@@ -63,8 +63,9 @@ export default {
       return [{
         label: 'Forms',
         value: this.forms.length,
-        percentage: '4.7%',
-        increase: true,
+        percentage: '',
+        increase: false,
+        decrease: false,
         labels: ['Label', 'Label', 'Label', 'Label', 'Label', 'Label'],
         datasets: [{
           label: 'Today',

@@ -6,9 +6,9 @@
                     <span :class="['stats-small__label', 'text-uppercase', computedLabelClass]">{{ label }}</span>
                     <h6 :class="['stats-small__value', 'count', computedValueClass]">{{ value }}</h6>
                 </div>
-                <div :class="['stats-small__data', computedInnerDataFieldClass]">
+                <!-- <div :class="['stats-small__data', computedInnerDataFieldClass]">
                     <span :class="['stats-small__percentage', `stats-small__percentage--${computedPercentageModifier}`]">{{ percentage }}</span>
-                </div>
+                </div> -->
             </div>
             <canvas :height="computedCanvasHeight" ref="canvas" :class="[computedChartId]"></canvas>
         </d-card-body>

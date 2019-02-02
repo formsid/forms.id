@@ -4,7 +4,7 @@
     <d-row no-gutters class="page-header py-4 flex justify-between items-center">
       <!-- Page Title -->
       <d-col col sm="6" class="text-center text-sm-left mb-4 mb-sm-0">
-        <editable class="page-title" :content="title" @update="title = $event"></editable>
+        <editable class="page-title" :content.sync="title"></editable>
       </d-col>
       <div class="flex-grow flex justify-end">
         <div class="d-flex">
@@ -48,7 +48,7 @@
               <d-list-group-item class="p-3">
                 <span class="d-flex mb-2"><i class="material-icons mr-1">flag</i><strong class="mr-1">Status:</strong> {{ this.isPublishable ? 'Ready to publish' : 'Incomplete' }} </span>
                 <span class="d-flex mb-2"><i class="material-icons mr-1">flag</i><strong class="mr-1">Theme:</strong> Clean <a class="ml-auto" href="#">Edit</a></span>
-                <span class="d-flex mb-2"><i class="material-icons mr-1">visibility</i><strong class="mr-1">Visibility:</strong> <strong class="text-danger" v-if="!public">Private</strong><strong class="text-success" v-if="public">Public</strong> <a class="ml-auto" href="#" @click="public = !public">Edit</a></span>
+                <span class="d-flex mb-2"><i class="material-icons mr-1">visibility</i><strong class="mr-1">Visibility:</strong> <strong class="text-danger" v-if="!isPublic">Private</strong><strong class="text-success" v-if="isPublic">Public</strong> <a class="ml-auto" href="#" @click="isPublic = !isPublic">Edit</a></span>
               </d-list-group-item>
             </d-list-group>
           </d-card-body>
@@ -70,7 +70,7 @@ export default {
     return {
       id: uuid('newform'),
       title: 'Untitled Form',
-      public: false,
+      isPublic: false,
       theme: 'clean',
       objects: null,
       modifiedWithoutSave: false,
@@ -85,7 +85,7 @@ export default {
         vm.id = form.id
         vm.title = form.title
         vm.objects = form.objects
-        vm.public = form.public
+        vm.isPublic = form.public
       } else {
         vm.objects = [
           { id: uuid(), type: 'question', added: Date.now(), data : {
@@ -99,6 +99,7 @@ export default {
         ]
       }
       vm.loaded = true
+
     })
   },
   computed: {
@@ -151,7 +152,7 @@ export default {
           created: Date.now(),
           objects: this.objects,
           title: this.title,
-          public: this.public,
+          public: this.isPublic,
           theme: this.theme
         }
         if(this.isNew){
@@ -167,11 +168,15 @@ export default {
         }
         this.bus.$emit('fetchforms')
         this.modifiedWithoutSave = false
+        this.$notify({
+          group: 'topcent',
+          text: 'Form saved successfully.'
+        })
         resolve()
       })
     },
-    publishForm(){
-      this.saveForm()
+    async publishForm(){
+      await this.saveForm()
       if(this.isPublishable){
         return new Promise(async (resolve, reject) => {
           let form = {
@@ -184,9 +189,15 @@ export default {
             theme: this.theme
           }
           await blockstack.putFile(`shared/${form.id}.json`, JSON.stringify(form), { encrypt : true })
+          this.$notify({
+            group: 'topcent',
+            text: 'Form published successfully.'
+          })
+          resolve()
         })
       } else {
         // couldn't publicly publish
+        reject()
       }
     }
   },

@@ -28,8 +28,8 @@ export default new Router({
       component: Dashboard,
     },
     {
-      path: '/errors',
-      name: 'errors',
+      path: '/404',
+      name: '404',
       component: Errors,
     },
     {
@@ -54,7 +54,7 @@ export default new Router({
     },
     {
       path: '*',
-      redirect: '/errors',
+      redirect: '/404',
     },
   ],
 })

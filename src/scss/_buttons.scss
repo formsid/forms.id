@@ -60,6 +60,10 @@
   @include button-variant($accent-color);
 }
 
+.btn-danger {
+  @include button-variant($danger-color);
+}
+
 // Outline button variation for the accent color.
 .btn-outline-accent {
   @include button-outline-variant($accent-color);

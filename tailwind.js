@@ -46,6 +46,7 @@ let defaultConfig = require('tailwindcss/defaultConfig')()
 let colors = {
   'transparent': 'transparent',
   'pale-khaki': '#fbfbfb',
+  'danger': '#983030',
   'formsid': '#304698',
   'formsid-glass': 'rgba(48, 70, 152, .92)',
   'border': '#e1e5eb',

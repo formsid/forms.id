@@ -55,7 +55,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: 'Users Overview',
+      default: 'Activity Overview',
     },
     chartData: {
       type: Object,
@@ -66,10 +66,7 @@ export default {
   },
   data() {
     return {
-      dateRange: {
-        from: null,
-        to: null,
-      },
+
     };
   },
   mounted() {

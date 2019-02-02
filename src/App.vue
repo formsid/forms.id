@@ -1,5 +1,6 @@
 <template>
   <component :is="layout">
+    <notifications group="topcent" :position="'top center'" />
     <router-view/>
     <auth :visible="authOpen"></auth>
   </component>
@@ -72,6 +73,20 @@ export default {
 }
 .not-so-subtle {
   transition: all 3.2s ease;
+}
+.modal {
+  z-index: 99999999999 !important;
+}
+.vue-notification {
+  padding: 10px;
+  margin: 10px 5px 5px;
+
+  font-size: 14px;
+
+  color: rgba(48, 70, 152, .82);
+  background: rgba(48, 70, 152, .22) !important;
+  border-left: 5px solid rgba(48, 70, 152, .82) !important;
+  border-radius: 8px;
 }
 </style>
 

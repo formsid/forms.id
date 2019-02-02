@@ -4,7 +4,7 @@
       <template v-for="obj in objects">
         <div class="subtle cursor-pointer p-3 rounded border hover:bg-pale-khaki mb-4" :class="{'bg-pale-khaki' : editingId == obj.id }" :key="obj.id" v-if="obj.type == 'image'" @click="editingId = obj.id">
           <div class="flex items-center justify-between mb-3">
-            <editable :content="obj.data.title" @update="obj.data.title = $event" class="text-muted d-block text-base font-light"></editable>
+            <editable :content.sync="obj.data.title" class="text-muted d-block text-base font-light"></editable>
             <div class="my-auto ml-auto" v-if="editingId == obj.id">
               <d-button size="sm" class="btn-white" @click="cloneObj(obj)">
                 <i class="far fa-clone"></i>
@@ -14,11 +14,11 @@
               </d-button>
             </div>
           </div>
-          <img :src="obj.data.src" :alt="obj.data.alt">
+          <img class="w-full" :src="obj.data.src" :alt="obj.data.alt">
         </div>
         <div class="subtle cursor-pointer p-3 rounded border hover:bg-pale-khaki mb-4" :class="{'bg-pale-khaki' : editingId == obj.id }" :key="obj.id" v-if="obj.type == 'question'" @click="editingId = obj.id">
           <div class="flex items-center justify-between mb-3">
-            <editable :content="obj.data.title" @update="obj.data.title = $event" class="text-muted d-block text-base font-light"></editable>
+            <editable :content.sync="obj.data.title" class="text-muted d-block text-base font-light"></editable>
             <div class="my-auto ml-auto" v-if="editingId == obj.id">
               <d-button size="sm" class="btn-white" @click="cloneObj(obj)">
                 <i class="far fa-clone"></i>
@@ -97,9 +97,11 @@ export default {
     },
     objects(newVal, oldVal){
       if(oldVal && oldVal.length > 0){
-        const objs = JSON.parse(JSON.stringify(newVal))
-        const newestObj = objs.sort((a, b) => new Date(b.added) - new Date(a.added))[0]
-        this.editingId = newestObj.id
+        if(newVal.length > 0){
+          const objs = JSON.parse(JSON.stringify(newVal))
+          const newestObj = objs.sort((a, b) => new Date(b.added) - new Date(a.added))[0]
+          this.editingId = newestObj.id
+        }
       }
     }
   }

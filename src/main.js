@@ -9,8 +9,10 @@ require('gun/sea')
 /* eslint-disable */
 import Vue from 'vue'
 import ShardsVue from 'shards-vue'
+import notifications from 'vue-notification'
 import stash from 'vue-stash'
 import VueDraggable from 'vuedraggable'
+
 
 import 'bootstrap/dist/css/bootstrap.css'
 import '@/scss/shards-dashboards.scss'
@@ -28,6 +30,7 @@ ShardsVue.install(Vue)
 Vue.component('draggable', VueDraggable)
 Vue.component('default-layout', Default)
 Vue.component('editable', Editable)
+Vue.use(notifications)
 Vue.use(stash)
 Vue.config.productionTip = false
 Vue.prototype.$eventHub = new Vue()
