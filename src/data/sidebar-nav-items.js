@@ -12,7 +12,7 @@ export default function () {
     title: 'Settings',
     htmlBefore: '<i class="material-icons">note_add</i>',
     to: {
-      name: 'Settings',
+      path: '/settings',
     },
   }];
 }
