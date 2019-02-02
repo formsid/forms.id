@@ -48,7 +48,7 @@
               <d-list-group-item class="p-3">
                 <span class="d-flex mb-2"><i class="material-icons mr-1">flag</i><strong class="mr-1">Status:</strong> {{ this.isPublishable ? 'Ready to publish' : 'Incomplete' }} </span>
                 <span class="d-flex mb-2"><i class="material-icons mr-1">flag</i><strong class="mr-1">Theme:</strong> Clean <a class="ml-auto" href="#">Edit</a></span>
-                <span class="d-flex mb-2"><i class="material-icons mr-1">visibility</i><strong class="mr-1">Visibility:</strong> <strong class="text-danger">Private</strong> <a class="ml-auto" href="#">Edit</a></span>
+                <span class="d-flex mb-2"><i class="material-icons mr-1">visibility</i><strong class="mr-1">Visibility:</strong> <strong class="text-danger" v-if="!public">Private</strong><strong class="text-success" v-if="public">Public</strong> <a class="ml-auto" href="#" @click="public = !public">Edit</a></span>
               </d-list-group-item>
             </d-list-group>
           </d-card-body>
@@ -180,7 +180,7 @@ export default {
             created: Date.now(),
             objects: this.objects,
             title: this.title,
-            public: this.public,
+            public: true,
             theme: this.theme
           }
           await blockstack.putFile(`shared/${form.id}.json`, JSON.stringify(form), { encrypt : true })

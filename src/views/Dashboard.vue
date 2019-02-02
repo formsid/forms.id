@@ -24,22 +24,14 @@
 </template>
 
 <script>
-import SmallStats from '@/components/common/SmallStats.vue';
-import TopReferrals from '@/components/common/TopReferrals.vue';
-import UsersOverview from '@/components/blog/UsersOverview.vue';
-import UsersByDevice from '@/components/blog/UsersByDeviceLite.vue';
-import NewDraft from '@/components/blog/NewDraft.vue';
-import Discussions from '@/components/blog/Discussions.vue';
+import SmallStats from '@/components/dash/SmallStats.vue';
+import FormsOverview from '@/components/dash/FormsOverview.vue'
 
 export default {
   store: ['collections'],
   components: {
     SmallStats,
-    boUsersOverview: UsersOverview,
-    boUsersByDevice: UsersByDevice,
-    boNewDraft: NewDraft,
-    boDiscussions: Discussions,
-    boTopReferrals: TopReferrals,
+    boUsersOverview: FormsOverview,
   },
   data() {
     return {
@@ -51,16 +43,16 @@ export default {
   },
   methods: {
     handleApprove(id) {
-      alert(`Approving discussion id: ${id}`); // eslint-disable-line no-alert
+      alert(`Approving discussion id: ${id}`)
     },
     handleReject(id) {
-      alert(`Rejecting discussion id: ${id}`); // eslint-disable-line no-alert
+      alert(`Rejecting discussion id: ${id}`)
     },
     handleEdit(id) {
-      alert(`Editing discussion id: ${id}`); // eslint-disable-line no-alert
+      alert(`Editing discussion id: ${id}`)
     },
     handleViewAllComments() {
-      alert('Viewing all comments!'); // eslint-disable-line no-alert
+      alert('Viewing all comments!')
     },
   },
   computed: {
