@@ -48,7 +48,8 @@ let colors = {
   'pale-khaki': '#fbfbfb',
   'danger': '#983030',
   'formsid': '#304698',
-  'formsid-glass': 'rgba(48, 70, 152, .92)',
+  'formsid-clear': 'rgba(48, 70, 152, .22)',
+  'formsid-glass': 'rgba(48, 70, 152, .82)',
   'border': '#e1e5eb',
   'white': '#fff'
 }

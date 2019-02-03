@@ -11,10 +11,10 @@
           <d-button class="btn-outline-accent text-sm mr-3">
             <i class="material-icons">remove_red_eye</i> Preview
           </d-button>
-          <d-button class="btn-outline-accent text-sm mr-3" @click="saveForm()">
+          <d-button class="btn-outline-accent text-sm" @click="saveForm()">
             <i class="material-icons">save</i> Save
           </d-button>
-          <d-button class="btn-accent text-sm" @click="publishForm()">
+          <d-button class="btn-accent text-sm ml-3" @click="publishForm()" v-if="isPublic">
             <i class="material-icons">file_copy</i> Publish
           </d-button>
         </div>
@@ -148,7 +148,7 @@ export default {
       return new Promise(async (resolve, reject) => {
         let form = {
           id: this.id,
-          published: false,
+          published: this.isPublic ? Date.now() : false,
           created: Date.now(),
           objects: this.objects,
           title: this.title,
@@ -181,14 +181,14 @@ export default {
         return new Promise(async (resolve, reject) => {
           let form = {
             id: this.id,
-            published: false,
-            created: Date.now(),
+            published: Date.now(),
+            created: this.editingForm.created,
             objects: this.objects,
             title: this.title,
             public: true,
             theme: this.theme
           }
-          await blockstack.putFile(`shared/${form.id}.json`, JSON.stringify(form), { encrypt : true })
+          await blockstack.putFile(`shared/${form.id}.json`, JSON.stringify(form), { encrypt : false })
           this.$notify({
             group: 'topcent',
             text: 'Form published successfully.'

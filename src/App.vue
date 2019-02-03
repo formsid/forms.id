@@ -10,7 +10,7 @@
 import Auth from './components/Auth'
 
 export default {
-  store: ['bus', 'collections', 'forms'],
+  store: ['bus', 'collections', 'forms', 'user'],
   components: { Auth },
   data() {
     return {
@@ -30,6 +30,13 @@ export default {
         collections.push(JSON.parse(await blockstack.getFile(`forms/${f}.json`, { decrypt: true })))
       })
       this.collections.forms = collections
+      this.collections.forms.forEach(f => {
+        this.$gun.get(`${this.user.username}:${f.id}`).get('submissions').map().on((node, key) => {
+          console.log(node)
+          f.submissions.push(node)
+          f.submissions = Array.from(new Set(f.submissions))
+        })
+      })
     },
     closeAuth(){
       this.authOpen = false

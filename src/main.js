@@ -9,6 +9,7 @@ require('gun/sea')
 /* eslint-disable */
 import Vue from 'vue'
 import ShardsVue from 'shards-vue'
+import gun from 'vue-gun'
 import notifications from 'vue-notification'
 import stash from 'vue-stash'
 import VueDraggable from 'vuedraggable'
@@ -30,6 +31,11 @@ ShardsVue.install(Vue)
 Vue.component('draggable', VueDraggable)
 Vue.component('default-layout', Default)
 Vue.component('editable', Editable)
+Vue.use(gun, {
+  peers: process.env.NODE_ENV == 'development' ? 'http://localhost:8765/gun' : 'https://friend.forms.id/gun',
+  store: RindexedDB({}),
+  file: false
+})
 Vue.use(notifications)
 Vue.use(stash)
 Vue.config.productionTip = false

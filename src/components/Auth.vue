@@ -42,6 +42,8 @@ export default {
       if(!this.$route.query.authResponse){
         if(blockstack.isUserSignedIn()){
           const data = blockstack.loadUserData()
+          const profile = new blockstack.Person(data.profile)
+          console.log(profile.avatarUrl())
           await this.putUser(data)
           // await blockstack.putFile('forms.json', JSON.stringify([]), { encrypt : true })
           this.bus.$emit('closeauth')
@@ -57,6 +59,7 @@ export default {
             file = await blockstack.getFile('preferences.json', { decrypt: true })
             if(file === null || typeof(file.created) == 'undefined') throw 'new user; blockstack null'
             console.log('old user')
+            await this.putUser(userData)
             this.bus.$emit('closeauth')
           } catch(err) {
             console.log('new user')
@@ -72,6 +75,7 @@ export default {
               email: '',
               notifications: false
             }), { encrypt : true })
+            await this.putUser(userData)
             this.bus.$emit('closeauth')
           }
         }).catch(err => {

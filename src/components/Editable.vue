@@ -11,7 +11,7 @@ export default {
   },
   watch: {
     content: function () {
-      this.$el.innerText = this.content
+      this.$el.innerText = this.content.replace(/\r?\n?/g, '').trim()
     }
   }
 }

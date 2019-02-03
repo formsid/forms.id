@@ -4,8 +4,8 @@
       <template v-for="obj in objects">
         <div class="subtle cursor-pointer p-3 rounded border hover:bg-pale-khaki mb-4" :class="{'bg-pale-khaki' : editingId == obj.id }" :key="obj.id" v-if="obj.type == 'image'" @click="editingId = obj.id">
           <div class="flex items-center justify-between mb-3">
-            <editable :content.sync="obj.data.title" class="text-muted d-block text-base font-light"></editable>
-            <div class="my-auto ml-auto" v-if="editingId == obj.id">
+            <editable :content.sync="obj.data.title" class="flex-grow mr-2 text-muted d-block text-base font-light overflow-hidden"></editable>
+            <div class="flex mb-auto ml-auto" v-if="editingId == obj.id">
               <d-button size="sm" class="btn-white" @click="cloneObj(obj)">
                 <i class="far fa-clone"></i>
               </d-button>
@@ -14,12 +14,17 @@
               </d-button>
             </div>
           </div>
-          <img class="w-full" :src="obj.data.src" :alt="obj.data.alt">
+          <div class="w-full relative">
+            <img class="w-full" :src="obj.data.src" :alt="obj.data.alt">
+            <div class="absolute pin flex items-center justify-center ">
+
+            </div>
+          </div>
         </div>
         <div class="subtle cursor-pointer p-3 rounded border hover:bg-pale-khaki mb-4" :class="{'bg-pale-khaki' : editingId == obj.id }" :key="obj.id" v-if="obj.type == 'question'" @click="editingId = obj.id">
           <div class="flex items-center justify-between mb-3">
-            <editable :content.sync="obj.data.title" class="text-muted d-block text-base font-light"></editable>
-            <div class="my-auto ml-auto" v-if="editingId == obj.id">
+            <editable :content.sync="obj.data.title" class="flex-grow mr-2 text-muted d-block text-base font-light overflow-hidden"></editable>
+            <div class="flex mb-auto ml-auto" v-if="editingId == obj.id">
               <d-button size="sm" class="btn-white" @click="cloneObj(obj)">
                 <i class="far fa-clone"></i>
               </d-button>
@@ -56,7 +61,7 @@ export default {
         { value: 'checkboxes', text: 'Checkboxes' },
         { value: 'dropdown', text: 'Dropdown' },
         { value: 'radio', text: 'Radio' },
-        { value: 'text', text: 'Short Answer' },
+        { value: 'shortanswer', text: 'Short Answer' },
         { value: 'paragraph', text: 'Paragraph' },
 
       ],
