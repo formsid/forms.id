@@ -56,7 +56,8 @@ export default {
           let file
           try {
             file = JSON.parse(await blockstack.getFile('preferences.json', { decrypt: true }))
-            if(file === null || typeof(file.created) == 'undefined') throw 'new user; blockstack null'
+            notifications = JSON.parse(await blockstack.getFile('notifications.json', { decrypt: true }))
+            if(file === null || notifications === null || typeof(file.created) == 'undefined') throw 'new user; blockstack null'
             console.log('old user')
             await this.putUser(userData)
             this.bus.$emit('closeauth')

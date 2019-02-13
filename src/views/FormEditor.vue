@@ -89,7 +89,7 @@ export default {
       return this.$route.name == 'NewForm'
     },
     formPreview(){
-      return `${isDev ? 'http://localhost:8081' : 'https://test.forms.id'}/f/${this.user.username}/${this.editingForm.id}`
+      return `${isDev ? 'http://localhost:8081' : 'https://forms.id'}/f/${this.user.username}/${this.editingForm.id}`
     },
     editingForm(){
       return !this.isNew ? this.collections.forms.find(f => f.id == this.$route.params.id) : false

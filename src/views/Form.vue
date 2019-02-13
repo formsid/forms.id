@@ -80,7 +80,7 @@ export default {
   },
   computed: {
     formPreview(){
-      return `${isDev ? 'http://localhost:8081' : 'https://test.forms.id'}/f/${this.user.username}/${this.form.id}`
+      return `${isDev ? 'http://localhost:8081' : 'https://forms.id'}/f/${this.user.username}/${this.form.id}`
     }
   },
   methods: {
