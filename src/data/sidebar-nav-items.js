@@ -1,16 +1,11 @@
 export default function () {
-  return [{
-    title: 'Dashboard',
-    to: { name: 'Dashboard' },
-    htmlBefore: '<i class="material-icons">dashboard</i>',
-    htmlAfter: '',
-  }, {
+  return [ {
     title: 'Forms',
     htmlBefore: '<i class="material-icons">filter_none</i>',
     to: { name: 'Forms' },
   }, {
     title: 'Settings',
-    htmlBefore: '<i class="material-icons">note_add</i>',
+    htmlBefore: '<i class="material-icons">settings</i>',
     to: {
       path: '/settings',
     },

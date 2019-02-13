@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Dashboard from './views/Dashboard.vue'
 import Errors from './views/Errors.vue'
 import Forms from './views/Forms.vue'
 import Form from './views/Form.vue'
@@ -20,12 +19,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/dashboard',
-    },
-    {
-      path: '/dashboard',
-      name: 'Dashboard',
-      component: Dashboard,
+      redirect: '/forms',
     },
     {
       path: '/404',

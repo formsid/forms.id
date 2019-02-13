@@ -1,19 +1,9 @@
-require('gun')
-require('gun/lib/unset')
-require('gun/lib/radix')
-require('gun/lib/radisk')
-require('gun/lib/store')
-require('gun/lib/rindexed')
-require('gun/sea')
-
+require('setimmediate')
 /* eslint-disable */
 import Vue from 'vue'
 import ShardsVue from 'shards-vue'
-import gun from 'vue-gun'
 import notifications from 'vue-notification'
 import stash from 'vue-stash'
-import VueDraggable from 'vuedraggable'
-
 
 import 'bootstrap/dist/css/bootstrap.css'
 import '@/scss/shards-dashboards.scss'
@@ -28,14 +18,8 @@ import Default from '@/layouts/Default.vue'
 import Editable from '@/components/Editable.vue'
 ShardsVue.install(Vue)
 
-Vue.component('draggable', VueDraggable)
 Vue.component('default-layout', Default)
 Vue.component('editable', Editable)
-Vue.use(gun, {
-  peers: process.env.NODE_ENV == 'development' ? 'http://localhost:8765/gun' : 'https://friend.forms.id/gun',
-  store: RindexedDB({}),
-  file: false
-})
 Vue.use(notifications)
 Vue.use(stash)
 Vue.config.productionTip = false
@@ -61,5 +45,3 @@ new Vue({
   }),
   render: h => h(App),
 }).$mount('#app')
-
-

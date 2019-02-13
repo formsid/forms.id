@@ -10,14 +10,14 @@
                     <span :class="['stats-small__percentage', `stats-small__percentage--${computedPercentageModifier}`]">{{ percentage }}</span>
                 </div> -->
             </div>
-            <canvas :height="computedCanvasHeight" ref="canvas" :class="[computedChartId]"></canvas>
+            <!-- <canvas :height="computedCanvasHeight" ref="canvas" :class="[computedChartId]"></canvas> -->
         </d-card-body>
     </d-card>
 </template>
 
 <script>
-import Chart from '../../utils/chart';
-import { nanoid } from '../../utils';
+// import Chart from '../../utils/chart';
+// import { nanoid } from '../../utils';
 
 export default {
   name: 'd-small-stats',
@@ -204,7 +204,7 @@ export default {
       ...{
         type: 'line',
         data: {
-          ...{ labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5'] },
+          ...{ labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6', 'Label 7'] },
           ...{
             datasets: this.chartData,
           },
@@ -214,7 +214,7 @@ export default {
       ...this.chartConfig,
     };
 
-    new Chart(this.$refs.canvas, chartConfig);
+    // new Chart(this.$refs.canvas, chartConfig);
   },
 };
 </script>

@@ -8,6 +8,8 @@
 
 <script>
 import Auth from './components/Auth'
+import OrbitDB from 'orbit-db'
+import { decryptECIES } from 'blockstack/lib/encryption'
 
 export default {
   store: ['bus', 'collections', 'forms', 'user'],
@@ -23,24 +25,107 @@ export default {
     },
   },
   methods: {
-    async fetchForms() {
-      this.forms = JSON.parse(await blockstack.getFile('forms.json', { decrypt : true }))
-      let collections = []
-      this.forms.forEach(async f => {
-        collections.push(JSON.parse(await blockstack.getFile(`forms/${f}.json`, { decrypt: true })))
-      })
-      this.collections.forms = collections
-      this.collections.forms.forEach(f => {
-        this.$gun.get(`${this.user.username}:${f.id}`).get('submissions').map().on((node, key) => {
-          console.log(node)
-          f.submissions.push(node)
-          f.submissions = Array.from(new Set(f.submissions))
+    async connectIpfs(){
+      return new Promise((resolve, reject) => {
+        const repoPath = 'ipfs-formsid'
+        let ipfs
+        try {
+          // Instatiate your IPFS node
+          ipfs = new Ipfs({
+            repo: repoPath,
+            config: {
+              Addresses: {
+                Swarm: ['/dns4/ws-star.discovery.libp2p.io/tcp/443/wss/p2p-websocket-star']
+              }
+            },
+            EXPERIMENTAL: { pubsub: true, sharding: false, dht: false }
+          })
+        } catch(err) {
+          console.log(err)
+          reject()
+        }
+        ipfs.on('error', (e) => console.error(e))
+        ipfs.on('ready', async () => {
+          window.orbit = new OrbitDB(ipfs)
+          resolve()
         })
       })
     },
+    async fetchForms() {
+      return new Promise(async (resolve, reject) => {
+        let privateKey = blockstack.loadUserData().appPrivateKey
+        this.forms = JSON.parse(await blockstack.getFile('forms.json', { decrypt : true }))
+        let collections = []
+        let newSubmissions = []
+        this.forms.forEach(async f => {
+          const file = JSON.parse(await blockstack.getFile(`forms/${f}.json`, { decrypt: true }))
+          const subdb = await orbit.open(file.dbs.submissions)
+          const viewdb = await orbit.open(file.dbs.views)
+          await subdb.load()
+          await viewdb.load()
+          file.submissions = JSON.parse(await blockstack.getFile(`submissions/${f}.json`, { decrypt: true }))
+          const allExtSubmissions = subdb.query(doc => doc)
+          allExtSubmissions.forEach(extSub => {
+            const decryptedSub = JSON.parse(decryptECIES(privateKey, extSub.data))
+            decryptedSub._id = extSub._id
+            if(file.submissions.map(s => s._id).indexOf(decryptedSub._id) == -1){
+              newSubmissions.push(decryptedSub)
+            }
+          })
+          if(newSubmissions.length){
+            newSubmissions.forEach(async s => {
+              this.user.notifications.push({ id: uuid('notification'), type: 'response', s: s._id, f: f, read: false, t: s.created })
+              file.submissions.push(s)
+            })
+            await blockstack.putFile(`submissions/${f}.json`, JSON.stringify(file.submissions), { encrypt : true })
+            await blockstack.putFile(`notifications.json`, JSON.stringify(this.user.notifications), { encrypt : true })
+          }
+          file.views = viewdb.value
+          collections.push(file)
+        })
+        this.collections.forms = collections
+        resolve()
+      })
+    },
+    async updateForms() {
+      return new Promise(async (resolve, reject) => {
+        this.forms = JSON.parse(await blockstack.getFile('forms.json', { decrypt : true }))
+        let collections = []
+        let newSubmissions = []
+        this.forms.forEach(async f => {
+          const file = JSON.parse(await blockstack.getFile(`forms/${f}.json`, { decrypt: true }))
+          const subdb = await orbit.open(file.dbs.submissions)
+          const viewdb = await orbit.open(file.dbs.views)
+          await subdb.load()
+          await viewdb.load()
+          file.submissions = JSON.parse(await blockstack.getFile(`submissions/${f}.json`, { decrypt: true }))
+          const allExtSubmissions = subdb.query(doc => doc)
+          allExtSubmissions.forEach(extSub => {
+            if(file.submissions.map(s => s._id).indexOf(extSub._id) == -1){
+              newSubmissions.push(extSub)
+            }
+          })
+          if(newSubmissions.length){
+            newSubmissions.forEach(async s => {
+              this.user.notifications.push({ id: uuid('notification'), type: 'response', s: s._id, f: f, read: false, t: s.created })
+              file.submissions.push(s)
+            })
+            await blockstack.putFile(`submissions/${f}.json`, JSON.stringify(file.submissions), { encrypt : true })
+            await blockstack.putFile(`notifications.json`, JSON.stringify(this.user.notifications), { encrypt : true })
+          }
+          file.views = viewdb.value
+          collections.push(file)
+        })
+        this.collections.forms = collections
+        resolve()
+      })
+    },
     closeAuth(){
-      this.authOpen = false
-      this.fetchForms()
+      this.connectIpfs().then(() => {
+        this.fetchForms().then(() => {
+          this.authOpen = false
+        })
+      })
     },
     signIn() {
       const origin = window.location.origin
@@ -62,7 +147,15 @@ export default {
     this.bus.$on('closeauth', this.closeAuth)
     this.bus.$on('signin', this.signIn)
     this.bus.$on('fetchforms', this.fetchForms)
-  }
+    this.bus.$on('updateforms', this.updateForms)
+  },
+  watch: {
+    // $route(newValue, oldValue) {
+    //   if(newValue.name == 'Form' || newValue.name == 'Dashboard'){
+    //     this.updateForms()
+    //   }
+    // }
+  },
 }
 </script>
 
@@ -96,6 +189,16 @@ export default {
   border-radius: 8px;
 }
 </style>
+
+<style>
+.main-navbar .navbar .notifications .dropdown-menu {
+  min-width: 20rem !important;
+  max-height: 16rem !important;
+  overflow-y: scroll !important;
+}
+
+</style>
+
 
 <style lang="css">
   /* style the background and the text color of the input ... */

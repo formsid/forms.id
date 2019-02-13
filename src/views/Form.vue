@@ -1,23 +1,24 @@
 <template>
   <d-container fluid class="main-content-container px-4">
-    <!-- Page Header -->
-
-
     <d-row no-gutters class="page-header py-4 flex justify-between items-center">
       <d-col col sm="6" class="text-center text-sm-left mb-4 mb-sm-0">
         <h3 class="page-title">{{ form.title }}</h3>
       </d-col>
       <div class="flex-grow flex justify-end">
         <div class="d-flex">
-          <d-button class="btn-outline-accent text-sm mr-3">
-            <i class="material-icons">cloud_download</i> Download Data
+          <a class="block no-underline" :href="formPreview" target="_blank">
+            <d-button class="btn-outline-accent text-sm mr-3" v-if="form.public">
+              <i class="material-icons">remove_red_eye</i> View
+            </d-button>
+          </a>
+          <d-button class="btn-outline-accent text-sm mr-3" @click="exportData">
+            <i class="material-icons">cloud_download</i> Export Data
           </d-button>
           <router-link :to="`/forms/${form.id}/edit`" class="block no-underline">
              <d-button class="btn-accent text-sm">
               <i class="material-icons">edit</i> Edit
             </d-button>
           </router-link>
-
         </div>
       </div>
     </d-row>
@@ -26,13 +27,13 @@
         <div class="card card-small mb-4">
           <div class="row py-4 border-bottom">
             <div class="text-center col-sm-4 col-md-6 col-lg-4">
-              <h4 class="mt-0 mb-1">{{ submissions.length }}</h4><span class="text-light text-uppercase">Submissions</span>
+              <h4 class="mt-0 mb-1">{{ form.submissions ? form.submissions.length : 0 }}</h4><span class="text-light text-uppercase">Submissions</span>
             </div>
             <div class="text-center col-sm-4 col-md-6 col-lg-4">
-              <h4 class="mt-0 mb-1">72.4%</h4><span class="text-light text-uppercase">Completion Rate</span>
+              <h4 class="mt-0 mb-1">0%</h4><span class="text-light text-uppercase">Completion Rate</span>
             </div>
             <div class="text-center col-sm-4 col-md-6 col-lg-4">
-              <h4 class="mt-0 mb-1">400</h4><span class="text-light text-uppercase">Views</span>
+              <h4 class="mt-0 mb-1">{{ form.views }}</h4><span class="text-light text-uppercase">Views</span>
             </div>
           </div>
           <div class="card-body p-0 pb-3 text-center">
@@ -40,19 +41,15 @@
               <thead class="bg-light">
                 <tr>
                   <th scope="col" class="border-0">#</th>
-                  <th scope="col" class="border-0">First Name</th>
-                  <th scope="col" class="border-0">Last Name</th>
-                  <th scope="col" class="border-0">Country</th>
-                  <th scope="col" class="border-0">City</th>
+                  <th scope="col" class="border-0">Data</th>
+                  <th scope="col" class="border-0">Timestamp</th>
                 </tr>
               </thead>
               <tbody>
-                <tr class="hover:bg-pale-khaki cursor-pointer" v-for="(record, i) in submissions" :key="record.id">
+                <tr class="hover:bg-pale-khaki cursor-pointer" v-for="(record, i) in form.submissions" :key="record._id">
                   <td>{{ i + 1 }}</td>
-                  <td>Ali</td>
-                  <td>Kerry</td>
-                  <td>Russian Federation</td>
-                  <td>Gdańsk</td>
+                  <td>{{ record.data }}</td>
+                  <td>{{ timestamp(record.created) }}</td>
                 </tr>
               </tbody>
             </table>
@@ -64,10 +61,12 @@
 </template>
 
 <script>
+import XLSX from 'xlsx'
+const isDev = process.env.NODE_ENV == 'development'
 
 export default {
   name: 'Form',
-  store: ['collections', 'forms'],
+  store: ['collections', 'forms', 'user'],
   beforeRouteEnter(to, from, next){
     next(vm => {
       vm.form = vm.collections.forms.find(f => f.id == to.params.id)
@@ -76,24 +75,49 @@ export default {
   data() {
     return {
       form: {},
-      submissions: []
+      formData: []
     }
   },
   computed: {
-
+    formPreview(){
+      return `${isDev ? 'http://localhost:8081' : 'https://test.forms.id'}/f/${this.user.username}/${this.form.id}`
+    }
   },
   methods: {
-    fetchSubmissions() {
-      let items = []
-      for (let i = 0; i < 23; i++) {
-        items.push({ id: i, created: Date.now()})
-      }
-      this.submissions = items
+    exportData(){
+      const ws = XLSX.utils.json_to_sheet(this.formData, { header: this.form.objects.filter(o => o.data.type !== 'image').map(a => a.data.title) })
+			const wb = XLSX.utils.book_new()
+			XLSX.utils.book_append_sheet(wb, ws, "Responses")
+			XLSX.writeFile(wb, `${this.form.title}.xlsx`)
+    },
+    timestamp(time){
+      return new Intl.DateTimeFormat('default', {
+        timeZone: 'UTC',
+        weekday: 'short',
+        year: 'numeric', month: 'numeric', day: 'numeric',
+        hour: 'numeric', minute: 'numeric'
+      }).format(new Date(time))
     }
   },
   mounted(){
-    this.fetchSubmissions()
-  }
+
+  },
+  watch: {
+    form(newValue, oldValue) {
+      if(newValue){
+        const answerable = newValue.objects.filter(o => o.data.type !== 'image')
+        let data = []
+        newValue.submissions.forEach(s => {
+          let record = {}
+          answerable.map(a => a.id).forEach(object => {
+            record[newValue.objects.find(o => o.id == object).data.title] = s.data[object]
+          })
+          data.push(record)
+        })
+        this.formData = data
+      }
+    }
+  },
 }
 </script>
 

@@ -10,7 +10,6 @@
 
 <script>
 import { decryptECIES, encryptECIES } from 'blockstack/lib/encryption'
-import crypto from 'simple-crypto-js'
 
 export default {
   name: 'Auth',
@@ -33,7 +32,8 @@ export default {
     async putUser(data){
       return new Promise(async (resolve, reject) => {
         this.user = {
-          username : data.username ? data.username : data.profile.name
+          username : data.username,
+          notifications: JSON.parse(await blockstack.getFile('notifications.json', { decrypt: true }))
         }
         resolve()
       })
@@ -43,9 +43,8 @@ export default {
         if(blockstack.isUserSignedIn()){
           const data = blockstack.loadUserData()
           const profile = new blockstack.Person(data.profile)
-          console.log(profile.avatarUrl())
           await this.putUser(data)
-          // await blockstack.putFile('forms.json', JSON.stringify([]), { encrypt : true })
+          // await blockstack.putFile('preferences.json', JSON.stringify(null), { encrypt : true })
           this.bus.$emit('closeauth')
         }
       }
@@ -56,7 +55,7 @@ export default {
           this.userData = userData
           let file
           try {
-            file = await blockstack.getFile('preferences.json', { decrypt: true })
+            file = JSON.parse(await blockstack.getFile('preferences.json', { decrypt: true }))
             if(file === null || typeof(file.created) == 'undefined') throw 'new user; blockstack null'
             console.log('old user')
             await this.putUser(userData)
@@ -64,12 +63,10 @@ export default {
           } catch(err) {
             console.log('new user')
             const cleanArray = JSON.stringify([])
-            const aesKey = crypto.generateRandom()
             const pubKey = blockstack.getPublicKeyFromPrivate(blockstack.loadUserData().appPrivateKey)
-            const encryptedAesKey = encryptECIES(pubKey, aesKey)
             await blockstack.putFile('key.txt', pubKey, { encrypt : false })
-            await blockstack.putFile('keycrypt.json', encryptedAesKey, { encrypt : false })
             await blockstack.putFile('forms.json', cleanArray, { encrypt : true })
+            await blockstack.putFile('notifications.json', cleanArray, { encrypt : true })
             await blockstack.putFile('preferences.json', JSON.stringify({
               created: Date.now(),
               email: '',

@@ -15,7 +15,11 @@
         </div>
       </div>
     </d-row>
-
+    <d-row>
+      <d-col lg v-for="(stats, idx) in smallStats" :key="idx" class="mb-4">
+        <small-stats :id="`small-stats-${idx}`" variation="1" :chart-data="stats.datasets" :label="stats.label" :value="stats.value" :percentage="stats.percentage" :increase="stats.increase" :decrease="stats.decrease" />
+      </d-col>
+    </d-row>
     <d-row>
       <d-col v-for="form in sortedForms" :key="form.id" lg="4">
         <d-card class="card-small card-post mb-4 cursor-pointer">
@@ -27,13 +31,10 @@
           <d-card-footer class="border-top d-flex">
             <div class="card-post__author d-flex">
               <div class="d-flex flex-column justify-content-center">
-                <span class="card-post__author-name">12 Submissions</span>
+                <span class="card-post__author-name">{{ form.submissions.length }} Responses</span>
               </div>
             </div>
             <div class="my-auto ml-auto">
-              <d-button size="sm" class="btn-white">
-                <i class="fas fa-share-alt"></i>
-              </d-button>
               <d-button size="sm" class="ml-2 btn-white" @click="clickDeleteForm(form.id)">
                 <i class="far fa-trash-alt"></i>
               </d-button>
@@ -58,9 +59,11 @@
 </template>
 
 <script>
+import SmallStats from '@/components/dash/SmallStats'
 
 export default {
   store: ['bus', 'collections', 'forms'],
+  components: { SmallStats },
   data() {
     return {
       deleteAttempt: null,
@@ -74,7 +77,51 @@ export default {
     },
     deletingForm(){
       return this.deleteAttempt ? this.sortedForms.find(f => f.id == this.deleteAttempt) : false
-    }
+    },
+    smallStats() {
+      return [{
+        label: 'Forms',
+        value: this.sortedForms.length,
+        percentage: '',
+        increase: false,
+        decrease: false,
+        datasets: [{
+          label: 'Today',
+          fill: 'start',
+          borderWidth: 1.5,
+          backgroundColor: 'rgba(48,70,152,.22)',
+          borderColor: 'rgb(48,70,152)',
+          data: [1, 2, 3, 3, 3, 4, 4],
+        }],
+      }, {
+        label: 'Responses',
+        value: this.sortedForms.map(f => f.submissions.length).reduce((a, b) => a + b, 0),
+        percentage: '12.4%',
+        increase: true,
+        datasets: [{
+          label: 'Today',
+          fill: 'start',
+          borderWidth: 1.5,
+          backgroundColor: 'rgba(48,70,152,.22)',
+          borderColor: 'rgb(48,70,152)',
+          data: [1, 2, 3, 3, 3, 4, 4],
+        }],
+      }, {
+        label: 'Views',
+        value: this.sortedForms.map(f => f.views).reduce((a, b) => a + b, 0),
+        percentage: '3.8%',
+        increase: false,
+        decrease: true,
+        datasets: [{
+          label: 'Today',
+          fill: 'start',
+          borderWidth: 1.5,
+          backgroundColor: 'rgba(48,70,152,.22)',
+          borderColor: 'rgb(48,70,152)',
+          data: [2, 3, 3, 3, 4, 3, 3],
+        }],
+      }];
+    },
   },
   methods: {
     clickDeleteForm(id){
@@ -84,11 +131,12 @@ export default {
     deleteForm(id) {
       return new Promise(async (resolve, reject) => {
         this.isDeletingForm = true
-        this.forms = this.forms.filter(f => f !== id)
         if(this.deletingForm.public){
           await blockstack.putFile(`shared/${id}.json`, JSON.stringify(null))
         }
         await blockstack.putFile(`forms/${id}.json`, JSON.stringify(null))
+        this.forms = this.forms.filter(f => f !== id)
+        this.collections.forms = this.collections.forms.filter(f => f !== id)
         await blockstack.putFile(`forms.json`, JSON.stringify(this.forms), { encrypt : true })
         this.isDeletingForm = false
         this.deleteModalClosed()
@@ -96,7 +144,7 @@ export default {
           group: 'topcent',
           text: 'Form deleted successfully.'
         })
-        this.bus.$emit('fetchforms')
+        this.bus.$emit('updateforms')
         resolve()
       })
     },
