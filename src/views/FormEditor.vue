@@ -228,6 +228,7 @@ export default {
         })
       } else {
         // couldn't publicly publish
+        this.validateObjects()
         reject()
       }
     }

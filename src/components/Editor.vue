@@ -63,7 +63,7 @@ export default {
         { value: null, text: 'Select a question type' },
         { value: 'dropdown', text: 'Dropdown' },
         { value: 'image', text: 'Image' },
-        { value: 'multipleanswer', text: 'Multiple Answer' },
+        // { value: 'multipleanswer', text: 'Multiple Answer' },
         { value: 'multiplechoice', text: 'Multiple Choice' },
         { value: 'paragraph', text: 'Paragraph' },
         { value: 'shortanswer', text: 'Short Answer' }

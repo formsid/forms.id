@@ -26,13 +26,13 @@
       <div class="col">
         <div class="card card-small mb-4">
           <div class="row py-4 border-bottom">
-            <div class="text-center col-sm-4 col-md-6 col-lg-4">
+            <div class="text-center col-sm-4 col-md-6 col-lg-6">
               <h4 class="mt-0 mb-1">{{ form.submissions ? form.submissions.length : 0 }}</h4><span class="text-light text-uppercase">Submissions</span>
             </div>
-            <div class="text-center col-sm-4 col-md-6 col-lg-4">
+            <!-- <div class="text-center col-sm-4 col-md-6 col-lg-6">
               <h4 class="mt-0 mb-1">0%</h4><span class="text-light text-uppercase">Completion Rate</span>
-            </div>
-            <div class="text-center col-sm-4 col-md-6 col-lg-4">
+            </div> -->
+            <div class="text-center col-sm-4 col-md-6 col-lg-6">
               <h4 class="mt-0 mb-1">{{ form.views }}</h4><span class="text-light text-uppercase">Views</span>
             </div>
           </div>
@@ -48,7 +48,7 @@
               <tbody>
                 <tr class="hover:bg-pale-khaki cursor-pointer" v-for="(record, i) in form.submissions" :key="record._id">
                   <td>{{ i + 1 }}</td>
-                  <td>{{ record.data }}</td>
+                  <td>{{ filled(record.data) }}</td>
                   <td>{{ timestamp(record.created) }}</td>
                 </tr>
               </tbody>
@@ -97,6 +97,10 @@ export default {
         year: 'numeric', month: 'numeric', day: 'numeric',
         hour: 'numeric', minute: 'numeric'
       }).format(new Date(time))
+    },
+    filled(data){
+      const max = this.form.objects.filter(o => o.data.type !== 'image').length
+      return `${(data.length / max) * 100}% filled`
     }
   },
   mounted(){
