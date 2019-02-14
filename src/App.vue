@@ -172,7 +172,7 @@ export default {
   transition: all .21s ease;
 }
 .not-so-subtle {
-  transition: all 3.2s ease;
+  transition: all 2.8s ease;
 }
 .modal {
   z-index: 99999999999 !important;
@@ -180,10 +180,8 @@ export default {
 .vue-notification {
   padding: 10px;
   margin: 10px 5px 5px;
-
-  font-size: 14px;
-
-  color: rgba(48, 70, 152, .82);
+  font-size: 14px !important;
+  color: rgba(48, 70, 152, .82) !important;
   background: rgba(48, 70, 152, .22) !important;
   border-left: 5px solid rgba(48, 70, 152, .82) !important;
   border-radius: 8px;

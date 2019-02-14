@@ -38,6 +38,7 @@
                 </d-dropdown-item>
               </d-collapse>
             </li>
+            <li class="nav-item dropdown" @click="logout()"><a href="#" class="nav-link" target="_self" aria-controls="snc-0" aria-expanded="false" role="button"><div class="item-icon-wrapper"><i class="material-icons">logout</i></div><span>Logout</span><!----></a><!----></li>
           </d-nav>
       </div>
   </aside>
@@ -74,6 +75,10 @@ export default {
     handleToggleSidebar() {
       this.sidebarVisible = !this.sidebarVisible;
     },
+    logout(){
+      localStorage.clear()
+      window.location.replace(window.location.host)
+    }
   },
 };
 </script>

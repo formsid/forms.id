@@ -98,7 +98,7 @@ export default {
       return this.taggableObjects.map(o => o.data.choices.length).every(l => l >= 2) &&
       this.objects.every(o => o.data.type !== null) &&
       this.imageObjects.every(o => o.data.src.indexOf('placehold.it') == -1) &&
-      this.objects.every(o => o.data.title !== '') 
+      this.objects.every(o => o.data.title !== '')
     },
     imageObjects(){
       return this.objects
