@@ -5,7 +5,7 @@
     <d-button class="btn-outline-white border-2 btn-lg font-light hover:text-formsid" @click="signIn()" v-if="!isLoggingIn">
       Login w/ Blockstack
     </d-button>
-    <i class="fas fa-spinner fa-spin text-formsid" v-if="isLoggingIn"></i>
+    <i class="fas fa-spinner fa-spin text-white text-6xl" v-if="isLoggingIn"></i>
   </div>
 </template>
 

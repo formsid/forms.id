@@ -77,7 +77,7 @@ export default {
     },
     logout(){
       localStorage.clear()
-      window.location.replace(window.location.host)
+      window.location.replace('')
     }
   },
 };
