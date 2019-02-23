@@ -1,0 +1,30 @@
+{
+  "name": "client",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
+  },
+  "dependencies": {
+    "autosize": "^4.0.2",
+    "blockstack": "^18.3.0",
+    "gun": "^0.9.9999991",
+    "ipfs": "^0.34.4",
+    "orbit-db": "^0.19.9",
+    "setimmediate": "^1.0.5",
+    "tailwindcss": "^0.7.4",
+    "v-autosize": "^1.0.0",
+    "vue": "^2.6.6",
+    "vue-gun": "0.0.3",
+    "vue-router": "^3.0.2",
+    "vue-scroll-progressbar": "^0.1.4"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.4.0",
+    "@vue/cli-service": "^3.4.0",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2",
+    "vue-template-compiler": "^2.6.6"
+  }
+}
