@@ -13,12 +13,14 @@
     "gun": "^0.9.9999991",
     "ipfs": "^0.34.4",
     "orbit-db": "^0.19.9",
+    "pug": "^2.0.3",
+    "pug-plain-loader": "^1.0.0",
     "setimmediate": "^1.0.5",
     "shards-ui": "^2.1.0",
     "shards-vue": "^1.0.7",
-    "slug": "^0.9.3",
+    "slug": "^0.9.4",
     "tailwindcss": "^0.7.4",
-    "vue": "^2.6.6",
+    "vue": "^2.6.7",
     "vue-gun": "0.0.3",
     "vue-notification": "^1.3.16",
     "vue-router": "^3.0.1",
@@ -28,12 +30,15 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.3.1",
-    "@vue/cli-plugin-babel": "^3.4.0",
-    "@vue/cli-plugin-eslint": "^3.0.3",
-    "@vue/cli-service": "^3.4.0",
-    "@vue/eslint-config-airbnb": "^3.0.3",
+    "@vue/cli-plugin-babel": "^3.4.1",
+    "@vue/cli-plugin-eslint": "^3.4.1",
+    "@vue/cli-service": "^3.4.1",
+    "@vue/eslint-config-airbnb": "^3.0.5",
+    "coffee-loader": "^0.9.0",
+    "coffeescript": "^2.3.2",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.0.1",
-    "vue-template-compiler": "^2.6.6"
+    "vue-cli-plugin-coffeescript": "0.0.3",
+    "vue-template-compiler": "^2.6.7"
   }
 }
