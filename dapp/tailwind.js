@@ -49,10 +49,13 @@ let colors = {
   'pale-khaki': '#fbfbfb',
   'danger': '#983030',
   'formsid': '#304698',
+  'reddish': '#983030',
   'formsid-darker': '#18234c',
   'formsid-darkest': '#090e1e',
   'formsid-clear': 'rgba(48, 70, 152, .22)',
   'formsid-glass': 'rgba(48, 70, 152, .82)',
+  'reddish-clear': 'rgba(152, 48, 48, 0.22)',
+  'reddish-glass': 'rgba(152, 48, 48, 0.82)',
   'grey-darkest': '#3d4852',
   'grey-darker': '#606f7b',
   'grey-dark': '#8795a1',
@@ -656,6 +659,7 @@ module.exports = {
     '20': '5rem',
     '24': '6rem',
     '32': '8rem',
+    '64': '16rem'
   },
 
 

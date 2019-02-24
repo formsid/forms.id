@@ -2,21 +2,22 @@
   .container
     .flex.flex-wrap.-mx-2
       .w-third.px-2(v-for="form in sortedForms" :key="form.id")
-        router-link.block.no-underline(:to="formUrl(form.id)")
-          .bg-white.rounded.mb-4.cursor-pointer.shadow
-            .flex.flex-col
+        .bg-white.rounded.mb-4.cursor-pointer.shadow
+          .flex.flex-col
+            router-link.block.no-underline(:to="formUrl(form.id)")
               .px-6.pt-6
                 h2.font-light.text-formsid {{ form.title }}
+            router-link.block.no-underline(:to="formUrl(form.id)")
               .my-4.flex.flex-col.w-full.py-8
                 //- .px-6.py-2.flex.flex-col
                 //-   span.my-2.font-light.text-formsid-darker {{ form.submissions.length }} Submissions
                 //-   span.my-2.font-light.text-formsid-darker {{ form.submissions.length }} Views
-              .px-6.pb-6
-                div.flex.justify-end.items-center
-                  div.bg-formsid-clear.text-formsid-glass.subtle.hover-text-white.hover-bg-formsid.p-2.rounded.mr-2
-                    i.material-icons.text-lg share
-                  div.bg-formsid-clear.text-formsid-glass.subtle.hover-text-white.hover-bg-formsid.p-2.rounded
-                    i.material-icons.text-lg(@click="clickDeleteForm(form.id)") delete
+            .px-6.pb-6
+              div.flex.justify-end.items-center
+                div.bg-formsid-clear.text-formsid-glass.subtle.hover-text-white.hover-bg-formsid.p-2.rounded.mr-2
+                  i.material-icons.text-lg share
+                div.bg-reddish-clear.text-reddish-glass.subtle.hover-text-white.hover-bg-reddish.p-2.rounded
+                  i.material-icons.text-lg(@click="clickDeleteForm(form.id)") delete
     <d-modal v-if="showDeleteModal" @close="deleteModalClosed">
       <d-modal-header>
           <d-modal-title>Confirm deletion</d-modal-title>
