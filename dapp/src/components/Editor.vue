@@ -21,7 +21,7 @@
                 <d-form-select size="lg" :options="questionTypes" v-model="obj.data.type"/>
                 <div class="border-top mt-3 pt-3" v-if="editingId == obj.id">
                   <vue-tags-input :separators="['|']" :max-tags="4" placeholder="Add a choice" :allow-edit-tags="true" v-model="tag" :tags="tags" @tags-changed="tagsChanged" v-if="taggable"/>
-                  <div class="w-full relative" v-show="editingId == obj.id" v-if="obj.data.type == 'image'">
+                  <div class="w-full relative" v-if="obj.data.type == 'image'">
                     <img class="w-full" :src="obj.data.src" :alt="obj.data.alt">
                     <div class="absolute pin flex items-center justify-center" >
                       <div class="w-24 h-24 rounded-full bg-formsid opacity-75 flex items-center justify-center subtle hover:opacity-100" @click="clickImageInput">
@@ -29,6 +29,9 @@
                         <i class="fas fa-camera text-white text-2xl"></i>
                       </div>
                     </div>
+                  </div>
+                  <div class="mt-3 ml-auto table">
+                    <d-checkbox inline v-model="obj.required" toggle></d-checkbox>
                   </div>
                 </div>
               </div>

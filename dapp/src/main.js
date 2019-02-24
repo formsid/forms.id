@@ -5,9 +5,9 @@ import ShardsVue from 'shards-vue'
 import notifications from 'vue-notification'
 import stash from 'vue-stash'
 
-import 'bootstrap/dist/css/bootstrap.css'
-import '@/scss/shards-dashboards.scss'
-import '@/assets/scss/date-range.scss'
+// import 'bootstrap/dist/css/bootstrap.css'
+// import '@/scss/shards-dashboards.scss'
+// import '@/assets/scss/date-range.scss'
 
 // Core
 import App from './App.vue'
