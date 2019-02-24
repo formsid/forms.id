@@ -213,8 +213,16 @@ export default {
 
 
 <style lang="css">
-.el-tree-node__content {
-  height: 58px !important;
+.el-collapse-item__content {
+  padding: 0 1.2rem 25px;
+  font-weight: 300;
+}
+.el-collapse-item__header {
+  padding-left: 1.4rem;
+  font-weight: 300 !important;
+  height: 56px !important;
+  color: inherit !important;
+  font-size: inherit !important;
 }
   .ti-tags {
     flex-direction: column;

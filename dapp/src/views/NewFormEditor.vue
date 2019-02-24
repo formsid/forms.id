@@ -1,11 +1,17 @@
 <template lang="pug">
   .min-h-screen.w-full.bg-khaki.overflow-hidden.subtle.z-max.fixed.pin.flex(:class="open")
     .sidebar.w-64.fixed.pin-l.pin-t.pin-b.shadow.bg-white.flex.flex-col.overflow-hidden
-      .border-b.py-8.w-full
-      tree(:data="data6" node-key="id" @node-drag-end="handleDragEnd" @node-drop="handleDrop" draggable accordion :allow-drop="allowDrop" :allow-drag="allowDrag")
+      .py-8.w-full
+      collapse(v-model="activeTree")
+        draggable(element="collapse" :list="objects")
+          collapse-item.text-md(:title="obj.data.title" :name="obj.id" v-for="obj in objects" :key="obj.id")
+            select.subtle.rounded.focus-border-b-2.border-formsid-glass.bg-formsid-clear.appearance-none.w-full.p-3.leading-tight.focus-outline-none.outline-none.greycliff.text-sm.font-light.text-formsid-glas.focus-text-formsid-glass(v-model="obj.data.type")
+              option(v-for="choice in questionTypes" :key="choice.label" :value="choice.value") {{ choice.label }}
+      //- tree(:data="data6" node-key="id" @node-drag-end="handleDragEnd" @node-drop="handleDrop" draggable accordion :allow-drop="allowDrop" :allow-drag="allowDrag")
+      //-   span.custom-tree-node(slot-scope="{ node, data }")
+      //-     span {{ node.label }}
     .flex-grow.flex.flex-col.ml-64
-      .w-full.h-32
-      .w-full.overflow-hidden
+      .w-full.overflow-hidden.flex-grow
         .container.h-full.px-8
           .bg-white.h-full.shadow.form-container.overflow-y-scroll.relative
             .sticky.z-max.pin-t.w-full.bg-formsid-clear(style="height: .5rem;")
@@ -83,12 +89,13 @@
 </template>
 
 <script lang="coffee">
+import Draggable from 'vuedraggable'
 import Editor from '@/components/Editor.vue'
 isDev = process.env.NODE_ENV is'development'
 export default
   props: ['visible', 'new']
   store: ['bus', 'collections', 'forms', 'user']
-  components: { Editor }
+  components: { Draggable, Editor }
   data: ->
     id: uuid('newform')
     title: 'Untitled Form'
@@ -98,8 +105,19 @@ export default
     objects: []
     modifiedWithoutSave: false
     loaded: false
+    activeTree: '1',
+    questionTypes: [
+      { value: null, label: 'Select a question type' },
+      { value: 'dropdown', label: 'Dropdown' },
+      { value: 'image', label: 'Image' },
+      # // { value: 'multipleanswer', label: 'Multiple Answer' },
+      { value: 'multiplechoice', label: 'Multiple Choice' },
+      { value: 'paragraph', label: 'Paragraph' },
+      { value: 'shortanswer', label: 'Short Answer' }
+    ],
   beforeMount: ->
     if @new
+      @addObject()
       @addObject()
       @addObject()
       @addObject()
@@ -124,28 +142,30 @@ export default
   computed:
     data6: ->
       tree = [{ label: 'Heading' }]
-      tree.push({ label: obj.data.title }) for obj in @objects
+      tree.push({
+        label: obj.data.title, id: obj.id, children: [ { label: '' } ]
+      }) for obj in @objects
       tree
     vueScrollClass: -> { 'form-container' : true }
     open: ->
-      'opacity-100 visible' if @visible is true
-      'opacity-0 invisible' if @visible is false
+      return 'opacity-100 visible' if @visible is true
+      return 'opacity-0 invisible' if @visible is false
     formPreview: ->
       # // return `${isDev ? 'http://localhost:8081' : 'https://forms.id'}/f/${@user.username}/${@editingForm.id}`
       ''
-    editingForm: -> @collections.forms.find(f) -> f.id is @$route.params.id unless @new
-    isPublishable: ->
-      return @taggableObjects.map(o => o.data.choices.length).every(l => l >= 2) &&
-      @objects.every(o) -> o.data.type isnt null &&
-      @imageObjects.every(o) -> o.data.src.indexOf('placehold.it') is -1 &&
-      @objects.every(o) -> o.data.title isnt ''
-    imageObjects: -> @objects.filter(o) -> o.data.type is 'image'
-    taggableObjects: -> @objects.filter(o) -> ['dropdown', 'multipleanswer', 'multiplechoice'].indexOf(o.data.type) > -1
+    editingForm: ->
+      form = f for f in @collections.forms when f.id is @$route.params.id
+      if @new is false then form[0] else false
+    isPublishable: -> false
+      # return @taggableObjects.map(o => o.data.choices.length).every(l => l >= 2) &&
+      # @objects.every(o) -> o.data.type isnt null &&
+      # @imageObjects.every(o) -> o.data.src.indexOf('placehold.it') is -1 &&
+      # @objects.every(o) -> o.data.title isnt ''
+    imageObjects: -> o for o in @objects when o.data.type is 'image'
+    taggableObjects: ->
+      taggable = ['dropdown', 'multipleanswer', 'multiplechoice']
+      o for o in @objects when taggable.indexOf(o.data.type) > -1
   methods:
-    allowDrag: (draggingNode) -> draggingNode.data.label isnt 'Heading'
-    allowDrop: (draggingNode, dropNode, type) -> type isnt 'inner' and dropNode.data.label isnt 'Heading'
-    handleDrop: (draggingNode, dropNode, dropType, ev) ->
-    handleDragEnd: (draggingNode, dropNode, dropType, ev) ->
     validateObjects: ->
       if !@taggableObjects.map(o) -> o.data.choices.length.every(l) -> l >= 2
         @$notify({
@@ -172,7 +192,7 @@ export default
         id: uuid('object')
         added: Date.now()
         data:
-          type: 'multipleanswer'
+          type: 'multiplechoice'
           title: 'Click to edit label...',
           alt: 'Image alt tag'
           src: 'https://placehold.it/700x300'
