@@ -45,11 +45,22 @@ let defaultConfig = require('tailwindcss/defaultConfig')()
 
 let colors = {
   'transparent': 'transparent',
+  'khaki': '#F6F6F6',
   'pale-khaki': '#fbfbfb',
   'danger': '#983030',
   'formsid': '#304698',
+  'formsid-darker': '#18234c',
+  'formsid-darkest': '#090e1e',
   'formsid-clear': 'rgba(48, 70, 152, .22)',
   'formsid-glass': 'rgba(48, 70, 152, .82)',
+  'grey-darkest': '#3d4852',
+  'grey-darker': '#606f7b',
+  'grey-dark': '#8795a1',
+  'grey': '#b8c2cc',
+  'grey-light': '#dae1e7',
+  'grey-lighter': '#f1f5f8',
+  'grey-lightest': '#f8fafc',
+  'blay': 'rgba(47, 67, 154, .03)',
   'border': '#e1e5eb',
   'white': '#fff'
 }
@@ -179,6 +190,7 @@ module.exports = {
   textSizes: {
     'xs': '.75rem',     // 12px
     'sm': '.875rem',    // 14px
+    'md': '.9375rem',    // 14px
     'base': '1rem',     // 16px
     'lg': '1.125rem',   // 18px
     'xl': '1.25rem',    // 20px
@@ -422,10 +434,10 @@ module.exports = {
     '32': '8rem',
     '48': '12rem',
     '64': '16rem',
-    '1/2': '50%',
-    '1/3': '33.33333%',
+    'half': '50%',
+    'third': '33.33333%',
     '2/3': '66.66667%',
-    '1/4': '25%',
+    'fourth': '25%',
     '3/4': '75%',
     '1/5': '20%',
     '2/5': '40%',
@@ -701,6 +713,7 @@ module.exports = {
 
   shadows: {
     default: '0 2px 4px 0 rgba(0,0,0,0.10)',
+    'sm': '0 2px 6px 0 rgba(0,0,0,0.08), 0 1px 1px 0 rgba(0,0,0,0.04)',
     'md': '0 4px 8px 0 rgba(0,0,0,0.12), 0 2px 4px 0 rgba(0,0,0,0.08)',
     'lg': '0 15px 30px 0 rgba(0,0,0,0.11), 0 5px 15px 0 rgba(0,0,0,0.08)',
     'inner': 'inset 0 2px 4px 0 rgba(0,0,0,0.06)',
@@ -889,7 +902,7 @@ module.exports = {
 
   plugins: [
     require('tailwindcss/plugins/container')({
-      // center: true,
+      center: true,
       // padding: '1rem',
     }),
   ],
@@ -908,7 +921,7 @@ module.exports = {
   options: {
     prefix: '',
     important: false,
-    separator: ':',
+    separator: '-',
   },
 
 }

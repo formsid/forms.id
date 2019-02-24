@@ -1,9 +1,5 @@
 <template>
-  <component :is="layout">
-    <notifications group="topcent" :position="'top center'" />
-    <router-view/>
-    <auth :visible="authOpen"></auth>
-  </component>
+ <router-view/>
 </template>
 
 <script>
