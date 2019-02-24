@@ -1,23 +1,27 @@
-<template>
- <router-view/>
+<template lang="pug">
+  .app-root
+    router-view
+    auth(:visible="authOpen")
+    form-editor(:visible="formEditorOpen" :new="true")
 </template>
 
 <script>
 import Auth from './components/Auth'
+import NewFormEditor from './views/NewFormEditor'
 import OrbitDB from 'orbit-db'
 import { decryptECIES } from 'blockstack/lib/encryption'
 
 export default {
   store: ['bus', 'collections', 'forms', 'user'],
-  components: { Auth },
+  components: { Auth, 'form-editor' : NewFormEditor },
   data() {
     return {
       authOpen: true
     }
   },
   computed: {
-    layout() {
-      return `${this.$route.meta.layout || 'default'}-layout`;
+    formEditorOpen() {
+      return false
     },
   },
   methods: {
@@ -160,8 +164,22 @@ export default {
 @tailwind components;
 @tailwind utilities;
 
-.cursor-pointer {
-  cursor: pointer;
+@font-face {
+  font-family: fair;
+  src: url(/fonts/playfairdisplay-regular-webfont.woff);
+}
+
+@font-face {
+  font-family: greycliff;
+  src: url(/fonts/greycliff-cf-regular.woff2);
+}
+
+.fair {
+  font-family: fair;
+}
+
+.greycliff {
+  font-family: greycliff;
 }
 
 .subtle {
