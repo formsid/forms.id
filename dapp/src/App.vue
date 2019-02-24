@@ -213,8 +213,9 @@ export default {
 
 
 <style lang="css">
-  /* style the background and the text color of the input ... */
-
+.el-tree-node__content {
+  height: 58px !important;
+}
   .ti-tags {
     flex-direction: column;
   }

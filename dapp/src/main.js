@@ -5,10 +5,13 @@ import App from './App.vue'
 import router from './router'
 import notifications from 'vue-notification'
 import stash from 'vue-stash'
+import { Tree } from 'element-ui'
 
+import 'element-ui/lib/theme-chalk/index.css';
 import Editable from '@/components/Editable.vue'
 
 Vue.component('editable', Editable)
+Vue.component('tree', Tree)
 Vue.use(notifications)
 Vue.use(stash)
 Vue.config.productionTip = false
