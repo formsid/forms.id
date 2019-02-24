@@ -52,6 +52,7 @@ let colors = {
   'reddish': '#983030',
   'formsid-darker': '#18234c',
   'formsid-darkest': '#090e1e',
+  'formsid-pale': 'rgba(210, 215, 233, .22)',
   'formsid-clear': 'rgba(48, 70, 152, .22)',
   'formsid-glass': 'rgba(48, 70, 152, .82)',
   'reddish-clear': 'rgba(152, 48, 48, 0.22)',

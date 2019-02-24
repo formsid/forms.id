@@ -1,29 +1,23 @@
 require('setimmediate')
-/* eslint-disable */
+
 import Vue from 'vue'
-import ShardsVue from 'shards-vue'
-import notifications from 'vue-notification'
-import stash from 'vue-stash'
-
-// import 'bootstrap/dist/css/bootstrap.css'
-// import '@/scss/shards-dashboards.scss'
-// import '@/assets/scss/date-range.scss'
-
-// Core
 import App from './App.vue'
 import router from './router'
+import autosize from 'vue-autosize'
+import notifications from 'vue-notification'
+import stash from 'vue-stash'
+import { Collapse, CollapseItem } from 'element-ui'
 
-// Layouts
-import Default from '@/layouts/Default.vue'
+import 'element-ui/lib/theme-chalk/index.css';
 import Editable from '@/components/Editable.vue'
-ShardsVue.install(Vue)
 
-Vue.component('default-layout', Default)
 Vue.component('editable', Editable)
+Vue.component('collapse', Collapse)
+Vue.component('collapse-item', CollapseItem)
+Vue.use(autosize)
 Vue.use(notifications)
 Vue.use(stash)
 Vue.config.productionTip = false
-Vue.prototype.$eventHub = new Vue()
 
 window.blockstack = require('blockstack')
 window.uuid = ((a, b) => {

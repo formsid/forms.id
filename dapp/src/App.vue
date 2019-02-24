@@ -21,7 +21,7 @@ export default {
   },
   computed: {
     formEditorOpen() {
-      return false
+      return true
     },
   },
   methods: {
@@ -162,6 +162,30 @@ export default {
 <style>
 @tailwind preflight;
 @tailwind components;
+.form-switch {
+  @apply relative select-none w-12 leading-normal;
+}
+.form-switch-checkbox {
+  @apply hidden;
+}
+.form-switch-label {
+  @apply block overflow-hidden cursor-pointer bg-formsid-pale border rounded-full h-6 shadow-inner;
+  transition: background-color 0.2s ease-in;
+}
+.form-switch-label:before {
+  @apply absolute block bg-white pin-y w-6 border rounded-full -ml-1;
+  right: 50%;
+  content: "";
+  transition: all 0.2s ease-in;
+}
+.form-switch-checkbox:checked+.form-switch-label,
+.form-switch-checkbox:checked+.form-switch-label:before {}
+.form-switch-checkbox:checked+.form-switch-label {
+  @apply bg-formsid-glass shadow-none;
+}
+.form-switch-checkbox:checked+.form-switch-label:before {
+  @apply pin-r;
+}
 @tailwind utilities;
 
 @font-face {
@@ -188,8 +212,15 @@ export default {
 .not-so-subtle {
   transition: all 2.8s ease;
 }
-.modal {
-  z-index: 99999999999 !important;
+.checkbox span {
+  width: 18px;
+  height: 18px;
+  display: block;
+  background: #F9F9FB;
+}
+
+.checkbox input:checked + span {
+  background: #636b6f;
 }
 .vue-notification {
   padding: 10px;
@@ -213,8 +244,17 @@ export default {
 
 
 <style lang="css">
-  /* style the background and the text color of the input ... */
-
+.el-collapse-item__content {
+  padding: 0 1.2rem 25px;
+  font-weight: 300;
+}
+.el-collapse-item__header {
+  padding-left: 1.4rem;
+  font-weight: 300 !important;
+  height: 56px !important;
+  color: inherit !important;
+  font-size: inherit !important;
+}
   .ti-tags {
     flex-direction: column;
   }
