@@ -1,24 +1,13 @@
 require('setimmediate')
-/* eslint-disable */
+
 import Vue from 'vue'
-import ShardsVue from 'shards-vue'
+import App from './App.vue'
+import router from './router'
 import notifications from 'vue-notification'
 import stash from 'vue-stash'
 
-// import 'bootstrap/dist/css/bootstrap.css'
-// import '@/scss/shards-dashboards.scss'
-// import '@/assets/scss/date-range.scss'
-
-// Core
-import App from './App.vue'
-import router from './router'
-
-// Layouts
-import Default from '@/layouts/Default.vue'
 import Editable from '@/components/Editable.vue'
-ShardsVue.install(Vue)
 
-Vue.component('default-layout', Default)
 Vue.component('editable', Editable)
 Vue.use(notifications)
 Vue.use(stash)

@@ -2,9 +2,9 @@
   <div class="min-h-screen w-full fixed pin z-max bg-formsid-glass not-so-subtle flex flex-col items-center justify-center px-8" :class="open">
     <!-- <img src="../assets/images/auth.svg" alt="" class="absolute pin-b pin-r"/> -->
     <img src="../assets/images/logo_white.svg" alt="" class="max-w-sm mb-16"/>
-    <d-button class="btn-outline-white border-2 btn-lg font-light hover:text-formsid" @click="signIn()" v-if="!isLoggingIn">
+    <div class="btn-outline-white border-2 btn-lg font-light hover:text-formsid" @click="signIn()" v-if="!isLoggingIn">
       Login w/ Blockstack
-    </d-button>
+    </div>
     <i class="fas fa-spinner fa-spin text-white text-6xl" v-if="isLoggingIn"></i>
   </div>
 </template>

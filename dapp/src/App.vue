@@ -21,7 +21,7 @@ export default {
   },
   computed: {
     formEditorOpen() {
-      return false
+      return true
     },
   },
   methods: {
