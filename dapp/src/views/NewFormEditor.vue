@@ -7,6 +7,11 @@
           collapse-item.text-md(:title="obj.data.title" :name="obj.id" v-for="obj in objects" :key="obj.id")
             select.subtle.rounded.focus-border-b-2.border-formsid-glass.bg-formsid-clear.appearance-none.w-full.p-3.leading-tight.focus-outline-none.outline-none.greycliff.text-sm.font-light.text-formsid-glas.focus-text-formsid-glass(v-model="obj.data.type")
               option(v-for="choice in questionTypes" :key="choice.label" :value="choice.value") {{ choice.label }}
+            .flex.items-center.mt-4.justify-between
+              span.font-light.text-md.mr-2 Required
+              .form-switch
+                input.form-switch-checkbox(type="checkbox" :name="obj.id" :id="obj.id" v-model="obj.required")
+                label.form-switch-label(:for="obj.id")
       //- tree(:data="data6" node-key="id" @node-drag-end="handleDragEnd" @node-drop="handleDrop" draggable accordion :allow-drop="allowDrop" :allow-drag="allowDrag")
       //-   span.custom-tree-node(slot-scope="{ node, data }")
       //-     span {{ node.label }}
