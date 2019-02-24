@@ -3,6 +3,7 @@ import Router from 'vue-router'
 
 import Dash from './views/Dash.vue'
 import NewForms from './views/NewForms.vue'
+import NewForm from './views/NewForm.vue'
 
 import Errors from './views/Errors.vue'
 import Forms from './views/Forms.vue'
@@ -27,6 +28,11 @@ export default new Router({
           path: 'forms',
           component: NewForms,
           name: 'Forms'
+        },
+        {
+          path: 'forms/:id',
+          name: 'Form',
+          component: NewForm,
         },
         {
           path: 'polls',

@@ -2,21 +2,21 @@
   .container
     .flex.flex-wrap.-mx-2
       .w-third.px-2(v-for="form in sortedForms" :key="form.id")
-        //- router-link.block.no-underline(:to="`/forms/${form.id}`")
-        .bg-white.rounded.mb-4.cursor-pointer.shadow
-          .flex.flex-col
-            .px-6.pt-6
-              h2.font-light.text-formsid {{ form.title }}
-            .my-4.flex.flex-col.w-full.py-8
-              //- .px-6.py-2.flex.flex-col
-              //-   span.my-2.font-light.text-formsid-darker {{ form.submissions.length }} Submissions
-              //-   span.my-2.font-light.text-formsid-darker {{ form.submissions.length }} Views
-            .px-6.pb-6
-              div.flex.justify-end.items-center
-                div.bg-formsid-clear.text-formsid-glass.subtle.hover-text-white.hover-bg-formsid.p-2.rounded.mr-2
-                  i.material-icons.text-lg share
-                div.bg-formsid-clear.text-formsid-glass.subtle.hover-text-white.hover-bg-formsid.p-2.rounded
-                  i.material-icons.text-lg(@click="clickDeleteForm(form.id)") delete
+        router-link.block.no-underline(:to="formUrl(form.id)")
+          .bg-white.rounded.mb-4.cursor-pointer.shadow
+            .flex.flex-col
+              .px-6.pt-6
+                h2.font-light.text-formsid {{ form.title }}
+              .my-4.flex.flex-col.w-full.py-8
+                //- .px-6.py-2.flex.flex-col
+                //-   span.my-2.font-light.text-formsid-darker {{ form.submissions.length }} Submissions
+                //-   span.my-2.font-light.text-formsid-darker {{ form.submissions.length }} Views
+              .px-6.pb-6
+                div.flex.justify-end.items-center
+                  div.bg-formsid-clear.text-formsid-glass.subtle.hover-text-white.hover-bg-formsid.p-2.rounded.mr-2
+                    i.material-icons.text-lg share
+                  div.bg-formsid-clear.text-formsid-glass.subtle.hover-text-white.hover-bg-formsid.p-2.rounded
+                    i.material-icons.text-lg(@click="clickDeleteForm(form.id)") delete
     <d-modal v-if="showDeleteModal" @close="deleteModalClosed">
       <d-modal-header>
           <d-modal-title>Confirm deletion</d-modal-title>
@@ -40,9 +40,10 @@ export default
   computed:
     sortedForms: ->
       @collections.forms
-      { id: item, title: 'My Awesome Form', submissions: [] } for item in [0,1,2,3,4,5,6,7,8,9]
+      { id: item, title: 'My Awesome Form', submissions: [] } for item in [0,1,2,3,4]
     deletingForm: -> @sortedForms.find (f) -> f.id is @deleteAttempt if deleteAttempt?
   methods:
+    formUrl: (id) -> "/ui/forms/#{id}"
     clickDeleteForm: (id) ->
       @deleteAttempt = id
       @showDeleteModal = true
