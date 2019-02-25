@@ -10,7 +10,7 @@
         .w-full.flex.justify-between.items-center.my-10
           h1.font-thin.text-formsid.py-2 {{ pageTitle }}
           .flex(v-if="$route.name == 'Forms'")
-            div.flex.items-center.cursor-pointer.bg-formsid-clear.px-4.subtle.hover-bg-formsid.hover-text-white.font-light.text-formsid.py-3.rounded
+            div.flex.items-center.cursor-pointer.bg-formsid-clear.px-4.subtle.hover-bg-formsid.hover-text-white.font-light.text-formsid.py-3.rounded(@click="bus.$emit('openformeditor')")
               i.material-icons.text-lg.mr-2 create
               span Create
           .flex(v-if="$route.name == 'Form'")
@@ -39,9 +39,13 @@
 
 <script lang="coffee">
   export default
-    store: ['collections', 'user']
+    store: ['bus', 'collections', 'user']
     computed:
-      pageTitle: -> @$route.name
+      pageTitle: ->
+        title = @$route.name if @$route.name isnt 'Form'
+        found = (f for f in @collections.forms when f.id is @$route.params.id)[0]
+        title = found.title if @$route.name is 'Form' and found?
+        title
       totalSubmissions: ->
         subs = @collections.forms.map (f) -> f.submissions.length
         subs.reduce (a, b) -> a + b
@@ -49,7 +53,3 @@
         views = @collections.forms.map (f) -> f.views
         views.reduce (a, b) -> a + b
 </script>
-
-<style scoped>
-
-</style>

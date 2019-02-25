@@ -34,7 +34,8 @@ export default
   name: 'Form',
   store: ['collections', 'forms', 'user']
   beforeRouteEnter: (to, from, next) ->
-    next (vm) -> vm.form = vm.collections.forms.find(f) -> f.id is to.params.id
+    next (vm) ->
+       vm.form = (f for f in vm.collections.forms when f.id is to.params.id)[0]
   data: ->
     form: {}
     formData: []
@@ -56,16 +57,18 @@ export default
         hour: 'numeric', minute: 'numeric'
       }).format(new Date(time))
     filled: (data) ->
-      max = @form.objects.filter(o) -> o.data.type isnt 'image'.length
+      max = (o for o in @form.objects when o.data.type isnt 'image').length
       "#{(data.length / max) * 100}% filled"
   watch:
     form: (newValue, oldValue) ->
       if newValue
-        answerable = newValue.objects.filter(o) -> o.data.type isnt 'image'
+        answerable = o for o in newValue.objects when o.data.type isnt 'image'
         data = []
-        newValue.submissions.forEach(s) ->
+        for s in newValue.submissions
           record = {}
-          answerable.map(a => a.id).forEach(object) ->
+          aids = a.id for a in answerable
+          for object in aids
+            titleCheck = (o for o in newValue.objects when o.id is object.data.title)[0]
             record[newValue.objects.find(o) -> o.id == object.data.title] is s.data[object]
           data.push(record)
         @formData = data

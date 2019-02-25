@@ -2,7 +2,7 @@
   .app-root
     router-view
     auth(:visible="authOpen")
-    form-editor(:visible="formEditorOpen" :new="true")
+    form-editor(:visible="formEditorOpen" :new="true" v-if="feOpen")
 </template>
 
 <script>
@@ -16,13 +16,10 @@ export default {
   components: { Auth, 'form-editor' : NewFormEditor },
   data() {
     return {
-      authOpen: true
+      authOpen: true,
+      formEditorOpen: false,
+      feOpen: true
     }
-  },
-  computed: {
-    formEditorOpen() {
-      return true
-    },
   },
   methods: {
     async connectIpfs(){
@@ -127,6 +124,18 @@ export default {
         })
       })
     },
+    closeFormEditor(){
+      this.formEditorOpen = false
+      setTimeout(() => {
+        this.feOpen = false
+        setTimeout(() => {
+          this.feOpen = true
+        }, 800)
+      }, 800)
+    },
+    openFormEditor(){
+      this.formEditorOpen = true
+    },
     signIn() {
       const origin = window.location.origin
       const date = new Date()
@@ -145,6 +154,8 @@ export default {
   },
   mounted(){
     this.bus.$on('closeauth', this.closeAuth)
+    this.bus.$on('closeformeditor', this.closeFormEditor)
+    this.bus.$on('openformeditor', this.openFormEditor)
     this.bus.$on('signin', this.signIn)
     this.bus.$on('fetchforms', this.fetchForms)
     this.bus.$on('updateforms', this.updateForms)
@@ -231,6 +242,9 @@ export default {
   border-left: 5px solid rgba(48, 70, 152, .82) !important;
   border-radius: 8px;
 }
+.el-collapse-item__arrow {
+  display: none !important;
+}
 </style>
 
 <style>
@@ -251,7 +265,7 @@ export default {
 .el-collapse-item__header {
   padding-left: 1.4rem;
   font-weight: 300 !important;
-  height: 56px !important;
+  height: 48px !important;
   color: inherit !important;
   font-size: inherit !important;
 }
