@@ -180,11 +180,11 @@ export default {
   @apply hidden;
 }
 .form-switch-label {
-  @apply block overflow-hidden cursor-pointer bg-formsid-pale border rounded-full h-6 shadow-inner;
+  @apply block overflow-hidden cursor-pointer bg-formsid-pale border rounded-full h-7 shadow-inner;
   transition: background-color 0.2s ease-in;
 }
 .form-switch-label:before {
-  @apply absolute block bg-white pin-y w-6 border rounded-full -ml-1;
+  @apply absolute block bg-white pin-y w-7 border rounded-full -ml-1;
   right: 50%;
   content: "";
   transition: all 0.2s ease-in;
@@ -223,16 +223,7 @@ export default {
 .not-so-subtle {
   transition: all 2.8s ease;
 }
-.checkbox span {
-  width: 18px;
-  height: 18px;
-  display: block;
-  background: #F9F9FB;
-}
 
-.checkbox input:checked + span {
-  background: #636b6f;
-}
 .vue-notification {
   padding: 10px;
   margin: 10px 5px 5px;
@@ -268,6 +259,7 @@ export default {
   height: 48px !important;
   color: inherit !important;
   font-size: inherit !important;
+  background: inherit !important;
 }
   .ti-tags {
     flex-direction: column;

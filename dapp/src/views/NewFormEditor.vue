@@ -1,10 +1,11 @@
 <template lang="pug">
   .min-h-screen.w-full.bg-khaki.overflow-hidden.subtle.z-max.fixed.pin.flex(:class="open")
     .sidebar.w-64.fixed.pin-l.pin-t.pin-b.shadow.bg-white.flex.flex-col.overflow-hidden
-      .py-8.w-full
-      collapse.overflow-y-scroll(v-model="activeTree")
-        draggable(element="collapse" :list="objects")
-          collapse-item.text-md(:title="obj.data.title" :name="obj.id" v-for="obj in objects" :key="obj.id")
+      .w-full
+        img.py-6.table.mx-auto(style="width: 150px;" src="@/assets/images/logo.svg" alt="Forms.id")
+        //- collapse.overflow-y-scroll(v-model="activeTree" :accordion="true")
+        draggable(element="collapse" :list="objects" :component-data="getDraggableData()")
+          collapse-item.subtle.text-base.text-grey-darkest.opacity-90(:title="obj.data.title" :name="obj.id" v-for="obj in objects" :key="obj.id" :class="{'hover-bg-formsid-clear' : activeTree != obj.id}")
             select.subtle.rounded.focus-border-b-2.border-formsid-glass.bg-formsid-clear.appearance-none.w-full.p-3.leading-tight.focus-outline-none.outline-none.greycliff.text-sm.font-light.text-formsid-glas.focus-text-formsid-glass(v-model="obj.data.type")
               option(v-for="choice in questionTypes" :key="choice.label" :value="choice.value") {{ choice.label }}
             .flex.items-center.mt-4.justify-between
@@ -181,6 +182,11 @@ export default
       taggable = ['dropdown', 'multipleanswer', 'multiplechoice']
       o for o in @objects when taggable.indexOf(o.data.type) > -1
   methods:
+    getDraggableData: ->
+      { props: { accordion: true }, on: {
+          change: @handleChooseEvent
+        }}
+    handleChooseEvent: (event) -> @activeTree = event
     validateObjects: ->
       if !@taggableObjects.map(o) -> o.data.choices.length.every(l) -> l >= 2
         @$notify({
