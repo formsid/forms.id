@@ -16,7 +16,10 @@
     .flex-grow.flex.flex-col.ml-64
       .w-Full.py-4
         .container.flex.justify-between.items-center.px-8
-          .something
+          .flex
+            div.flex.items-center.cursor-pointer.border-reddish-clear.border.px-4.subtle.hover-bg-reddish.hover-text-white.font-light.text-reddish.py-3.rounded.mr-4(@click="bus.$emit('closeformeditor')")
+              i.material-icons.text-lg.mr-2 cancel
+              span Cancel
           .flex
             div.flex.items-center.cursor-pointer.border-formsid-clear.border.px-4.subtle.hover-bg-formsid.hover-text-white.font-light.text-formsid.py-3.rounded.mr-4
               i.material-icons.text-lg.mr-2 remove_red_eye
