@@ -39,9 +39,7 @@ export default
     showDeleteModal: false,
     isDeletingForm: false,
   computed:
-    sortedForms: ->
-      @collections.forms
-      { id: item, title: 'My Awesome Form', submissions: [] } for item in [0,1,2,3,4]
+    sortedForms: -> @collections.forms
     deletingForm: -> @sortedForms.find (f) -> f.id is @deleteAttempt if deleteAttempt?
   methods:
     formUrl: (id) -> "/ui/forms/#{id}"

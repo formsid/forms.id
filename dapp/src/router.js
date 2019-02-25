@@ -72,7 +72,7 @@ export default new Router({
     // },
     {
       path: '*',
-      redirect: '/404',
+      redirect: '/ui',
     },
   ],
 })

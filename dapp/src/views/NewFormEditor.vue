@@ -2,7 +2,7 @@
   .min-h-screen.w-full.bg-khaki.overflow-hidden.subtle.z-max.fixed.pin.flex(:class="open")
     .sidebar.w-64.fixed.pin-l.pin-t.pin-b.shadow.bg-white.flex.flex-col.overflow-hidden
       .py-8.w-full
-      collapse(v-model="activeTree")
+      collapse.overflow-y-scroll(v-model="activeTree")
         draggable(element="collapse" :list="objects")
           collapse-item.text-md(:title="obj.data.title" :name="obj.id" v-for="obj in objects" :key="obj.id")
             select.subtle.rounded.focus-border-b-2.border-formsid-glass.bg-formsid-clear.appearance-none.w-full.p-3.leading-tight.focus-outline-none.outline-none.greycliff.text-sm.font-light.text-formsid-glas.focus-text-formsid-glass(v-model="obj.data.type")
@@ -12,10 +12,20 @@
               .form-switch
                 input.form-switch-checkbox(type="checkbox" :name="obj.id" :id="obj.id" v-model="obj.required")
                 label.form-switch-label(:for="obj.id")
-      //- tree(:data="data6" node-key="id" @node-drag-end="handleDragEnd" @node-drop="handleDrop" draggable accordion :allow-drop="allowDrop" :allow-drag="allowDrag")
-      //-   span.custom-tree-node(slot-scope="{ node, data }")
-      //-     span {{ node.label }}
     .flex-grow.flex.flex-col.ml-64
+      .w-Full.py-4
+        .container.flex.justify-between.items-center.px-8
+          .something
+          .flex
+            div.flex.items-center.cursor-pointer.border-formsid-clear.border.px-4.subtle.hover-bg-formsid.hover-text-white.font-light.text-formsid.py-3.rounded.mr-4
+              i.material-icons.text-lg.mr-2 remove_red_eye
+              span View
+            div.flex.items-center.cursor-pointer.border-formsid-clear.border.px-4.subtle.hover-bg-formsid.hover-text-white.font-light.text-formsid.py-3.rounded.mr-4(@click="clickSave()")
+              i.material-icons.text-lg.mr-2 save
+              span Save
+            div.flex.items-center.cursor-pointer.bg-formsid-clear.px-4.subtle.hover-bg-formsid.hover-text-white.font-light.text-formsid.py-3.rounded
+              i.material-icons.text-lg.mr-2 file_copy
+              span Publish
       .w-full.overflow-hidden.flex-grow
         .container.h-full.px-8
           .bg-white.h-full.shadow.form-container.overflow-y-scroll.relative
@@ -208,38 +218,39 @@ export default
       @objects.push(newObject)
     clickSave: ->
       await @saveForm()
-      @$router.push({ name: 'Forms' }) if @new
+      @$router.push({ name: 'Forms' }) if @new is true
+      this.bus.$emit('closeformeditor')
     saveForm: ->
-      new Promise async (resolve, reject) ->
+      new Promise (resolve, reject) =>
         form =
-          id: if @new is true then @id else @editingForm.id
+          id: if @new is true then uuid('newform') else @editingForm.id
           published: if @isPublic is true then Date.now() else false
-          objects: @$refs.editor.arrangedObjects()
+          objects: @objects
           title: @title
           subtitle: @subtitle
           public: @isPublic
           theme: @theme
         if @new
-          subDb = await orbit.create('#{@user.username}.#{form.id}.submissions', 'docstore', { write: ['*']})
-          viewDb = await orbit.create('#{@user.username}.#{form.id}.views', 'counter', { write: ['*']})
+          subDb = await orbit.create("#{@user.username}.#{form.id}.submissions", 'docstore', { write: ['*']})
+          viewDb = await orbit.create("#{@user.username}.#{form.id}.views", 'counter', { write: ['*']})
           form.created = Date.now()
           form.dbs =
             submissions: subDb.address.toString()
             views: viewDb.address.toString()
           if @forms.indexOf(form.id) is -1
             @forms.push(form.id)
-            await blockstack.putFile('forms.json', JSON.stringify(@forms), { encrypt : true })
-            await blockstack.putFile('forms/#{form.id}.json', JSON.stringify(form), { encrypt : true })
-            await blockstack.putFile('submissions/#{form.id}.json', JSON.stringify([]), { encrypt : true })
+            await blockstack.putFile("forms.json", JSON.stringify(@forms), { encrypt : true })
+            await blockstack.putFile("forms/#{form.id}.json", JSON.stringify(form), { encrypt : true })
+            await blockstack.putFile("submissions/#{form.id}.json", JSON.stringify([]), { encrypt : true })
           else
             # // form must already exist
           @bus.$emit 'updateforms'
         else
           if @editingForm.public and form.public is false
-            await blockstack.putFile('shared/#{form.id}.json', JSON.stringify(null))
+            await blockstack.putFile("shared/#{form.id}.json", JSON.stringify(null))
           form.created = @editingForm.created
           form.dbs = @editingForm.dbs
-          await blockstack.putFile('forms/#{form.id}.json', JSON.stringify(form), { encrypt : true })
+          await blockstack.putFile("forms/#{form.id}.json", JSON.stringify(form), { encrypt : true })
         @modifiedWithoutSave = false
         @$notify({
           group: 'topcent',
@@ -249,7 +260,7 @@ export default
     publishForm: ->
       await @clickSave()
       if @isPublishable
-        new Promise async (resolve, reject) ->
+        new Promise (resolve, reject) ->
           form =
             id: @editingForm.id
             published: Date.now()
@@ -259,7 +270,7 @@ export default
             subtitle: @subtitle
             theme: @theme
             dbs: @editingForm.dbs
-          await blockstack.putFile('shared/#{form.id}.json', JSON.stringify(form), { encrypt : false })
+          await blockstack.putFile("shared/#{form.id}.json", JSON.stringify(form), { encrypt : false })
           @$notify({
             group: 'topcent',
             text: 'Form published successfully.'
