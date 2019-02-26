@@ -260,6 +260,8 @@ export default {
   color: inherit !important;
   font-size: inherit !important;
   background: inherit !important;
+  overflow: hidden;
+  display: block !important;
 }
   .ti-tags {
     flex-direction: column;

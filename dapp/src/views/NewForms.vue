@@ -8,7 +8,7 @@
               .px-6.pt-6
                 h2.font-light.text-formsid {{ form.title }}
             router-link.block.no-underline(:to="formUrl(form.id)")
-              .my-4.flex.flex-col.w-full.py-8
+              .my-4.flex.flex-col.w-full.py-4
                 //- .px-6.py-2.flex.flex-col
                 //-   span.my-2.font-light.text-formsid-darker {{ form.submissions.length }} Submissions
                 //-   span.my-2.font-light.text-formsid-darker {{ form.submissions.length }} Views

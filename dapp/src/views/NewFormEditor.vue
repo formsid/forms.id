@@ -5,8 +5,12 @@
         img.py-6.table.mx-auto(style="width: 150px;" src="@/assets/images/logo.svg" alt="Forms.id")
         //- collapse.overflow-y-scroll(v-model="activeTree" :accordion="true")
         draggable(element="collapse" :list="objects" :component-data="getDraggableData()")
-          collapse-item.subtle.text-base.text-grey-darkest.opacity-90(:title="obj.data.title" :name="obj.id" v-for="obj in objects" :key="obj.id" :class="{'hover-bg-formsid-clear' : activeTree != obj.id}")
-            select.subtle.rounded.focus-border-b-2.border-formsid-glass.bg-formsid-clear.appearance-none.w-full.p-3.leading-tight.focus-outline-none.outline-none.greycliff.text-sm.font-light.text-formsid-glas.focus-text-formsid-glass(v-model="obj.data.type")
+          collapse-item.rounded.subtle.bg-white.text-base.text-grey-darkest.opacity-90(:title="obj.data.title" :name="obj.id" v-for="obj in objects" :key="obj.id" :class="{'hover-bg-formsid-clear' : activeTree != obj.id}")
+            template(slot="title")
+              .flex.items-center.w-full
+                i.material-icons.text-formsid-darkest.mr-2 drag_handle
+                p.h-12.overflow-hidden.text-formsid-darkest.font-light {{ obj.data.title }}
+            select.subtle.rounded.focus-border-b-2.border-formsid-glass.bg-formsid-clear.appearance-none.w-full.p-3.leading-tight.focus-outline-none.outline-none.greycliff.text-sm.font-light.text-formsid-darker.focus-text-formsid-glass(v-model="obj.data.type")
               option(v-for="choice in questionTypes" :key="choice.label" :value="choice.value") {{ choice.label }}
             .flex.items-center.mt-4.justify-between
               span.font-light.text-md.mr-2 Required
@@ -36,11 +40,11 @@
             .sticky.z-max.pin-t.w-full.bg-formsid-clear(style="height: .5rem;")
             div.md-px-16.max-w-lg.mx-auto.pb-12(style="margin-top:15%;")
               div.mx-auto.pb-12
-                editable.text-center.fair.mb-6.text-5xl(:content.sync="title") {{ title }}
-                editable.greycliff.max-w-lg.mx-auto.text-center.text-xl.leading-loose(:content.sync="subtitle") {{ subtitle }}
+                editable.text-center.fair.mb-6.text-5xl.text-formsid-darkest(:content.sync="title") {{ title }}
+                editable.greycliff.max-w-lg.mx-auto.text-center.text-xl.leading-loose.text-formsid-darker(:content.sync="subtitle") {{ subtitle }}
               div.w-full.mb-16
                 div.mb-8(v-for="obj in objects" :key="obj.id")
-                  editable.break-words.greycliff.max-w-lg.mx-auto.text-left.text-xl.leading-loose.mb-2(:content.sync="obj.data.title") {{ obj.data.title }}
+                  editable.break-words.greycliff.max-w-lg.mx-auto.text-left.text-xl.leading-loose.mb-2.text-formsid-darkest(:content.sync="obj.data.title") {{ obj.data.title }}
                   <div class="flex items-center max-w-lg mx-auto py-2" v-if="obj.data.type == 'shortanswer'">
                     <input type="text" :aria-label="obj.data.title" class="subtle rounded focus:border-b-2 border-formsid-glass bg-formsid-clear appearance-none w-full p-3 leading-tight focus:outline-none outline-none greycliff text-xl font-light text-formsid-glass focus:text-formsid-glass">
                   </div>
@@ -138,10 +142,7 @@ export default
     if @new
       @addObject()
       @addObject()
-      @addObject()
-      @addObject()
-      @addObject()
-      @addObject()
+      @activeTree = @objects[0].id.toString()
       @loaded = true
     # // next(vm => {
     # //   if(to.name == 'EditForm'){
@@ -186,9 +187,11 @@ export default
       o for o in @objects when taggable.indexOf(o.data.type) > -1
   methods:
     getDraggableData: ->
-      { props: { accordion: true }, on: {
-          change: @handleChooseEvent
-        }}
+      props:
+        accordion: true
+        value: @activeTree
+      on:
+        change: @handleChooseEvent
     handleChooseEvent: (event) -> @activeTree = event
     validateObjects: ->
       if !@taggableObjects.map(o) -> o.data.choices.length.every(l) -> l >= 2
@@ -217,7 +220,7 @@ export default
         added: Date.now()
         data:
           type: 'multiplechoice'
-          title: 'Click to edit label...',
+          title: 'This is a new label',
           alt: 'Image alt tag'
           src: 'https://placehold.it/700x300'
           choices: [
@@ -228,7 +231,7 @@ export default
     clickSave: ->
       await @saveForm()
       @$router.push({ name: 'Forms' }) if @new is true
-      this.bus.$emit('closeformeditor')
+      @bus.$emit('closeformeditor')
     saveForm: ->
       new Promise (resolve, reject) =>
         form =
