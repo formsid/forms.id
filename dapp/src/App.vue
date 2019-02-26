@@ -2,7 +2,7 @@
   .app-root
     router-view
     auth(:visible="authOpen")
-    form-editor(:visible="formEditorOpen" :new="true" v-if="feOpen")
+    form-editor(:visible="formEditorOpen" :form="editingForm" v-if="feOpen")
 </template>
 
 <script>
@@ -18,7 +18,8 @@ export default {
     return {
       authOpen: true,
       formEditorOpen: false,
-      feOpen: true
+      feOpen: true,
+      editingForm: null
     }
   },
   methods: {
@@ -126,14 +127,16 @@ export default {
     },
     closeFormEditor(){
       this.formEditorOpen = false
-      setTimeout(() => {
-        this.feOpen = false
-        setTimeout(() => {
-          this.feOpen = true
-        }, 800)
-      }, 800)
+      this.editingForm = null
+      // setTimeout(() => {
+      //   this.feOpen = false
+      //   setTimeout(() => {
+      //     this.feOpen = true
+      //   }, 500)
+      // }, 500)
     },
-    openFormEditor(){
+    openFormEditor(form){
+      this.editingForm = form
       this.formEditorOpen = true
     },
     signIn() {
@@ -155,7 +158,9 @@ export default {
   mounted(){
     this.bus.$on('closeauth', this.closeAuth)
     this.bus.$on('closeformeditor', this.closeFormEditor)
-    this.bus.$on('openformeditor', this.openFormEditor)
+    this.bus.$on('openformeditor', form => {
+       this.openFormEditor(this.collections.forms.find(f => f.id == form))
+    })
     this.bus.$on('signin', this.signIn)
     this.bus.$on('fetchforms', this.fetchForms)
     this.bus.$on('updateforms', this.updateForms)
