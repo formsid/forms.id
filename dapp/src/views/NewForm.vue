@@ -19,7 +19,7 @@
               th.py-4.font-light.text-formsid-darkest(scope="col") #
               th.py-4.font-light.text-formsid-darkest(scope="col") Data
               th.py-4.font-light.text-formsid-darkest(scope="col") Timestamp
-          tbody(v-if="form.submissions.length")
+          tbody(v-if="form.submissions && form.submissions.length")
             tr.hover-bg-pale-khaki.cursor-pointer(v-for="(record, i) in form.submissions" :key="record._id")
               td {{ i + 1 }}
               td {{ filled(record.data) }}
@@ -29,7 +29,6 @@
 
 <script lang="coffee">
 import XLSX from 'xlsx'
-isDev = process.env.NODE_ENV is 'development'
 
 export default
   name: 'Form',
@@ -40,9 +39,6 @@ export default
   data: ->
     form: {}
     formData: []
-  computed:
-    formPreview: ->
-      "#{isDev ? 'http://localhost:8081' : 'https://forms.id'}/f/#{@user.username}/#{@form.id}"
   methods:
     exportData: ->
       headers = @form.objects.filter(o) -> o.data.type isnt 'image'.map(a) -> a.data.title
