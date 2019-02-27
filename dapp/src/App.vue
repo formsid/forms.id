@@ -2,10 +2,11 @@
   .app-root
     router-view
     auth(:visible="authOpen")
-    form-editor(:visible="formEditorOpen" :new="true" v-if="feOpen")
+    form-editor(:visible="formEditorOpen" :form="editingForm" v-if="feOpen")
 </template>
 
 <script>
+import XLSX from 'xlsx'
 import Auth from './components/Auth'
 import NewFormEditor from './views/NewFormEditor'
 import OrbitDB from 'orbit-db'
@@ -18,7 +19,8 @@ export default {
     return {
       authOpen: true,
       formEditorOpen: false,
-      feOpen: true
+      feOpen: true,
+      editingForm: null
     }
   },
   methods: {
@@ -126,14 +128,16 @@ export default {
     },
     closeFormEditor(){
       this.formEditorOpen = false
-      setTimeout(() => {
-        this.feOpen = false
-        setTimeout(() => {
-          this.feOpen = true
-        }, 800)
-      }, 800)
+      this.editingForm = null
+      // setTimeout(() => {
+      //   this.feOpen = false
+      //   setTimeout(() => {
+      //     this.feOpen = true
+      //   }, 500)
+      // }, 500)
     },
-    openFormEditor(){
+    openFormEditor(form){
+      this.editingForm = form
       this.formEditorOpen = true
     },
     signIn() {
@@ -150,12 +154,32 @@ export default {
         { solicitGaiaHubUrl: true }
       )
       blockstack.redirectToSignInWithAuthRequest(authRequest)
-    }
+    },
+    exportData(form){
+      const answerable = form.objects.filter(o => o.data.type !== 'image')
+      let data = []
+      form.submissions.forEach(s => {
+        let record = {}
+        answerable.map(a => a.id).forEach(object => {
+          record[form.objects.find(o => o.id == object).data.title] = s.data[object]
+        })
+        data.push(record)
+      })
+      const ws = XLSX.utils.json_to_sheet(data, { header: answerable.map(a => a.data.title) })
+			const wb = XLSX.utils.book_new()
+			XLSX.utils.book_append_sheet(wb, ws, "Responses")
+			XLSX.writeFile(wb, `${form.title}.xlsx`)
+    },
   },
   mounted(){
     this.bus.$on('closeauth', this.closeAuth)
     this.bus.$on('closeformeditor', this.closeFormEditor)
-    this.bus.$on('openformeditor', this.openFormEditor)
+    this.bus.$on('openformeditor', form => {
+       this.openFormEditor(this.collections.forms.find(f => f.id == form))
+    })
+    this.bus.$on('exportdata', form => {
+       this.exportData(this.collections.forms.find(f => f.id == form))
+    })
     this.bus.$on('signin', this.signIn)
     this.bus.$on('fetchforms', this.fetchForms)
     this.bus.$on('updateforms', this.updateForms)
@@ -180,11 +204,11 @@ export default {
   @apply hidden;
 }
 .form-switch-label {
-  @apply block overflow-hidden cursor-pointer bg-formsid-pale border rounded-full h-6 shadow-inner;
+  @apply block overflow-hidden cursor-pointer bg-formsid-pale border rounded-full h-7 shadow-inner;
   transition: background-color 0.2s ease-in;
 }
 .form-switch-label:before {
-  @apply absolute block bg-white pin-y w-6 border rounded-full -ml-1;
+  @apply absolute block bg-white pin-y w-7 border rounded-full -ml-1;
   right: 50%;
   content: "";
   transition: all 0.2s ease-in;
@@ -223,16 +247,7 @@ export default {
 .not-so-subtle {
   transition: all 2.8s ease;
 }
-.checkbox span {
-  width: 18px;
-  height: 18px;
-  display: block;
-  background: #F9F9FB;
-}
 
-.checkbox input:checked + span {
-  background: #636b6f;
-}
 .vue-notification {
   padding: 10px;
   margin: 10px 5px 5px;
@@ -268,6 +283,9 @@ export default {
   height: 48px !important;
   color: inherit !important;
   font-size: inherit !important;
+  background: inherit !important;
+  overflow: hidden;
+  display: block !important;
 }
   .ti-tags {
     flex-direction: column;

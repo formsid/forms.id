@@ -10,17 +10,18 @@
         .w-full.flex.justify-between.items-center.my-10
           h1.font-thin.text-formsid.py-2 {{ pageTitle }}
           .flex(v-if="$route.name == 'Forms'")
-            div.flex.items-center.cursor-pointer.bg-formsid-clear.px-4.subtle.hover-bg-formsid.hover-text-white.font-light.text-formsid.py-3.rounded(@click="bus.$emit('openformeditor')")
+            div.flex.items-center.cursor-pointer.bg-formsid-clear.px-4.subtle.hover-bg-formsid.hover-text-white.font-light.text-formsid.py-3.rounded(@click="bus.$emit('openformeditor', null)")
               i.material-icons.text-lg.mr-2 create
               span Create
           .flex(v-if="$route.name == 'Form'")
-            div.flex.items-center.cursor-pointer.border-formsid-clear.border.px-4.subtle.hover-bg-formsid.hover-text-white.font-light.text-formsid.py-3.rounded.mr-4
-              i.material-icons.text-lg.mr-2 remove_red_eye
-              span Preview
-            div.flex.items-center.cursor-pointer.border-formsid-clear.border.px-4.subtle.hover-bg-formsid.hover-text-white.font-light.text-formsid.py-3.rounded.mr-4
+            a.block.no-underline(:href="formPreview()" target="_blank" v-if="currentForm.public")
+              div.flex.items-center.cursor-pointer.border-formsid-clear.border.px-4.subtle.hover-bg-formsid.hover-text-white.font-light.text-formsid.py-3.rounded.mr-4
+                i.material-icons.text-lg.mr-2 remove_red_eye
+                span Preview
+            div.flex.items-center.cursor-pointer.border-formsid-clear.border.px-4.subtle.hover-bg-formsid.hover-text-white.font-light.text-formsid.py-3.rounded.mr-4(@click="bus.$emit('exportdata', $route.params.id)")
               i.material-icons.text-lg.mr-2 cloud_download
               span Export Data
-            div.flex.items-center.cursor-pointer.bg-formsid-clear.px-4.subtle.hover-bg-formsid.hover-text-white.font-light.text-formsid.py-3.rounded
+            div.flex.items-center.cursor-pointer.bg-formsid-clear.px-4.subtle.hover-bg-formsid.hover-text-white.font-light.text-formsid.py-3.rounded(@click="bus.$emit('openformeditor', $route.params.id)")
               i.material-icons.text-lg.mr-2 edit
               span Edit
         .w-full
@@ -38,9 +39,12 @@
 </template>
 
 <script lang="coffee">
+  isDev = process.env.NODE_ENV is 'development'
   export default
     store: ['bus', 'collections', 'user']
     computed:
+      currentForm: ->
+        found = (f for f in @collections.forms when f.id is @$route.params.id)[0] if @$route.name == 'Form'
       pageTitle: ->
         title = @$route.name if @$route.name isnt 'Form'
         found = (f for f in @collections.forms when f.id is @$route.params.id)[0]
@@ -52,4 +56,8 @@
       totalViews: ->
         views = @collections.forms.map (f) -> f.views
         views.reduce (a, b) -> a + b
+    methods:
+      formPreview: ->
+        prefix = if isDev is true then 'http://localhost:8081' else 'https://forms.id'
+        "#{prefix}/f/#{@user.username}/#{@$route.params.id}"
 </script>

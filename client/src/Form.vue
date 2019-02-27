@@ -47,12 +47,12 @@
       <div class="container h-full mt-15p">
         <div class="md:px-16 max-w-lg mx-auto pb-12">
           <div class="mx-auto pb-12">
-            <h1 class="text-center fair mb-8 text-5xl">{{ form.title }}</h1>
-            <p class="greycliff max-w-lg mx-auto text-center text-xl leading-loose">{{ form.subtitle }}</p>
+            <h1 class="text-center fair mb-8 text-5xl text-formsid-darkest">{{ form.title }}</h1>
+            <p class="greycliff max-w-lg mx-auto text-center text-xl leading-loose text-formsid-darker">{{ form.subtitle }}</p>
           </div>
           <div class="w-full mb-15p" v-if="form">
             <div class="mb-8" v-for="obj in form.objects" :key="obj.id">
-              <p class="break-words greycliff max-w-lg mx-auto text-left text-xl leading-loose mb-2">{{ obj.data.title }}</p> 
+              <p class="break-words greycliff max-w-lg mx-auto text-left text-xl leading-loose mb-2">{{ obj.data.title }}</p>
               <div class="flex items-center max-w-lg mx-auto py-2" v-if="obj.data.type == 'shortanswer'">
                 <input @blur="setAnswer(obj.id.toString(), $event.target.value)" type="text" :aria-label="obj.data.title" class="subtle rounded focus:border-b-2 border-formsid-glass bg-formsid-clear appearance-none w-full p-3 leading-tight focus:outline-none outline-none greycliff text-xl font-light text-formsid-glass focus:text-formsid-glass">
               </div>
@@ -70,7 +70,7 @@
               <div class="flex items-center max-w-lg mx-auto py-2" v-if="obj.data.type == 'image'">
                 <img class="w-full rounded" :src="obj.data.src"/>
               </div>
-            </div> 
+            </div>
           </div>
         </div>
       </div>
@@ -134,7 +134,7 @@ export default {
     answerIsSelected(answer, oid){
       const object = this.form.objects.find(o => o.id == oid)
       const hasAnswer = this.answers.find(a => a.id === oid)
-      return hasAnswer 
+      return hasAnswer
         ? hasAnswer.answer == answer
         : false
     },
@@ -156,13 +156,13 @@ export default {
 
     },
     validateForm(){
-      
+
     },
     setAnswer(id, answer){
       const object = this.form.objects.find(o => o.id == id)
       this.answers = this.answers.filter(a => a.id !== id)
       this.answers.push({ id: id, answer: answer })
-    },  
+    },
     async connectIpfs(){
       return new Promise(async (resolve, reject) => {
         const repoPath = 'ipfs-' + Math.random()
@@ -200,7 +200,7 @@ export default {
     })
   },
   watch: {
-    
+
   }
 }
 </script>
