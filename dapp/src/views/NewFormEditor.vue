@@ -283,9 +283,8 @@ export default
     @bus.$on 'add-object', () -> @addObject()
   watch:
     visible: (newValue, oldValue) ->
-      if newValue is false
-        @[k] = @cleanData()[k] for k in Object.keys(@cleanData())
-      else
+      @[k] = @cleanData()[k] for k in Object.keys(@cleanData()) if newValue is false
+      if newValue is true
         unless @form?
           @addObject()
           @addObject()

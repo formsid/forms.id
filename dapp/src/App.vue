@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import XLSX from 'xlsx'
 import Auth from './components/Auth'
 import NewFormEditor from './views/NewFormEditor'
 import OrbitDB from 'orbit-db'
@@ -153,13 +154,31 @@ export default {
         { solicitGaiaHubUrl: true }
       )
       blockstack.redirectToSignInWithAuthRequest(authRequest)
-    }
+    },
+    exportData(form){
+      const answerable = form.objects.filter(o => o.data.type !== 'image')
+      let data = []
+      form.submissions.forEach(s => {
+        let record = {}
+        answerable.map(a => a.id).forEach(object => {
+          record[form.objects.find(o => o.id == object).data.title] = s.data[object]
+        })
+        data.push(record)
+      })
+      const ws = XLSX.utils.json_to_sheet(data, { header: answerable.map(a => a.data.title) })
+			const wb = XLSX.utils.book_new()
+			XLSX.utils.book_append_sheet(wb, ws, "Responses")
+			XLSX.writeFile(wb, `${form.title}.xlsx`)
+    },
   },
   mounted(){
     this.bus.$on('closeauth', this.closeAuth)
     this.bus.$on('closeformeditor', this.closeFormEditor)
     this.bus.$on('openformeditor', form => {
        this.openFormEditor(this.collections.forms.find(f => f.id == form))
+    })
+    this.bus.$on('exportdata', form => {
+       this.exportData(this.collections.forms.find(f => f.id == form))
     })
     this.bus.$on('signin', this.signIn)
     this.bus.$on('fetchforms', this.fetchForms)

@@ -5,25 +5,26 @@
         .border-b
           .p-6.flex.justify-between.max-w-lg.mx-auto
             .text-center.flex.flex-col
-              h4.mb-2 {{ form.submissions ? form.submissions.length : 0 }}
-              span.text-light.text-uppercase Submissions
+              h4.mb-2.font-light.text-3xl.text-formsid-darkest {{ form.submissions ? form.submissions.length : 0 }}
+              span.font-light.text-uppercase.text-formsid-darker Submissions
             .text-center.flex.flex-col
-              h4.mb-2 0%
-              span.text-light.text-uppercase Completion Rate
+              h4.mb-2.font-light.text-3xl.text-formsid-darkest 0%
+              span.font-light.text-uppercase.text-formsid-darker Completion Rate
             .text-center.flex.flex-col
-              h4.mb-2 {{ form.views }}
-              span.text-light.text-uppercase Views
+              h4.mb-2.font-light.text-3xl.text-formsid-darkest {{ form.views }}
+              span.font-light.text-uppercase.text-formsid-darker Views
         table.w-full
           thead
             tr
-              th.py-4(scope="col") #
-              th.py-4(scope="col") Data
-              th.py-4(scope="col") Timestamp
-          tbody
+              th.py-4.font-light.text-formsid-darkest(scope="col") #
+              th.py-4.font-light.text-formsid-darkest(scope="col") Data
+              th.py-4.font-light.text-formsid-darkest(scope="col") Timestamp
+          tbody(v-if="form.submissions.length")
             tr.hover-bg-pale-khaki.cursor-pointer(v-for="(record, i) in form.submissions" :key="record._id")
               td {{ i + 1 }}
               td {{ filled(record.data) }}
               td {{ timestamp(record.created) }}
+        p.py-4.text-center.font-light.text-formsid-darker.border-t No submissions, yet.
 </template>
 
 <script lang="coffee">
