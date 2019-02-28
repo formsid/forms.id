@@ -2,14 +2,15 @@
   .min-h-screen.w-full.bg-khaki.overflow-hidden.subtle.z-max.fixed.pin.flex(:class="open")
     .sidebar.w-64.fixed.pin-l.pin-t.pin-b.shadow.bg-white.flex.flex-col.overflow-hidden
       .w-full
-        img.py-6.table.mx-auto(style="width: 150px;" src="@/assets/images/logo.svg" alt="Forms.id")
-        //- collapse.overflow-y-scroll(v-model="activeTree" :accordion="true")
+        .w-full.border-b.py-6.mb-4
+          img.table.mx-auto(style="width: 150px;" src="@/assets/images/logo.svg" alt="Forms.id")
+        p.text-xs.px-6.py-3.font-normal.text-formsid-darkest.opacity-75.tracking-wide Form Objects
         draggable(element="collapse" :list="objects" :component-data="getDraggableData()")
           collapse-item.rounded.subtle.bg-white.text-base.text-grey-darkest.opacity-90(:title="obj.data.title" :name="obj.id" v-for="obj in objects" :key="obj.id" :class="{'hover-bg-formsid-clear' : activeTree != obj.id}")
             template(slot="title")
               .flex.items-center.w-full
                 i.material-icons.text-formsid-darkest.mr-2 drag_handle
-                p.h-12.overflow-hidden.text-formsid-darkest.font-light {{ obj.data.title }}
+                p.h-12.overflow-hidden.text-formsid-darkest.font-light {{ questionTypes.find(q => q.value == obj.data.type).label }}
             select.subtle.rounded.focus-border-b-2.border-formsid-glass.bg-formsid-clear.appearance-none.w-full.p-3.leading-tight.focus-outline-none.outline-none.greycliff.text-sm.font-light.text-formsid-darker.focus-text-formsid-glass(v-model="obj.data.type")
               option(v-for="choice in questionTypes" :key="choice.label" :value="choice.value") {{ choice.label }}
             .flex.items-center.mt-4.justify-between
@@ -17,6 +18,9 @@
               .form-switch
                 input.form-switch-checkbox(type="checkbox" :name="obj.id" :id="obj.id" v-model="obj.required")
                 label.form-switch-label(:for="obj.id")
+        div.flex.items-center.justify-center.mt-4.subtle
+          div(class="hover-bg-formsid text-formsid-glass hover-text-white bg-formsid-clear opacity-75 subtle rounded-full w-12 h-12 cursor-pointer flex items-center justify-center" @click="addObject()")
+            i.fas.fa-plus.text-xl
     .flex-grow.flex.flex-col.ml-64
       .w-Full.py-4
         .container.flex.justify-between.items-center.px-8
@@ -134,7 +138,7 @@ export default
       tree
     vueScrollClass: -> { 'form-container' : true }
     open: ->
-      return 'opacity-100 visible' if @visible is true
+      return 'opacity-100 visible' if @visible is true and @loaded is true
       return 'opacity-0 invisible' if @visible is false
     formPreview: ->
       # // return `${isDev ? 'http://localhost:8081' : 'https://forms.id'}/f/${@user.username}/${@form.id}`
@@ -281,8 +285,7 @@ export default
         # // couldn't publicly publish
         @validateObjects()
         reject()
-    deleteObject: (obj) ->
-      @objects = @objects.filter((o) -> o.id isnt obj.id)
+    deleteObject: (obj) ->  @objects = @objects.filter((o) -> o.id isnt obj.id)
   mounted: ->
     @bus.$on 'clone-object', (obj) ->
       clone = JSON.parse(JSON.stringify(obj))
