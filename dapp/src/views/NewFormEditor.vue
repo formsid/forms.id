@@ -43,29 +43,31 @@
                 editable.text-center.fair.mb-6.text-5xl.text-formsid-darkest(:content.sync="title") {{ title }}
                 editable.greycliff.max-w-lg.mx-auto.text-center.text-xl.leading-loose.text-formsid-darker(:content.sync="subtitle") {{ subtitle }}
               div.w-full.mb-16
-                div.mb-8(v-for="obj in objects" :key="obj.id")
-                  editable.break-words.greycliff.max-w-lg.mx-auto.text-left.text-xl.leading-loose.mb-2.text-formsid-darkest(:content.sync="obj.data.title") {{ obj.data.title }}
-                  <div class="flex items-center max-w-lg mx-auto py-2" v-if="obj.data.type == 'shortanswer'">
-                    <input type="text" :aria-label="obj.data.title" class="subtle rounded focus:border-b-2 border-formsid-glass bg-formsid-clear appearance-none w-full p-3 leading-tight focus:outline-none outline-none greycliff text-xl font-light text-formsid-glass focus:text-formsid-glass">
-                  </div>
-                  <div class="flex items-center max-w-lg mx-auto py-2" v-if="obj.data.type == 'paragraph'">
-                    <textarea aria-label="Full name" class="subtle rounded focus:border-b-2 border-formsid-glass bg-formsid-clear appearance-none w-full p-3 leading-tight focus:outline-none outline-none greycliff text-xl font-light text-formsid-darker focus:text-formsid-glass resize-none" rows="3" v-autosize></textarea>
-                  </div>
-                  <vue-tags-input :separators="['|']" :max-tags="4" placeholder="Add a choice" :allow-edit-tags="true" v-model="tag" :tags="tags" @tags-changed="tagsChanged" v-if="['dropdown', 'multipleanswer', 'multiplechoice'].indexOf(obj.data.type) > -1 && activeTree == obj.id" :id="obj.id"/>
-                  <div class="flex items-center max-w-lg mx-auto py-2" v-if="['dropdown', 'multipleanswer', 'multiplechoice'].indexOf(obj.data.type) > -1 && activeTree !=obj.id">
-                    <div class="flex flex-col w-full" v-if="obj.data.type.indexOf('multiple') > -1">
-                      <div class="greycliff bg-formsid-clear hover-bg-formsid-glass hover-text-white rounded text-center p-3 text-lg text-formsid-glass leading-tight tracking-normal cursor-pointer subtle mb-4" v-for="choice in obj.data.choices" :key="choice.label">{{ choice.label }}</div>
-                    </div>
-                    <select v-else class="subtle rounded focus:border-b-2 border-formsid-glass bg-formsid-clear appearance-none w-full p-3 leading-tight focus:outline-none outline-none greycliff text-xl font-light text-formsid-glass focus:text-formsid-glass">
-                      <option v-for="choice in obj.data.choices" :key="choice.label" :value="choice.value">{{ choice.label }}</option>
-                    </select>
-                  </div>
-                  <div class="flex items-center max-w-lg mx-auto py-2" v-if="obj.data.type == 'image'">
-                    <img class="w-full rounded" :src="obj.data.src"/>
-                  </div>
-                </div>
-              </div>
-            </div>
+                div.mb-8.py-6.px-8.subtle.bg-formsid-transparent(v-for="obj in objects" :key="obj.id" :class="{ 'rounded-lg bg-formsid-clear' : activeTree == obj.id }")
+                  div.flex.items-center
+                    div.flex-grow
+                      editable.break-words.greycliff.max-w-lg.mx-auto.text-left.text-xl.leading-loose.mb-2.text-formsid-darkest(:content.sync="obj.data.title") {{ obj.data.title }}
+                      <div class="flex items-center max-w-lg mx-auto py-2" v-if="obj.data.type == 'shortanswer'">
+                        <input type="text" :aria-label="obj.data.title" class="subtle rounded focus:border-b-2 border-formsid-glass bg-formsid-clear appearance-none w-full p-3 leading-tight focus:outline-none outline-none greycliff text-xl font-light text-formsid-glass focus:text-formsid-glass">
+                      </div>
+                      <div class="flex items-center max-w-lg mx-auto py-2" v-if="obj.data.type == 'paragraph'">
+                        <textarea aria-label="Full name" class="subtle rounded focus:border-b-2 border-formsid-glass bg-formsid-clear appearance-none w-full p-3 leading-tight focus:outline-none outline-none greycliff text-xl font-light text-formsid-darker focus:text-formsid-glass resize-none" rows="3" v-autosize></textarea>
+                      </div>
+                      <vue-tags-input :separators="['|']" :max-tags="4" placeholder="Add a choice" :allow-edit-tags="true" v-model="tag" :tags="tags" @tags-changed="tagsChanged" v-if="['dropdown', 'multipleanswer', 'multiplechoice'].indexOf(obj.data.type) > -1 && activeTree == obj.id" :id="obj.id"/>
+                      <div class="flex items-center max-w-lg mx-auto py-2" v-if="['dropdown', 'multipleanswer', 'multiplechoice'].indexOf(obj.data.type) > -1 && activeTree !=obj.id">
+                        <div class="flex flex-col w-full" v-if="obj.data.type.indexOf('multiple') > -1">
+                          <div class="greycliff bg-formsid-clear hover-bg-formsid-glass hover-text-white rounded text-center p-3 text-lg text-formsid-glass leading-tight tracking-normal cursor-pointer subtle mb-4" v-for="choice in obj.data.choices" :key="choice.label">{{ choice.label }}</div>
+                        </div>
+                        <select v-else class="subtle rounded focus:border-b-2 border-formsid-glass bg-formsid-clear appearance-none w-full p-3 leading-tight focus:outline-none outline-none greycliff text-xl font-light text-formsid-glass focus:text-formsid-glass">
+                          <option v-for="choice in obj.data.choices" :key="choice.label" :value="choice.value">{{ choice.label }}</option>
+                        </select>
+                      </div>
+                      <div class="flex items-center max-w-lg mx-auto py-2" v-if="obj.data.type == 'image'">
+                        <img class="w-full rounded" :src="obj.data.src"/>
+                      </div>
+                    div.w-10.h-10.flex.items-center.justify-center.bg-formsid-clear.text-formsid-glass.subtle.hover-text-white.hover-bg-formsid.rounded.cursor-pointer.ml-4(v-if="activeTree == obj.id" @click="deleteObject(obj)")
+                      i.material-icons.text-lg delete
+
   //- <d-container fluid class="main-content-container px-4 pb-4 overflow-y-scroll flex-grow">
   //-   <d-row no-gutters class="page-header py-4 flex justify-between items-center">
   //-     <d-col col sm="6" class="text-center text-sm-left mb-4 mb-sm-0">
@@ -279,14 +281,14 @@ export default
         # // couldn't publicly publish
         @validateObjects()
         reject()
+    deleteObject: (obj) ->
+      @objects = @objects.filter((o) -> o.id isnt obj.id)
   mounted: ->
     @bus.$on 'clone-object', (obj) ->
       clone = JSON.parse(JSON.stringify(obj))
       clone.id = uuid()
       clone.added = Date.now()
       @objects.push(clone)
-    @bus.$on 'delete-object', (id) -> @objects = @objects.filter(o) -> o.id isnt id
-    @bus.$on 'add-object', () -> @addObject()
   watch:
     visible: (newValue, oldValue) ->
       @[k] = @cleanData()[k] for k in Object.keys(@cleanData()) if newValue is false

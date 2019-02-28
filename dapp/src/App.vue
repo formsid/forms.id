@@ -335,7 +335,7 @@ export default {
   }
 
   /* default styles for all the tags */
-  .vue-tags-input .ti-tag {
+  .vue-tags-input .ti-tag, .ti-new-tag-input-wrapper {
     position: relative;
     padding: .5625rem 1rem !important;
     font-size: 14px !important;
@@ -346,6 +346,19 @@ export default {
     color: rgba(48, 70, 152, .82) !important;
     justify-content: space-between !important;
   }
+
+  .vue-tags-input .ti-new-tag-input {
+    color: rgba(48, 70, 152, .82) !important;
+  }
+
+  /* .ti-new-tag-input-wrapper {
+    padding: .5625rem 1rem !important;
+    background-color: rgba(48, 70, 152, .22) !important;
+    font-size: 14px !important;
+    border: 1px solid rgba(48, 70, 152, .42) !important;
+    border-radius: .38rem !important;
+    color: rgba(48, 70, 152, .82) !important;
+  } */
 
   /* we defined a custom css class in the data model, now we are using it to style the tag */
   .vue-tags-input .ti-tag.custom-class {
