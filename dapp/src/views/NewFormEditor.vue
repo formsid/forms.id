@@ -10,9 +10,9 @@
             template(slot="title")
               .flex.items-center.w-full
                 i.material-icons.text-formsid-darkest.mr-2 drag_handle
-                p.h-12.overflow-hidden.text-formsid-darkest.font-light {{ questionTypes.find(q => q.value == obj.data.type).label }}
+                p.h-12.overflow-hidden.text-formsid-darkest.font-light {{ objectTypes.find(q => q.value == obj.data.type).label }}
             select.subtle.rounded.focus-border-b-2.border-formsid-glass.bg-formsid-clear.appearance-none.w-full.p-3.leading-tight.focus-outline-none.outline-none.greycliff.text-sm.font-light.text-formsid-darker.focus-text-formsid-glass(v-model="obj.data.type")
-              option(v-for="choice in questionTypes" :key="choice.label" :value="choice.value") {{ choice.label }}
+              option(v-for="choice in objectTypes" :key="choice.label" :value="choice.value") {{ choice.label }}
             .flex.items-center.mt-4.justify-between
               span.font-light.text-md.mr-2 Required
               .form-switch
@@ -29,9 +29,6 @@
               i.material-icons.text-lg.mr-2 cancel
               span Cancel
           .flex
-            div.flex.items-center.cursor-pointer.border-formsid-clear.border.px-4.subtle.hover-bg-formsid.hover-text-white.font-light.text-formsid.py-3.rounded.mr-4
-              i.material-icons.text-lg.mr-2 remove_red_eye
-              span View
             div.flex.items-center.cursor-pointer.border-formsid-clear.border.px-4.subtle.hover-bg-formsid.hover-text-white.font-light.text-formsid.py-3.rounded.mr-4(@click="clickSave()")
               i.material-icons.text-lg.mr-2 save
               span Save
@@ -50,7 +47,7 @@
                 div.mb-8.py-6.px-8.subtle.bg-formsid-transparent(v-for="obj in objects" :key="obj.id" :class="{ 'rounded-lg bg-formsid-clear' : activeTree == obj.id }")
                   div.flex.items-center
                     div.flex-grow
-                      editable.break-words.greycliff.max-w-lg.mx-auto.text-left.text-xl.leading-loose.mb-2.text-formsid-darkest(:content.sync="obj.data.title") {{ obj.data.title }}
+                      editable.break-words.greycliff.max-w-lg.mx-auto.text-left.text-xl.leading-loose.mb-2.text-formsid-darkest(:content.sync="obj.data.title" v-if="obj.data.type !== 'image'") {{ obj.data.title }}
                       <div class="flex items-center max-w-lg mx-auto py-2" v-if="obj.data.type == 'shortanswer'">
                         <input type="text" :aria-label="obj.data.title" class="subtle rounded focus:border-b-2 border-formsid-glass bg-formsid-clear appearance-none w-full p-3 leading-tight focus:outline-none outline-none greycliff text-xl font-light text-formsid-glass focus:text-formsid-glass">
                       </div>
@@ -66,7 +63,7 @@
                           <option v-for="choice in obj.data.choices" :key="choice.label" :value="choice.value">{{ choice.label }}</option>
                         </select>
                       </div>
-                      <div class="flex items-center max-w-lg mx-auto py-2" v-if="obj.data.type == 'image'">
+                      <div class="flex items-center max-w-lg mx-auto py-2" v-if="obj.data.type == 'image' || obj.data.type == 'imagewlabel'">
                         <img class="w-full rounded" :src="obj.data.src"/>
                       </div>
                     div.w-10.h-10.flex.items-center.justify-center.bg-formsid-clear.text-formsid-glass.subtle.hover-text-white.hover-bg-formsid.rounded.cursor-pointer.ml-4(v-if="activeTree == obj.id" @click="deleteObject(obj)")
@@ -140,9 +137,6 @@ export default
     open: ->
       return 'opacity-100 visible' if @visible is true and @loaded is true
       return 'opacity-0 invisible' if @visible is false
-    formPreview: ->
-      # // return `${isDev ? 'http://localhost:8081' : 'https://forms.id'}/f/${@user.username}/${@form.id}`
-      ''
     isPublishable: -> false
       # return @taggableObjects.map(o => o.data.choices.length).every(l => l >= 2) &&
       # @objects.every(o) -> o.data.type isnt null &&
@@ -166,11 +160,11 @@ export default
       activeTree: '1',
       tag: '',
       tags: [],
-      questionTypes: [
-        { value: null, label: 'Select a question type' },
+      objectTypes: [
         { value: 'dropdown', label: 'Dropdown' },
+        { value: 'imagewlabel', label: 'Image w/ Label' },
         { value: 'image', label: 'Image' },
-        # // { value: 'multipleanswer', label: 'Multiple Answer' },
+        { value: 'multipleanswer', label: 'Multiple Answer' },
         { value: 'multiplechoice', label: 'Multiple Choice' },
         { value: 'paragraph', label: 'Paragraph' },
         { value: 'shortanswer', label: 'Short Answer' }
