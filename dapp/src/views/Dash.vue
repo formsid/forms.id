@@ -32,9 +32,9 @@
           router-link.flex.items-center.no-underline.px-4.subtle.hover-bg-formsid-clear.font-light.text-formsid.p-2.rounded.mr-6(:to="{ name: 'Forms' }" active-class="bg-formsid-clear")
             i.material-icons.text-lg.mr-2 filter_none
             span Forms
-          router-link.flex.items-center.no-underline.px-4.subtle.hover-bg-formsid-clear.font-light.text-formsid.p-2.rounded.mr-6(:to="{ name: 'Polls' }" active-class="bg-formsid-clear")
-            i.material-icons.text-xl.mr-2 poll
-            span Polls
+          //- router-link.flex.items-center.no-underline.px-4.subtle.hover-bg-formsid-clear.font-light.text-formsid.p-2.rounded.mr-6(:to="{ name: 'Polls' }" active-class="bg-formsid-clear")
+          //-   i.material-icons.text-xl.mr-2 poll
+          //-   span Polls
     router-view.py-8
 </template>
 

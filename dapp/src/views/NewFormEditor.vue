@@ -51,7 +51,8 @@
                   <div class="flex items-center max-w-lg mx-auto py-2" v-if="obj.data.type == 'paragraph'">
                     <textarea aria-label="Full name" class="subtle rounded focus:border-b-2 border-formsid-glass bg-formsid-clear appearance-none w-full p-3 leading-tight focus:outline-none outline-none greycliff text-xl font-light text-formsid-darker focus:text-formsid-glass resize-none" rows="3" v-autosize></textarea>
                   </div>
-                  <div class="flex items-center max-w-lg mx-auto py-2" v-if="['dropdown', 'multipleanswer', 'multiplechoice'].indexOf(obj.data.type) > -1">
+                  <vue-tags-input :separators="['|']" :max-tags="4" placeholder="Add a choice" :allow-edit-tags="true" v-model="tag" :tags="tags" @tags-changed="tagsChanged" v-if="['dropdown', 'multipleanswer', 'multiplechoice'].indexOf(obj.data.type) > -1 && activeTree == obj.id" :id="obj.id"/>
+                  <div class="flex items-center max-w-lg mx-auto py-2" v-if="['dropdown', 'multipleanswer', 'multiplechoice'].indexOf(obj.data.type) > -1 && activeTree !=obj.id">
                     <div class="flex flex-col w-full" v-if="obj.data.type.indexOf('multiple') > -1">
                       <div class="greycliff bg-formsid-clear hover-bg-formsid-glass hover-text-white rounded text-center p-3 text-lg text-formsid-glass leading-tight tracking-normal cursor-pointer subtle mb-4" v-for="choice in obj.data.choices" :key="choice.label">{{ choice.label }}</div>
                     </div>
@@ -114,15 +115,14 @@
 <script lang="coffee">
 import Draggable from 'vuedraggable'
 import Editor from '@/components/Editor.vue'
+import VueTagsInput from '@johmun/vue-tags-input'
 isDev = process.env.NODE_ENV is'development'
 export default
   props: ['visible', 'form']
   store: ['bus', 'collections', 'forms', 'user']
-  components: { Draggable, Editor }
+  components: { Draggable, Editor, VueTagsInput }
   data: ->
     @cleanData()
-  beforeMount: ->
-
   computed:
     data6: ->
       tree = [{ label: 'Heading' }]
@@ -143,6 +143,7 @@ export default
       # @imageObjects.every(o) -> o.data.src.indexOf('placehold.it') is -1 &&
       # @objects.every(o) -> o.data.title isnt ''
     imageObjects: -> o for o in @objects when o.data.type is 'image'
+    selectedObject: -> (o for o in @objects when o.id is @activeTree)[0]
     taggableObjects: ->
       taggable = ['dropdown', 'multipleanswer', 'multiplechoice']
       o for o in @objects when taggable.indexOf(o.data.type) > -1
@@ -157,6 +158,8 @@ export default
       modifiedWithoutSave: false
       loaded: false
       activeTree: '1',
+      tag: '',
+      tags: [],
       questionTypes: [
         { value: null, label: 'Select a question type' },
         { value: 'dropdown', label: 'Dropdown' },
@@ -208,6 +211,9 @@ export default
             { label: 'Choice 2', value: 'Choice 2' }
           ]
       @objects.push(newObject)
+    tagsChanged: (tags) ->
+      @tags = tags.map((t) -> text: t.text )
+      @selectedObject.data.choices = tags.map((t) -> t.text).map((t) -> value: t, label: t )
     clickSave: ->
       await @saveForm()
       @$router.push({ name: 'Forms' }) if @form is null
@@ -257,7 +263,7 @@ export default
             id: @form.id
             published: Date.now()
             created: @form.created
-            objects: @$refs.editor.arrangedObjects()
+            objects: @objects
             title: @title
             subtitle: @subtitle
             theme: @theme
@@ -298,6 +304,8 @@ export default
           @objects = clone.objects
           @isPublic = clone.public
           @loaded = true
+    selectedObject: (value) ->
+      @tags = @selectedObject.data.choices.map((c) -> text: c.label) if @selectedObject?
     objects: (newValue) ->
       @modifiedWithoutSave = true if newValue and @loaded
     subtitle: (newValue) ->
