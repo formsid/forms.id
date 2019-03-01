@@ -14,7 +14,7 @@
               i.material-icons.text-lg.mr-2 create
               span Create
           .flex(v-if="$route.name == 'Form'")
-            a.block.no-underline(:href="formPreview()" target="_blank" v-if="currentForm.public")
+            a.block.no-underline(:href="formPreview()" target="_blank" v-if="currentForm && currentForm.public")
               div.flex.items-center.cursor-pointer.border-formsid-clear.border.px-4.subtle.hover-bg-formsid.hover-text-white.font-light.text-formsid.py-3.rounded.mr-4
                 i.material-icons.text-lg.mr-2 remove_red_eye
                 span Preview

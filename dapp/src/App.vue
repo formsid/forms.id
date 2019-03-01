@@ -294,6 +294,9 @@ export default {
     overflow: hidden;
     margin-right: 4px;
   }
+  .vue-tags-input ::placeholder {
+    color: rgba(0,0,0,.7) !important;
+  }
   .vue-tags-input {
     background-color: transparent !important;
     max-width: 100% !important;
@@ -314,24 +317,6 @@ export default {
   /* we cange the border color if the user focuses the input */
   .vue-tags-input.ti-focus .ti-input {
     border: none !important;
-  }
-
-
-  /* style the placeholders color across all browser */
-  .vue-tags-input ::-webkit-input-placeholder {
-    color: #a4b1b6;
-  }
-
-  .vue-tags-input ::-moz-placeholder {
-    color: #a4b1b6;
-  }
-
-  .vue-tags-input :-ms-input-placeholder {
-    color: #a4b1b6;
-  }
-
-  .vue-tags-input :-moz-placeholder {
-    color: #a4b1b6;
   }
 
   /* default styles for all the tags */
