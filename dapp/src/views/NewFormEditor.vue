@@ -198,7 +198,7 @@ export default
         added: Date.now()
         data:
           type: 'multiplechoice'
-          title: 'This is a new label',
+          title: 'A label for your question?',
           alt: 'Image alt tag'
           src: 'https://placehold.it/700x300'
           choices: [
@@ -214,9 +214,9 @@ export default
       @$router.push({ name: 'Forms' }) if @form is null
     saveForm: ->
       new Promise (resolve, reject) =>
-        isOld = @form.id?
+        isOld = @form?.id?
         form =
-          id: if @form.id? then @form.id else uuid('newform')
+          id: if isOld = true then @form.id else uuid('newform')
           published: if @isPublic is true then Date.now() else false
           objects: @objects
           title: @title
