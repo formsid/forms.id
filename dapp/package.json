@@ -13,6 +13,7 @@
     "gun": "^0.9.9999991",
     "ipfs": "^0.34.4",
     "orbit-db": "^0.19.9",
+    "portal-vue": "^1.5.1",
     "setimmediate": "^1.0.5",
     "slug": "^0.9.4",
     "tailwindcss": "^0.7.4",
