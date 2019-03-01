@@ -2,21 +2,25 @@
   .min-h-screen.w-full.bg-khaki.overflow-hidden.subtle.z-max.fixed.pin.flex(:class="open")
     .sidebar.w-64.fixed.pin-l.pin-t.pin-b.shadow.bg-white.flex.flex-col.overflow-hidden
       .w-full
-        img.py-6.table.mx-auto(style="width: 150px;" src="@/assets/images/logo.svg" alt="Forms.id")
-        //- collapse.overflow-y-scroll(v-model="activeTree" :accordion="true")
+        .w-full.border-b.py-6.mb-4
+          img.table.mx-auto(style="width: 150px;" src="@/assets/images/logo.svg" alt="Forms.id")
+        p.text-xs.px-6.py-3.font-normal.text-formsid-darkest.opacity-75.tracking-wide Form Objects
         draggable(element="collapse" :list="objects" :component-data="getDraggableData()")
           collapse-item.rounded.subtle.bg-white.text-base.text-grey-darkest.opacity-90(:title="obj.data.title" :name="obj.id" v-for="obj in objects" :key="obj.id" :class="{'hover-bg-formsid-clear' : activeTree != obj.id}")
             template(slot="title")
               .flex.items-center.w-full
                 i.material-icons.text-formsid-darkest.mr-2 drag_handle
-                p.h-12.overflow-hidden.text-formsid-darkest.font-light {{ obj.data.title }}
+                p.h-12.overflow-hidden.text-formsid-darkest.font-light {{ objectTypes.find(q => q.value == obj.data.type).label }}
             select.subtle.rounded.focus-border-b-2.border-formsid-glass.bg-formsid-clear.appearance-none.w-full.p-3.leading-tight.focus-outline-none.outline-none.greycliff.text-sm.font-light.text-formsid-darker.focus-text-formsid-glass(v-model="obj.data.type")
-              option(v-for="choice in questionTypes" :key="choice.label" :value="choice.value") {{ choice.label }}
+              option(v-for="choice in objectTypes" :key="choice.label" :value="choice.value") {{ choice.label }}
             .flex.items-center.mt-4.justify-between
               span.font-light.text-md.mr-2 Required
               .form-switch
                 input.form-switch-checkbox(type="checkbox" :name="obj.id" :id="obj.id" v-model="obj.required")
                 label.form-switch-label(:for="obj.id")
+        div.flex.items-center.justify-center.mt-4.subtle
+          div(class="hover-bg-formsid text-formsid-glass hover-text-white bg-formsid-clear opacity-75 subtle rounded-full w-12 h-12 cursor-pointer flex items-center justify-center" @click="addObject()")
+            i.fas.fa-plus.text-xl
     .flex-grow.flex.flex-col.ml-64
       .w-Full.py-4
         .container.flex.justify-between.items-center.px-8
@@ -25,9 +29,6 @@
               i.material-icons.text-lg.mr-2 cancel
               span Cancel
           .flex
-            div.flex.items-center.cursor-pointer.border-formsid-clear.border.px-4.subtle.hover-bg-formsid.hover-text-white.font-light.text-formsid.py-3.rounded.mr-4
-              i.material-icons.text-lg.mr-2 remove_red_eye
-              span View
             div.flex.items-center.cursor-pointer.border-formsid-clear.border.px-4.subtle.hover-bg-formsid.hover-text-white.font-light.text-formsid.py-3.rounded.mr-4(@click="clickSave()")
               i.material-icons.text-lg.mr-2 save
               span Save
@@ -43,28 +44,31 @@
                 editable.text-center.fair.mb-6.text-5xl.text-formsid-darkest(:content.sync="title") {{ title }}
                 editable.greycliff.max-w-lg.mx-auto.text-center.text-xl.leading-loose.text-formsid-darker(:content.sync="subtitle") {{ subtitle }}
               div.w-full.mb-16
-                div.mb-8(v-for="obj in objects" :key="obj.id")
-                  editable.break-words.greycliff.max-w-lg.mx-auto.text-left.text-xl.leading-loose.mb-2.text-formsid-darkest(:content.sync="obj.data.title") {{ obj.data.title }}
-                  <div class="flex items-center max-w-lg mx-auto py-2" v-if="obj.data.type == 'shortanswer'">
-                    <input type="text" :aria-label="obj.data.title" class="subtle rounded focus:border-b-2 border-formsid-glass bg-formsid-clear appearance-none w-full p-3 leading-tight focus:outline-none outline-none greycliff text-xl font-light text-formsid-glass focus:text-formsid-glass">
-                  </div>
-                  <div class="flex items-center max-w-lg mx-auto py-2" v-if="obj.data.type == 'paragraph'">
-                    <textarea aria-label="Full name" class="subtle rounded focus:border-b-2 border-formsid-glass bg-formsid-clear appearance-none w-full p-3 leading-tight focus:outline-none outline-none greycliff text-xl font-light text-formsid-darker focus:text-formsid-glass resize-none" rows="3" v-autosize></textarea>
-                  </div>
-                  <div class="flex items-center max-w-lg mx-auto py-2" v-if="['dropdown', 'multipleanswer', 'multiplechoice'].indexOf(obj.data.type) > -1">
-                    <div class="flex flex-col w-full" v-if="obj.data.type.indexOf('multiple') > -1">
-                      <div class="greycliff bg-formsid-clear hover-bg-formsid-glass hover-text-white rounded text-center p-3 text-lg text-formsid-glass leading-tight tracking-normal cursor-pointer subtle mb-4" v-for="choice in obj.data.choices" :key="choice.label">{{ choice.label }}</div>
-                    </div>
-                    <select v-else class="subtle rounded focus:border-b-2 border-formsid-glass bg-formsid-clear appearance-none w-full p-3 leading-tight focus:outline-none outline-none greycliff text-xl font-light text-formsid-glass focus:text-formsid-glass">
-                      <option v-for="choice in obj.data.choices" :key="choice.label" :value="choice.value">{{ choice.label }}</option>
-                    </select>
-                  </div>
-                  <div class="flex items-center max-w-lg mx-auto py-2" v-if="obj.data.type == 'image'">
-                    <img class="w-full rounded" :src="obj.data.src"/>
-                  </div>
-                </div>
-              </div>
-            </div>
+                div.mb-8.py-6.px-8.subtle.bg-formsid-transparent(v-for="obj in objects" :key="obj.id" :class="{ 'rounded-lg bg-formsid-clear' : activeTree == obj.id }")
+                  div.flex.items-center
+                    div.flex-grow
+                      editable.break-words.greycliff.max-w-lg.mx-auto.text-left.text-xl.leading-loose.mb-2.text-formsid-darkest(:content.sync="obj.data.title" v-if="obj.data.type !== 'image'") {{ obj.data.title }}
+                      <div class="flex items-center max-w-lg mx-auto py-2" v-if="obj.data.type == 'shortanswer'">
+                        <input type="text" :aria-label="obj.data.title" class="subtle rounded focus:border-b-2 border-formsid-glass bg-formsid-clear appearance-none w-full p-3 leading-tight focus:outline-none outline-none greycliff text-xl font-light text-formsid-glass focus:text-formsid-glass">
+                      </div>
+                      <div class="flex items-center max-w-lg mx-auto py-2" v-if="obj.data.type == 'paragraph'">
+                        <textarea aria-label="Full name" class="subtle rounded focus:border-b-2 border-formsid-glass bg-formsid-clear appearance-none w-full p-3 leading-tight focus:outline-none outline-none greycliff text-xl font-light text-formsid-darker focus:text-formsid-glass resize-none" rows="3" v-autosize></textarea>
+                      </div>
+                      <vue-tags-input :separators="['|']" :max-tags="4" placeholder="Add a choice" :allow-edit-tags="true" v-model="tag" :tags="tags" @tags-changed="tagsChanged" v-if="['dropdown', 'multipleanswer', 'multiplechoice'].indexOf(obj.data.type) > -1 && activeTree == obj.id" :id="obj.id"/>
+                      <div class="flex items-center max-w-lg mx-auto py-2" v-if="['dropdown', 'multipleanswer', 'multiplechoice'].indexOf(obj.data.type) > -1 && activeTree !=obj.id">
+                        <div class="flex flex-col w-full" v-if="obj.data.type.indexOf('multiple') > -1">
+                          <div class="greycliff bg-formsid-clear hover-bg-formsid-glass hover-text-white rounded text-center p-3 text-lg text-formsid-glass leading-tight tracking-normal cursor-pointer subtle mb-4" v-for="choice in obj.data.choices" :key="choice.label">{{ choice.label }}</div>
+                        </div>
+                        <select v-else class="subtle rounded focus:border-b-2 border-formsid-glass bg-formsid-clear appearance-none w-full p-3 leading-tight focus:outline-none outline-none greycliff text-xl font-light text-formsid-glass focus:text-formsid-glass">
+                          <option v-for="choice in obj.data.choices" :key="choice.label" :value="choice.value">{{ choice.label }}</option>
+                        </select>
+                      </div>
+                      <div class="flex items-center max-w-lg mx-auto py-2" v-if="obj.data.type == 'image' || obj.data.type == 'imagewlabel'">
+                        <img class="w-full rounded" :src="obj.data.src"/>
+                      </div>
+                    div.w-10.h-10.flex.items-center.justify-center.bg-formsid-clear.text-formsid-glass.subtle.hover-text-white.hover-bg-formsid.rounded.cursor-pointer.ml-4(v-if="activeTree == obj.id" @click="deleteObject(obj)")
+                      i.material-icons.text-lg delete
+
   //- <d-container fluid class="main-content-container px-4 pb-4 overflow-y-scroll flex-grow">
   //-   <d-row no-gutters class="page-header py-4 flex justify-between items-center">
   //-     <d-col col sm="6" class="text-center text-sm-left mb-4 mb-sm-0">
@@ -114,15 +118,14 @@
 <script lang="coffee">
 import Draggable from 'vuedraggable'
 import Editor from '@/components/Editor.vue'
+import VueTagsInput from '@johmun/vue-tags-input'
 isDev = process.env.NODE_ENV is'development'
 export default
   props: ['visible', 'form']
   store: ['bus', 'collections', 'forms', 'user']
-  components: { Draggable, Editor }
+  components: { Draggable, Editor, VueTagsInput }
   data: ->
     @cleanData()
-  beforeMount: ->
-
   computed:
     data6: ->
       tree = [{ label: 'Heading' }]
@@ -132,17 +135,15 @@ export default
       tree
     vueScrollClass: -> { 'form-container' : true }
     open: ->
-      return 'opacity-100 visible' if @visible is true
+      return 'opacity-100 visible' if @visible is true and @loaded is true
       return 'opacity-0 invisible' if @visible is false
-    formPreview: ->
-      # // return `${isDev ? 'http://localhost:8081' : 'https://forms.id'}/f/${@user.username}/${@form.id}`
-      ''
     isPublishable: -> false
       # return @taggableObjects.map(o => o.data.choices.length).every(l => l >= 2) &&
       # @objects.every(o) -> o.data.type isnt null &&
       # @imageObjects.every(o) -> o.data.src.indexOf('placehold.it') is -1 &&
       # @objects.every(o) -> o.data.title isnt ''
     imageObjects: -> o for o in @objects when o.data.type is 'image'
+    selectedObject: -> (o for o in @objects when o.id is @activeTree)[0]
     taggableObjects: ->
       taggable = ['dropdown', 'multipleanswer', 'multiplechoice']
       o for o in @objects when taggable.indexOf(o.data.type) > -1
@@ -157,11 +158,13 @@ export default
       modifiedWithoutSave: false
       loaded: false
       activeTree: '1',
-      questionTypes: [
-        { value: null, label: 'Select a question type' },
+      tag: '',
+      tags: [],
+      objectTypes: [
         { value: 'dropdown', label: 'Dropdown' },
+        { value: 'imagewlabel', label: 'Image w/ Label' },
         { value: 'image', label: 'Image' },
-        # // { value: 'multipleanswer', label: 'Multiple Answer' },
+        { value: 'multipleanswer', label: 'Multiple Answer' },
         { value: 'multiplechoice', label: 'Multiple Choice' },
         { value: 'paragraph', label: 'Paragraph' },
         { value: 'shortanswer', label: 'Short Answer' }
@@ -208,6 +211,9 @@ export default
             { label: 'Choice 2', value: 'Choice 2' }
           ]
       @objects.push(newObject)
+    tagsChanged: (tags) ->
+      @tags = tags.map((t) -> text: t.text )
+      @selectedObject.data.choices = tags.map((t) -> t.text).map((t) -> value: t, label: t )
     clickSave: ->
       await @saveForm()
       @$router.push({ name: 'Forms' }) if @form is null
@@ -257,7 +263,7 @@ export default
             id: @form.id
             published: Date.now()
             created: @form.created
-            objects: @$refs.editor.arrangedObjects()
+            objects: @objects
             title: @title
             subtitle: @subtitle
             theme: @theme
@@ -273,14 +279,13 @@ export default
         # // couldn't publicly publish
         @validateObjects()
         reject()
+    deleteObject: (obj) ->  @objects = @objects.filter((o) -> o.id isnt obj.id)
   mounted: ->
     @bus.$on 'clone-object', (obj) ->
       clone = JSON.parse(JSON.stringify(obj))
       clone.id = uuid()
       clone.added = Date.now()
       @objects.push(clone)
-    @bus.$on 'delete-object', (id) -> @objects = @objects.filter(o) -> o.id isnt id
-    @bus.$on 'add-object', () -> @addObject()
   watch:
     visible: (newValue, oldValue) ->
       @[k] = @cleanData()[k] for k in Object.keys(@cleanData()) if newValue is false
@@ -298,6 +303,8 @@ export default
           @objects = clone.objects
           @isPublic = clone.public
           @loaded = true
+    selectedObject: (value) ->
+      @tags = @selectedObject.data.choices.map((c) -> text: c.label) if @selectedObject?
     objects: (newValue) ->
       @modifiedWithoutSave = true if newValue and @loaded
     subtitle: (newValue) ->
