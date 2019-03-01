@@ -20,7 +20,7 @@
               th.py-4.font-light.text-formsid-darkest(scope="col") Data
               th.py-4.font-light.text-formsid-darkest(scope="col") Timestamp
           tbody(v-if="form.submissions && form.submissions.length")
-            tr.hover-bg-pale-khaki.cursor-pointer(v-for="(record, i) in form.submissions" :key="record._id" @click="record._id")
+            tr.hover-bg-pale-khaki.cursor-pointer(v-for="(record, i) in form.submissions" :key="record._id" @click="rowClicked(record._id)")
               td {{ i + 1 }}
               td {{ filled(record.data) }}
               td {{ timestamp(record.created) }}
