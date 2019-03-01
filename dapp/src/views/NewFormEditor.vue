@@ -27,12 +27,12 @@
           .flex
             div.flex.items-center.cursor-pointer.border-reddish-clear.border.px-4.subtle.hover-bg-reddish.hover-text-white.font-light.text-reddish.py-3.rounded.mr-4(@click="bus.$emit('closeformeditor')")
               i.material-icons.text-lg.mr-2 cancel
-              span Cancel
+              span Close
           .flex
             div.flex.items-center.cursor-pointer.border-formsid-clear.border.px-4.subtle.hover-bg-formsid.hover-text-white.font-light.text-formsid.py-3.rounded.mr-4(@click="clickSave()")
               i.material-icons.text-lg.mr-2 save
               span Save
-            div.flex.items-center.cursor-pointer.bg-formsid-clear.px-4.subtle.hover-bg-formsid.hover-text-white.font-light.text-formsid.py-3.rounded
+            div.flex.items-center.cursor-pointer.bg-formsid-clear.px-4.subtle.hover-bg-formsid.hover-text-white.font-light.text-formsid.py-3.rounded(@click="publishForm()")
               i.material-icons.text-lg.mr-2 file_copy
               span Publish
       .w-full.overflow-hidden.flex-grow
@@ -120,6 +120,7 @@ import Draggable from 'vuedraggable'
 import Editor from '@/components/Editor.vue'
 import VueTagsInput from '@johmun/vue-tags-input'
 isDev = process.env.NODE_ENV is'development'
+
 export default
   props: ['visible', 'form']
   store: ['bus', 'collections', 'forms', 'user']
@@ -137,11 +138,10 @@ export default
     open: ->
       return 'opacity-100 visible' if @visible is true and @loaded is true
       return 'opacity-0 invisible' if @visible is false
-    isPublishable: -> false
-      # return @taggableObjects.map(o => o.data.choices.length).every(l => l >= 2) &&
-      # @objects.every(o) -> o.data.type isnt null &&
-      # @imageObjects.every(o) -> o.data.src.indexOf('placehold.it') is -1 &&
-      # @objects.every(o) -> o.data.title isnt ''
+    isPublishable: ->
+      @taggableObjects.map((o) -> o.data.choices.length).every((l) -> l >= 2) and
+      @imageObjects.every((o) -> o.data.src.indexOf('placehold.it') is -1) and
+      @objects.every((o) -> o.data.title isnt '') and @isPublic
     imageObjects: -> o for o in @objects when o.data.type is 'image'
     selectedObject: -> (o for o in @objects when o.id is @activeTree)[0]
     taggableObjects: ->
@@ -149,7 +149,7 @@ export default
       o for o in @objects when taggable.indexOf(o.data.type) > -1
   methods:
     cleanData: ->
-      id: uuid('newform')
+      id: null
       title: 'Untitled Form'
       subtitle: 'Short description or note for my new form.'
       isPublic: false
@@ -177,22 +177,17 @@ export default
         change: @handleChooseEvent
     handleChooseEvent: (event) -> @activeTree = event
     validateObjects: ->
-      if !@taggableObjects.map(o) -> o.data.choices.length.every(l) -> l >= 2
+      if !@taggableObjects.map((o) -> o.data.choices.length).every((l) -> l >= 2)
         @$notify({
           group: 'topcent',
           text: 'All multiple choice questions require at least two answers.'
         })
-      if !@objects.every(o) -> o.data.type isnt null
-        @$notify({
-          group: 'topcent',
-          text: 'All questions require a type.'
-        })
-      if !@imageObjects.every(o) -> o.data.src.indexOf('placehold.it') is -1
+      if !@imageObjects.every((o) -> o.data.src.indexOf('placehold.it') is -1)
         @$notify({
           group: 'topcent',
           text: 'You must upload a non-placeholder image.'
         })
-      if !@objects.every(o) -> o.data.title isnt ''
+      if !@objects.every((o) -> o.data.title isnt '')
         @$notify({
           group: 'topcent',
           text: 'All questions require a label.'
@@ -217,18 +212,18 @@ export default
     clickSave: ->
       await @saveForm()
       @$router.push({ name: 'Forms' }) if @form is null
-      @bus.$emit('closeformeditor')
     saveForm: ->
       new Promise (resolve, reject) =>
+        isOld = @form.id?
         form =
-          id: if @form is null then uuid('newform') else @form.id
+          id: if @form.id? then @form.id else uuid('newform')
           published: if @isPublic is true then Date.now() else false
           objects: @objects
           title: @title
           subtitle: @subtitle
           public: @isPublic
           theme: @theme
-        if @form is null
+        if isOld = false
           subDb = await orbit.create("#{@user.username}.#{form.id}.submissions", 'docstore', { write: ['*']})
           viewDb = await orbit.create("#{@user.username}.#{form.id}.views", 'counter', { write: ['*']})
           form.created = Date.now()
@@ -255,6 +250,7 @@ export default
           text: 'Form saved successfully.'
         })
         resolve()
+        @bus.$emit 'updateforms'
     publishForm: ->
       await @clickSave()
       if @isPublishable
@@ -278,19 +274,12 @@ export default
       else
         # // couldn't publicly publish
         @validateObjects()
-        reject()
     deleteObject: (obj) ->  @objects = @objects.filter((o) -> o.id isnt obj.id)
-  mounted: ->
-    @bus.$on 'clone-object', (obj) ->
-      clone = JSON.parse(JSON.stringify(obj))
-      clone.id = uuid()
-      clone.added = Date.now()
-      @objects.push(clone)
   watch:
     visible: (newValue, oldValue) ->
       @[k] = @cleanData()[k] for k in Object.keys(@cleanData()) if newValue is false
       if newValue is true
-        unless @form?
+        unless @id?
           @addObject()
           @addObject()
           @activeTree = @objects[0].id.toString()
