@@ -25,13 +25,13 @@
           <div class="row flex justify-between">
             <ul class="flex list-reset items-center text-sm">
               <li>
-                <a class="no-underline text-formsid mr-2" href="https://forms.id" target="_blank">Home</a>
+                <a class="no-underline text-formsid mr-2" href="https://forms.id">Home</a>
               </li>
               <li>
-                <a class="no-underline text-formsid mr-2" href="https://forms.id/about" target="_blank">About</a>
+                <a class="no-underline text-formsid mr-2" href="https://forms.id/about">About</a>
               </li>
               <li>
-                <a class="no-underline text-formsid" href="https://forms.id/faq" target="_blank">FAQ</a>
+                <a class="no-underline text-formsid" href="https://forms.id/faq">FAQ</a>
               </li>
             </ul>
             <span class="text-sm text-formsid">&copy; Forms.id</span>
