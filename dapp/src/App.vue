@@ -156,12 +156,13 @@ export default {
       blockstack.redirectToSignInWithAuthRequest(authRequest)
     },
     exportData(form){
-      const answerable = form.objects.filter(o => o.data.type !== 'image')
+      const answerable = form.objects.filter(o => o.data.type.indexOf('image') == -1)
+      console.log(answerable)
       let data = []
       form.submissions.forEach(s => {
         let record = {}
-        answerable.map(a => a.id).forEach(object => {
-          record[form.objects.find(o => o.id == object).data.title] = s.data[object]
+        answerable.forEach(object => {
+          record[object.data.title] = s.data.find(a => a.id == object.id).answer
         })
         data.push(record)
       })
