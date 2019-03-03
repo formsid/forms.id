@@ -136,7 +136,7 @@ export default {
         }
         await blockstack.putFile(`forms/${id}.json`, JSON.stringify(null))
         this.forms = this.forms.filter(f => f !== id)
-        this.collections.forms = this.collections.forms.filter(f => f !== id)
+        this.collections.forms = this.collections.forms.filter(f => f.id !== id)
         await blockstack.putFile(`forms.json`, JSON.stringify(this.forms), { encrypt : true })
         this.isDeletingForm = false
         this.deleteModalClosed()
