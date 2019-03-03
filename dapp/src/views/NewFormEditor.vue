@@ -167,10 +167,9 @@ export default
       @tags = tags.map((t) -> text: t.text )
       @selectedObject.data.choices = tags.map((t) -> t.text).map((t) -> value: t, label: t )
     clickSave: ->
-      await @saveForm()
-      @$router.push({ name: 'Forms' }) if @form is null
+      resolution = await @saveForm()
     saveForm: ->
-      new Promise (resolve, reject) =>
+      return new Promise (resolve, reject) =>
         isOld = @form?.id?
         formId = @form?.id if isOld isnt false
         formId = uuid('newform') if isOld is false
@@ -182,7 +181,6 @@ export default
           subtitle: @subtitle
           public: @isPublic
           theme: @theme
-        console.log form
         if isOld is false
           subDb = await orbit.create("#{@user.username}.#{form.id}.submissions", 'docstore', { write: ['*']})
           viewDb = await orbit.create("#{@user.username}.#{form.id}.views", 'counter', { write: ['*']})
@@ -197,27 +195,24 @@ export default
             await blockstack.putFile("submissions/#{form.id}.json", JSON.stringify([]), { encrypt : true })
           else
             # // form must already exist
-          resolve(form)
-          @bus.$emit 'updateforms'
+            reject 'form id already exists'
         else
           if @form?.public and form.public is false
             await blockstack.putFile("shared/#{form.id}.json", JSON.stringify(null))
           form.created = @form?.created
           form.dbs = @form?.dbs
           await blockstack.putFile("forms/#{form.id}.json", JSON.stringify(form), { encrypt : true })
-          resolve(form)
         @modifiedWithoutSave = false
         @$notify({
           group: 'topcent',
           text: 'Form saved successfully.'
         })
+        resolve(form)
         @bus.$emit 'updateforms'
     publishForm: ->
-      form = await @clickSave()
-      console.log(form)
-      if @isPublishable
-        new Promise (resolve, reject) ->
-          form.published = Date.now()
+      form = await @saveForm()
+      if @isPublishable and form?
+        new Promise (resolve, reject) =>
           await blockstack.putFile("shared/#{form.id}.json", JSON.stringify(form), { encrypt : false })
           @$notify({
             group: 'topcent',
