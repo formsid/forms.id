@@ -156,12 +156,13 @@ export default {
       blockstack.redirectToSignInWithAuthRequest(authRequest)
     },
     exportData(form){
-      const answerable = form.objects.filter(o => o.data.type !== 'image')
+      const answerable = form.objects.filter(o => o.data.type.indexOf('image') == -1)
+      console.log(answerable)
       let data = []
       form.submissions.forEach(s => {
         let record = {}
-        answerable.map(a => a.id).forEach(object => {
-          record[form.objects.find(o => o.id == object).data.title] = s.data[object]
+        answerable.forEach(object => {
+          record[object.data.title] = s.data.find(a => a.id == object.id).answer
         })
         data.push(record)
       })
@@ -273,6 +274,19 @@ export default {
 
 
 <style lang="css">
+.tooltip .tooltip-inner {
+  background: rgba(48, 70, 152, .22) !important;
+  color: rgba(48, 70, 152, .82) !important;
+  padding: 7px 14px;
+  border-radius: .25rem;
+  font-weight: 300;
+}
+.tooltip[x-placement^="top"] {
+  margin-bottom: 10px;
+}
+.tooltip[x-placement^="bottom"] {
+  margin-top: 10px;
+}
 .el-collapse-item__content {
   padding: 0 1.2rem 25px;
   font-weight: 300;
@@ -335,15 +349,6 @@ export default {
   .vue-tags-input .ti-new-tag-input {
     color: rgba(48, 70, 152, .82) !important;
   }
-
-  /* .ti-new-tag-input-wrapper {
-    padding: .5625rem 1rem !important;
-    background-color: rgba(48, 70, 152, .22) !important;
-    font-size: 14px !important;
-    border: 1px solid rgba(48, 70, 152, .42) !important;
-    border-radius: .38rem !important;
-    color: rgba(48, 70, 152, .82) !important;
-  } */
 
   /* we defined a custom css class in the data model, now we are using it to style the tag */
   .vue-tags-input .ti-tag.custom-class {

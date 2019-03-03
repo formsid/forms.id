@@ -6,6 +6,7 @@ import router from './router'
 import autosize from 'vue-autosize'
 import notifications from 'vue-notification'
 import stash from 'vue-stash'
+import tooltip from 'v-tooltip'
 import { Collapse, CollapseItem } from 'element-ui'
 
 import 'element-ui/lib/theme-chalk/index.css';
@@ -17,6 +18,7 @@ Vue.component('collapse-item', CollapseItem)
 Vue.use(autosize)
 Vue.use(notifications)
 Vue.use(stash)
+Vue.use(tooltip)
 Vue.config.productionTip = false
 
 window.blockstack = require('blockstack')

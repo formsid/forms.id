@@ -50,7 +50,7 @@ export default
         @isDeletingForm = true
         await blockstack.putFile("shared/#{id}.json", JSON.stringify(null)) if @deletingForm.public
         await blockstack.putFile("forms/#{id}.json", JSON.stringify(null))
-        @forms = f for f in @forms when f isnt id
+        @forms = Array.from(f for f in @forms when f isnt id)
         @collections.forms = f for f in @forms when f.id isnt id
         await blockstack.putFile("forms.json", JSON.stringify(@forms), { encrypt : true })
         @isDeletingForm = false

@@ -1,6 +1,6 @@
 <template>
   <div id="home">
-    <div class="header bg-formsid">
+    <div class="header bg-formsid" id="header">
       <header class="px-6 py-6 md:px-0">
         <div class="container mx-auto flex items-center justify-between">
           <a href="/">
@@ -10,7 +10,7 @@
             <div class="flex items-center">
               <a class="no-underline mr-4 md:block hidden" href="https://app.forms.id">
                 <button class="hover:bg-white hover:text-formsid subtle border-white border focus:outline-none px-4 h-10 rounded block flex-no-shrink text-white tracking-wide">
-                  <span>Login</span>
+                  <span class="font-light">Login</span>
                 </button>
               </a>
             </div>
@@ -18,88 +18,104 @@
         </div>
       </header>
       <section class="px-6 md:px-0">
-        <div class="container mx-auto flex flex-col md:flex-row flex-row-reverse md:flex-row md:items-center py-16 text-white">
-          <div class="order-2 md:order-1 pt-6 md:pt-0 md:w-3/4 mx-auto mb-8">
-            <h1 class="text-center text-3xl md:text-5xl text-80 font-light mb-8">Forms. Simply done.</h1>
-            <p class="text-center font-light text-md md:text-xl text-70 leading-normal mb-10 md:w-3/4 mx-auto" style="max-width: 558px;">
-              Forms.id is a powerful, yet simple platform for building forms and surveys. We put privacy first and offer a secure alternative to Google Forms & Typeform.
+        <div class="container mx-auto flex flex-col md:flex-row flex-row-reverse md:flex-row md:items-center pt-8 pb-24 text-white">
+          <div class="order-2 md:order-1 pt-6 md:pt-0 md:w-1/2 mb-24 md:mb-0">
+            <h1 class="text-3xl md:text-5xl text-80 font-light mb-8 leading-normal" style="max-width: 500px;">Say hello to the friendly form maker.</h1>
+            <p class="font-light text-md md:text-xl text-70 leading-loose" style="max-width: 500px;">
+              We put privacy first and offer a secure alternative to Google Forms. Accept information from respondents without compromising their data or yours.
             </p>
+            <div class="bg-white text-formsid table rounded opacity-90 py-3 px-4 shadow-lg mt-8 cursor-pointer"> Learn More</div>
           </div>
-        </div> 
+          <div class="md:block hidden md:w-1/2 px-4 mb-4">
+            <img src="./assets/tellstory.png" class="w-full">
+          </div>
+        </div>
       </section>
     </div>
-    <section>
-      <div class="container mx-auto">
-        <p class="px-6 md:px-0 mb-6 md:mb-0">
-          <img id="try" src="/img/screenshot.jpg" class="rounded md:block shadow-lg -mt-16 -mb-16">
-        </p>
-      </div>
-    </section>
-    <section class="bg-formsid-clear py-24">
+    <section class="bg-formsid-clear -mt-24 pb-8">
       <div class="container mx-auto mt-8">
         <div class="flex justify-between -mx-4 mb-16">
-          <div class="w-1/3 border-b-2 border-formsid-glass mx-2 bg-white shadow-md rounded-lg p-6 relative">
-            <p class="text-grey-darkest font-light text-lg mb-4">Private</p>
-            <p class="text-grey-darker font-light text-base leading-normal z-10">
-              All responses to forms created with Forms.id are encrypted, meaning only the form maker
-              and the responder know the contents of the submission.
+          <div class="w-1/3 border-b-4 border-formsid-glass mx-2 bg-white shadow-md rounded-lg p-6 relative">
+            <p class="text-formsid-darkest font-light text-lg mb-4">Private</p>
+            <p class="text-formsid-darkest font-light text-base leading-normal z-10">
+              All responses to forms created with Forms.id are encrypted, meaning only the form creator
+              and the respondent will know the contents of the submission.
             </p>
-            <i class="fas fa-mask absolute text-6xl text-formsid pin-b pin-r mr-6 mb-6 opacity-15"></i>
           </div>
-          <div class="w-1/3 border-b-2 border-formsid-glass mx-2 bg-white shadow-md rounded-lg p-6 relative">
-            <p class="text-grey-darkest font-light text-lg mb-4">Sovereign</p>
-            <p class="text-grey-darker font-light text-base leading-normal z-10">
-              Response data and form data is hosted and owned by the maker of the form. No data resides on a central server controlled by Forms.id.
+          <div class="w-1/3 border-b-4 border-formsid-glass mx-2 bg-white shadow-md rounded-lg p-6 relative">
+            <p class="text-formsid-darkest font-light text-lg mb-4">Sovereign</p>
+            <p class="text-formsid-darkest font-light text-base leading-normal z-10">
+              Response data and form data is owned by the maker of the form. No data resides on a central server controlled by Forms.id.
             </p>
-            <i class="fas fa-crown absolute text-6xl text-formsid pin-b pin-r mr-6 mb-6 opacity-15"></i>
           </div>
-          <div class="w-1/3 flex-grow border-b-2 border-formsid-glass mx-2 bg-white shadow-md rounded-lg p-6 relative">
-            <p class="text-grey-darkest font-light text-lg mb-4">Modern</p>
-            <p class="text-grey-darker font-light text-base leading-normal z-10">
-              Ditch Google Forms and their outdated forms. Forms.id is built on modern technology and we're listening to the features you want! 
+          <div class="w-1/3 flex-grow border-b-4 border-formsid-glass mx-2 bg-white shadow-md rounded-lg p-6 relative">
+            <p class="text-formsid-darkest font-light text-lg mb-4">Modern</p>
+            <p class="text-formsid-darkest font-light text-base leading-normal z-10">
+              Ditch Google Forms and their outdated forms. Forms.id is built on modern technology and we're listening to the features you want!
             </p>
-            <i class="fas fa-paint-brush absolute text-6xl text-formsid pin-b pin-r mr-6 mb-6 opacity-15"></i>
           </div>
         </div>
-        <div class="flex justify-center mb-8">
-          <h1 class="font-light text-formsid">See the forms in action</h1>
-        </div>
-        <div class="flex justify-between">
-          <div class="w-1/2 mr-4">
-            <a class="no-underline block" href="https://forms.id/f/forms.id.blockstack/f18c99e7b3" target="_blank">
-              <img src="/img/form1.jpg" class="rounded-lg shadow-md"/>
-            </a>
+        <section class="px-6 md:px-0 py-4">
+          <div class="container mx-auto flex flex-col md:flex-row items-center flex-row-reverse md:flex-row text-formsid-darkest">
+            <div class="md:block hidden md:w-1/2 mr-4 mb-4">
+              <img src="./assets/pot.png" class="w-full">
+            </div>
+            <div class="order-2 md:order-1 pt-6 md:pt-0 md:w-3/5 mb-24 md:mb-0">
+              <div class="border-b-4 border-formsid-glass bg-white shadow-md rounded-lg p-6 relative">
+                <p class="text-formsid-darkest text-lg mb-3">The Problem</p>
+                <p class="font-light text-md  text-formsid-darkest leading-loose mb-4">
+                  For too long, website visitors and their data have been treated solely as profit; thrown into a bucket and sold to the highest bidder. Large companies such as Google and Facebook are notorious for this, as this is central to their profitability. Who knows where your form and poll data goes after the respondents hits submit? We at Forms.id believe the World Wide Web was built for decentralized consumption, sharing, and building, so we can do better.
+                </p>
+              </div>
+            </div>
           </div>
-          <div class="w-1/2 ml-4">
-            <a class="no-underline block" href="https://forms.id/f/forms.id.blockstack/b2a5b93cb8" target="_blank">
-              <img src="/img/form2.jpg" class="rounded-lg shadow-md"/>
-            </a>
+        </section>
+        <section class="px-6 md:px-0 py-4">
+          <div class="container mx-auto flex justify-between flex-col md:flex-row items-center flex-row-reverse md:flex-row text-formsid-darkest">
+            <div class="order-2 md:order-1 pt-6 md:pt-0 md:w-1/2 mb-24 md:mb-0">
+              <div class="border-b-4 border-formsid-glass bg-white shadow-md rounded-lg p-6 relative">
+                <p class="text-formsid-darkest text-lg mb-3">The Solution</p>
+                <p class="font-light text-md text-70 leading-loose mb-4 ">
+                  As a software user, one shouldn't have to sacrifice our privacy and our intellectual security in order to have access to beneficial tools. Luckily, advances in decentralized technology and repeated breaches of trust by corporations, have lead many to create and choose trustworthy alternatives.
+                </p>
+                <p class="font-light text-md text-70 leading-loose mb-4">
+                  Forms.id has chosen to implement <a class="no-underline text-formsid" href="https://blockstack.com">Blockstack</a> authentication and storage into our application. This suite of decentralized software allows the user to personally own their data at all times and prevents us from being evil. You don't, and shouldn't have to trust us.
+                </p>
+                <p class="font-light text-md text-70 leading-loose mb-4">
+                  Your <a class="no-underline text-formsid" href="https://blockstack.com">Blockstack</a> identity gives you access to any app in the ecosystem and most importantly, finally gives you control of your data.
+                </p>
+              </div>
+            </div>
+            <div class="md:block hidden md:w-2/5 ml-4">
+              <img src="./assets/build.png" class="w-full">
+            </div>
           </div>
-        </div>
+        </section>
+        <section class="py-4 container flex items-center justify-center mt-4">
+          <div class="bg-white text-formsid table rounded text-lg py-3 px-4 shadow-lg cursor-pointer mr-4">Get Started</div>
+          <div class="bg-white text-formsid table rounded text-lg py-3 px-4 shadow-lg cursor-pointer">Frequently Asked Questions</div>
+        </section>
       </div>
     </section>
-    <footer class="py-6 md:px-0 px-6" style="background-color: #304698;">
+    <footer class="py-4 md:px-0 px-6 bg-formsid" id="header">
       <div class="container mx-auto h-full">
         <div class="flex md:justify-between h-full">
-          <div class="w-1/3 flex flex-col justify-between mr-8 md:mr-2">
-            <img src="/img/logomark.png" class="w-12 rounded-full mb-4">
-            <small class="block text-sm text-white">
-              <span class="mr-4">&copy; 2019 Forms.id</span>
-            </small>
-          </div>
-          <div class="flex items-center justify-between py-2">
-            <small class="block text-sm text-white font-semibold">
-              <span>Contact</span>
-            </small>
+          <div class="w-1/3 flex items-center mr-8 md:mr-2">
+            <img src="/img/logomark.png" class="w-12 h-12 rounded-full mr-4">
             <small class="block text-sm text-white mx-4">
               <a href="https://twitter.com/formsid" class="text-white no-underline">
                 <i class="fab fa-twitter"></i>
               </a>
             </small>
             <small class="block text-sm text-white">
-              <a href="mailto:hello@forms.id" class="text-white no-underline">
+              <a href="mailto:hello@forms.id" class="text-white no-underline font-light">
                 hello@forms.id
               </a>
+            </small>
+          </div>
+          <div class="flex items-center justify-between py-2">
+            <small class="block text-sm text-white font-light">
+              <span class="mr-4">&copy; 2019 Forms.id</span>
             </small>
           </div>
         </div>
