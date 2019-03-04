@@ -5,8 +5,9 @@
         <img src="./assets/logomark.png" alt="Forms.id Logo" class="w-16 rounded-full">
       </a>
     </div>
-    <div class="flex-grow min-h-screen ml-24 bg-blay text-formsid-darker flex items-center justify-center" v-if="isFetching">
-      <i class="fas fa-spinner fa-spin text-formsid" style="font-size: 72px;"></i>
+    <div class="flex-grow min-h-screen ml-24 bg-blay text-formsid-darker flex flex-col items-center justify-center" v-if="isFetching">
+      <i class="fas fa-spinner fa-spin text-formsid mb-8" style="font-size: 68px;"></i>
+      <h1 class="font-light">Loading form...</h1>
     </div>
     <div class="relative flex-grow flex-col min-h-screen ml-24 bg-blay text-formsid-darker flex items-center justify-center" v-if="isSubmitted">
       <div class="container">
@@ -39,8 +40,9 @@
         </div>
       </footer>
     </div>
-    <div class="flex-grow min-h-screen ml-24 bg-blay text-formsid-darker flex items-center justify-center" v-if="isSubmitting">
-      <i class="fas fa-spinner fa-spin text-formsid" style="font-size: 72px;"></i>
+    <div class="flex-grow min-h-screen ml-24 bg-blay text-formsid-darker flex flex-col items-center justify-center" v-if="isSubmitting">
+      <i class="fas fa-spinner fa-spin text-formsid mb-8" style="font-size: 68px;"></i>
+      <h1 class="font-light">Submitting your response...</h1>
     </div>
     <div class="flex-grow min-h-screen ml-24 bg-blay text-formsid-darker" id="content" v-if="shouldShowForm">
       <vue-scroll-progress-bar class="ml-24" @complete="handleComplete" height=".5rem" backgroundColor="rgba(48, 70, 152, .82)" containerColor="#CDD2E7"/>
@@ -53,7 +55,7 @@
           <div class="w-full mb-15p" v-if="form">
             <div class="mb-8" v-for="obj in form.objects" :key="obj.id">
               <p class="break-words greycliff max-w-lg mx-auto text-left text-xl leading-loose mb-2">{{ obj.data.title }}</p>
-              <div class="flex items-center max-w-lg mx-auto py-2" v-if="obj.data.type == 'shortanswer'">
+              <div class="flex items-center max-w-lg mx-auto py-2" v-if="['email', 'shortanswer'].indexOf(obj.data.type) > -1">
                 <input @blur="setAnswer(obj.id.toString(), $event.target.value)" type="text" :aria-label="obj.data.title" class="subtle rounded focus:border-b-2 border-formsid-glass bg-formsid-clear appearance-none w-full p-3 leading-tight focus:outline-none outline-none greycliff text-xl font-light text-formsid-glass focus:text-formsid-glass">
               </div>
               <div class="flex items-center max-w-lg mx-auto py-2" v-if="obj.data.type == 'paragraph'">
@@ -106,6 +108,19 @@ export default {
     }
   },
   computed: {
+    emailsValid(){
+      const emails = this.form.objects.filter(o => o.data.type == 'email')
+      return emails.every(e => {
+        const answer = this.answers.find(a => a.id == e.id)
+        return answer
+          ?  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(answer.answer)
+          : true
+      })
+    },
+    requiredsValid(){
+      const required = this.form.objects.filter(o => o.required)
+      return required.every(o => this.hasAnswer(o.id))
+    },
     shouldShowForm(){
       return !this.isFetching && !this.isSubmitting && !this.isSubmitted
     }
@@ -114,26 +129,31 @@ export default {
     async clickSubmit(){
       return new Promise(async (resolve, reject) => {
         this.isSubmitting = true
-        const submission = {
-          created: Date.now(),
-          data: this.answers,
+        if(this.validateForm()){
+          const submission = {
+            created: Date.now(),
+            data: this.answers,
+          }
+          const encryptedSubmission = encryptECIES(this.pubKey, JSON.stringify(submission))
+          const fslug = this.$route.params.fslug
+          const uslug = this.$route.params.uslug
+          const db = await this.orbit.open(this.form.dbs.submissions)
+          const hash = await db.put({ _id: uuid('submission'), data : encryptedSubmission })
+          this.isSubmitting = false
+          this.isSubmitted = true
+        } else {
+          this.isSubmitting = false
         }
-        const encryptedSubmission = encryptECIES(this.pubKey, JSON.stringify(submission))
-        const fslug = this.$route.params.fslug
-        const uslug = this.$route.params.uslug
-        const db = await this.orbit.open(this.form.dbs.submissions)
-        const hash = await db.put({ _id: uuid('submission'), data : encryptedSubmission })
-        this.isSubmitting = false
-        this.isSubmitted = true
         resolve()
       })
     },
     hasAnswer(oid){
-      return this.answers[oid] && this.answers[oid] !== ''
+      const answer = this.answers.find(a => a.id == oid)
+      return answer && answer !== ''
     },
     answerIsSelected(answer, oid){
       const object = this.form.objects.find(o => o.id == oid)
-      const hasAnswer = this.answers.find(a => a.id === oid)
+      const hasAnswer = this.answers.find(a => a.id == oid)
       return hasAnswer
         ? hasAnswer.answer == answer
         : false
@@ -156,7 +176,7 @@ export default {
 
     },
     validateForm(){
-
+      return this.requiredsValid && this.emailsValid
     },
     setAnswer(id, answer){
       const object = this.form.objects.find(o => o.id == id)

@@ -5,11 +5,11 @@
         .w-full.flex.justify-between.items-center
           img.rounded-full.w-10.h-10(src="../assets/images/nav_logo.png")
           .ml-auto.flex.items-center
-            i.material-icons.text-formsid.subtle.cursor-pointer.mr-4.relative(@click="toggleNotifications") &#xE7F4;
-              .absolute.rounded.h-0.subtle.bg-white.shadow-md.pin-r.w-64.z-max.mt-4(:class="{'pointer-events-auto opacity-100 max-h-64 h-auto' : notificationsVisible, 'pointer-events-none opacity-0 h-0' : !notificationsVisible}")
-                .flex.flex-col.w-full
-                  .border-b.bg-formsid-pale.subtle(v-for="n in eligibleNotifications")
-                    p.py-4.font-light.text-formsid-glass(v-if="n.type == 'response'") has received a new response.
+            //- i.material-icons.text-formsid.subtle.cursor-pointer.mr-4.relative(@click="toggleNotifications") &#xE7F4;
+            //-   .absolute.rounded.h-0.subtle.bg-white.shadow-md.pin-r.w-64.z-max.mt-4(:class="{'pointer-events-auto opacity-100 max-h-64 h-auto' : notificationsVisible, 'pointer-events-none opacity-0 h-0' : !notificationsVisible}")
+            //-     .flex.flex-col.w-full
+            //-       .border-b.bg-formsid-pale.subtle(v-for="n in eligibleNotifications")
+            //-         p.py-4.font-light.text-formsid-glass(v-if="n.type == 'response'") has received a new response.
             p.text-formsid.font-light.text-md.px-4.py-2.rounded.bg-formsid-clear {{ user ? user.username : 'blockstacker' }}
         .w-full.flex.justify-between.items-center.my-10
           h1.font-thin.text-formsid.py-2 {{ pageTitle }}
@@ -69,6 +69,5 @@
       formPreview: ->
         prefix = if isDev is true then 'http://localhost:8081' else 'https://forms.id'
         "#{prefix}/f/#{@user.username}/#{@$route.params.id}"
-      toggleNotifications: ->
-        @notificationsVisible = !@notificationsVisible
+      toggleNotifications: -> @notificationsVisible = !@notificationsVisible
 </script>

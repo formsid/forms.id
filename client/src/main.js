@@ -2,9 +2,11 @@ require('setimmediate')
 
 import Vue from 'vue'
 import App from './App'
+import notifications from 'vue-notification'
 import router from './router'
 import sprogbar from 'vue-scroll-progressbar'
 
+Vue.use(notifications)
 Vue.use(router)
 
 window.uuid = ((a, b) => {
