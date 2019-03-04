@@ -1,136 +1,86 @@
-<template>
-  <d-container fluid class="main-content-container px-4">
-    <d-row no-gutters class="page-header py-4 flex justify-between items-center">
-      <d-col col sm="6" class="text-center text-sm-left mb-4 mb-sm-0">
-        <h3 class="page-title">{{ form.title }}</h3>
-      </d-col>
-      <div class="flex-grow flex justify-end">
-        <div class="d-flex">
-          <a class="block no-underline" :href="formPreview" target="_blank">
-            <d-button class="btn-outline-accent text-sm mr-3" v-if="form.public">
-              <i class="material-icons">remove_red_eye</i> View
-            </d-button>
-          </a>
-          <d-button class="btn-outline-accent text-sm mr-3" @click="exportData">
-            <i class="material-icons">cloud_download</i> Export Data
-          </d-button>
-          <router-link :to="`/forms/${form.id}/edit`" class="block no-underline">
-             <d-button class="btn-accent text-sm">
-              <i class="material-icons">edit</i> Edit
-            </d-button>
-          </router-link>
-        </div>
-      </div>
-    </d-row>
-    <div class="row">
-      <div class="col">
-        <div class="card card-small mb-4">
-          <div class="row py-4 border-bottom">
-            <div class="text-center col-sm-4 col-md-6 col-lg-6">
-              <h4 class="mt-0 mb-1">{{ form.submissions ? form.submissions.length : 0 }}</h4><span class="text-light text-uppercase">Submissions</span>
-            </div>
-            <!-- <div class="text-center col-sm-4 col-md-6 col-lg-6">
-              <h4 class="mt-0 mb-1">0%</h4><span class="text-light text-uppercase">Completion Rate</span>
-            </div> -->
-            <div class="text-center col-sm-4 col-md-6 col-lg-6">
-              <h4 class="mt-0 mb-1">{{ form.views }}</h4><span class="text-light text-uppercase">Views</span>
-            </div>
-          </div>
-          <div class="card-body p-0 pb-3 text-center">
-            <table class="table mb-0">
-              <thead class="bg-light">
-                <tr>
-                  <th scope="col" class="border-0">#</th>
-                  <th scope="col" class="border-0">Data</th>
-                  <th scope="col" class="border-0">Timestamp</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr class="hover:bg-pale-khaki cursor-pointer" v-for="(record, i) in form.submissions" :key="record._id">
-                  <td>{{ i + 1 }}</td>
-                  <td>{{ filled(record.data) }}</td>
-                  <td>{{ timestamp(record.created) }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </d-container>
+<template lang="pug">
+  .container
+    .flex.w-full
+      div.bg-white.rounded.w-full.shadow
+        .border-b
+          .p-6.flex.justify-between.max-w-lg.mx-auto
+            .text-center.flex.flex-col
+              h4.mb-2.font-light.text-2xl.text-formsid-darkest {{ form.submissions ? form.submissions.length : 0 }}
+              span.font-light.text-uppercase.text-formsid-darker Submissions
+            .text-center.flex.flex-col
+              h4.mb-2.font-light.text-2xl.text-formsid-darkest 0%
+              span.font-light.text-uppercase.text-formsid-darker Completion Rate
+            .text-center.flex.flex-col
+              h4.mb-2.font-light.text-2xl.text-formsid-darkest {{ form.views }}
+              span.font-light.text-uppercase.text-formsid-darker Views
+        table.w-full.px-8
+          thead
+            tr
+              th.px-4.py-4.font-light.text-formsid-darkest(scope="col") #
+              th.px-4.py-4.font-light.text-formsid-darkest(scope="col") Data
+              th.px-4.py-4.font-light.text-formsid-darkest(scope="col") Timestamp
+          tbody(v-if="form.submissions && form.submissions.length")
+            tr.subtle.border-t.hover-bg-formsid-pale.cursor-pointer(v-for="(record, i) in form.submissions" :key="record._id" @click="rowClicked(record._id)")
+              td.px-4.py-4.font-light.text-formsid-darkest.text-center {{ i + 1 }}
+              td.px-4.py-4.font-light.text-formsid-darkest.text-center Click to view data
+              td.px-4.py-4.font-light.text-formsid-darkest.text-center {{ timestamp(record.created) }}
+        p.py-4.text-center.font-light.text-formsid-darker.border-t No submissions, yet.
+      div(class="subtle pin max-h-screen overflow-hidden h-screen fixed w-full bg-light-smoke z-max" @click.self="hideRowView" :class="{'pointer-events-auto opacity-100' : rowViewVisible, 'pointer-events-none opacity-0' : !rowViewVisible}" v-if="form && row")
+        .absolute.pin-r.pin-b.pin-t.w-half.bg-white.shadow-lg
+          .absolute.pin-t.pin-x.pin-r.border-t-8.border-formsid.z-max
+          .bg-white.h-full.shadow.form-container.overflow-y-scroll.relative
+            div.max-w-md.px-4.mx-auto.pb-12(style="margin-top: 5%;")
+              div.w-full.mb-16
+                div.py-3.px-8.subtle.bg-formsid-transparent(v-for="obj in form.objects" :key="obj.id")
+                  div.flex.flex-col.mb-4(v-if="obj.data.type.indexOf('image') == -1")
+                    p.break-words.greycliff.w-full.text-left.text-xl.leading-loose.mb-2.text-formsid-darkest(:content.sync="obj.data.title") {{ obj.data.title }}
+                    input(type="text" class="subtle rounded focus:border-b-2 border-formsid-glass bg-formsid-clear appearance-none w-full p-3 leading-tight focus:outline-none outline-none greycliff text-xl font-light text-formsid-glass focus:text-formsid-glass" v-if="['email', 'shortanswer'].indexOf(obj.data.type) > -1")
+                    textarea(aria-label="Full name" class="subtle rounded focus:border-b-2 border-formsid-glass bg-formsid-clear appearance-none w-full p-3 leading-tight focus:outline-none outline-none greycliff text-xl font-light text-formsid-darker focus:text-formsid-glass resize-none" rows="3" v-autosize readonly :value="row.data.find(a => a.id == obj.id).answer" v-if="obj.data.type == 'paragraph'")
+                    div(class="w-full greycliff bg-formsid-clear rounded text-center p-3 text-lg text-formsid-glass leading-tight tracking-normal subtle" v-if="['dropdown', 'multipleanswer', 'multiplechoice'].indexOf(obj.data.type) > -1") {{ row.data.find(a => a.id == obj.id).answer }}
 </template>
 
-<script>
+<script lang="coffee">
 import XLSX from 'xlsx'
-const isDev = process.env.NODE_ENV == 'development'
 
-export default {
+export default
   name: 'Form',
-  store: ['collections', 'forms', 'user'],
-  beforeRouteEnter(to, from, next){
-    next(vm => {
-      vm.form = vm.collections.forms.find(f => f.id == to.params.id)
-    })
-  },
-  data() {
-    return {
-      form: {},
-      formData: []
-    }
-  },
-  computed: {
-    formPreview(){
-      return `${isDev ? 'http://localhost:8081' : 'https://forms.id'}/f/${this.user.username}/${this.form.id}`
-    }
-  },
-  methods: {
-    exportData(){
-      const ws = XLSX.utils.json_to_sheet(this.formData, { header: this.form.objects.filter(o => o.data.type !== 'image').map(a => a.data.title) })
-			const wb = XLSX.utils.book_new()
-			XLSX.utils.book_append_sheet(wb, ws, "Responses")
-			XLSX.writeFile(wb, `${this.form.title}.xlsx`)
-    },
-    timestamp(time){
-      return new Intl.DateTimeFormat('default', {
+  store: ['collections', 'forms', 'user']
+  beforeRouteEnter: (to, from, next) ->
+    next (vm) -> vm.form = (f for f in vm.collections.forms when f.id is to.params.id)[0]
+  data: ->
+    form: {}
+    formData: []
+    rowViewVisible: false
+    selectedObjectId: null
+  computed:
+    answerable: -> o for o in @form.objects when o.data.type.indexOf('image') is -1 if @form?
+    row: -> (s for s in @form.submissions when s._id is @selectedObjectId)[0] if @selectedObjectId?
+  methods:
+    exportData: ->
+      headers = @form.objects.filter(o) -> o.data.type isnt 'image'.map(a) -> a.data.title
+      formData = []
+      for s in newValue.submissions
+        record = {}
+        record[object.data.title] is (a for a in s.data when a.id is object.id)[0] for object in @answerable
+        formData.push(record)
+      console.log formData
+      ws = XLSX.utils.json_to_sheet(formData, { header: headers })
+      wb = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet wb, ws, "Responses"
+      XLSX.writeFile wb, "#{@form.title}.xlsx"
+    timestamp: (time) ->
+      new Intl.DateTimeFormat('default', {
         timeZone: 'UTC',
         weekday: 'short',
         year: 'numeric', month: 'numeric', day: 'numeric',
         hour: 'numeric', minute: 'numeric'
       }).format(new Date(time))
-    },
-    filled(data){
-      const max = this.form.objects.filter(o => o.data.type !== 'image').length
-      return `${(data.length / max) * 100}% filled`
-    }
-  },
-  mounted(){
-
-  },
-  watch: {
-    form(newValue, oldValue) {
-      if(newValue){
-        const answerable = newValue.objects.filter(o => o.data.type !== 'image')
-        let data = []
-        newValue.submissions.forEach(s => {
-          let record = {}
-          answerable.map(a => a.id).forEach(object => {
-            record[newValue.objects.find(o => o.id == object).data.title] = s.data[object]
-          })
-          data.push(record)
-        })
-        this.formData = data
-      }
-    }
-  },
-}
+    # filled: (data) ->
+    #   "" unless
+    #   "#{(data.length / @answerable.length) * 100}% filled" if data?
+    hideRowView: ->
+      @rowViewVisible = false
+    rowClicked: (id) ->
+      @selectedObjectId = id
+      @rowViewVisible = true
 </script>
-
-<style scoped>
-.card-link {
-  color: inherit !important;
-  text-decoration: none !important;
-}
-.card-title {
-  font-weight: 400;
-}
-</style>

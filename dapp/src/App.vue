@@ -8,13 +8,13 @@
 <script>
 import XLSX from 'xlsx'
 import Auth from './components/Auth'
-import NewFormEditor from './views/NewFormEditor'
+import FormEditor from './views/FormEditor'
 import OrbitDB from 'orbit-db'
 import { decryptECIES } from 'blockstack/lib/encryption'
 
 export default {
   store: ['bus', 'collections', 'forms', 'user'],
-  components: { Auth, 'form-editor' : NewFormEditor },
+  components: { Auth, FormEditor },
   data() {
     return {
       authOpen: true,
