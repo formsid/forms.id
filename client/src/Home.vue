@@ -24,7 +24,7 @@
             <p class="font-light text-md md:text-xl text-70 leading-loose" style="max-width: 500px;">
               We put privacy first and offer a secure alternative to Google Forms. Accept information from respondents without compromising their data or yours.
             </p>
-            <div class="bg-white text-formsid table rounded opacity-90 py-3 px-4 shadow-lg mt-8 cursor-pointer"> Learn More</div>
+            <a href="#learn" class="block no-underline bg-white text-formsid table rounded opacity-90 py-3 px-4 shadow-lg mt-8 cursor-pointer"> Learn More</a>
           </div>
           <div class="md:block hidden md:w-1/2 px-4 mb-4">
             <img src="./assets/tellstory.png" class="w-full">
@@ -32,7 +32,7 @@
         </div>
       </section>
     </div>
-    <section class="bg-formsid-clear -mt-24 pb-8">
+    <section class="bg-formsid-clear -mt-24 pb-8" id="learn">
       <div class="container mx-auto mt-8">
         <div class="flex justify-between -mx-4 mb-16">
           <div class="w-1/3 border-b-4 border-formsid-glass mx-2 bg-white shadow-md rounded-lg p-6 relative">
@@ -92,8 +92,8 @@
           </div>
         </section>
         <section class="py-4 container flex items-center justify-center mt-4">
-          <div class="bg-white text-formsid table rounded text-lg py-3 px-4 shadow-lg cursor-pointer mr-4">Get Started</div>
-          <div class="bg-white text-formsid table rounded text-lg py-3 px-4 shadow-lg cursor-pointer">Frequently Asked Questions</div>
+          <a href="https://app.forms.id" class="no-underline bg-white text-formsid table rounded text-lg py-3 px-4 shadow-lg cursor-pointer mr-4">Get Started w/ Blockstack</a>
+          <!-- <div class="bg-white text-formsid table rounded text-lg py-3 px-4 shadow-lg cursor-pointer">Frequently Asked Questions</div> -->
         </section>
       </div>
     </section>
