@@ -65,8 +65,12 @@
                           div(class="greycliff bg-formsid-clear hover-bg-formsid-glass hover-text-white rounded text-center p-3 text-lg text-formsid-glass leading-tight tracking-normal cursor-pointer subtle mb-4" v-for="choice in obj.data.choices" :key="choice.label") {{ choice.label }}
                         select(v-else class="subtle rounded focus:border-b-2 border-formsid-glass bg-formsid-clear appearance-none w-full p-3 leading-tight focus:outline-none outline-none greycliff text-xl font-light text-formsid-glass focus:text-formsid-glass")
                           option(v-for="choice in obj.data.choices" :key="choice.label" :value="choice.value") {{ choice.label }}
-                      div.flex.items-center.max-w-lg.mx-auto.py-2(v-if="obj.data.type == 'image' || obj.data.type == 'imagewlabel'")
+                      div.flex.items-center.max-w-lg.mx-auto.py-2.relative(v-if="obj.data.type == 'image' || obj.data.type == 'imagewlabel'")
                         img.w-full.rounded(:src="obj.data.src")
+                        div(class="absolute pin flex items-center justify-center" v-if="activeTree == obj.id")
+                          div(class="w-24 h-24 rounded-full bg-formsid opacity-50 flex items-center justify-center subtle hover-opacity-90 cursor-pointer" @click="clickImageInput")
+                            input(type="file" ref="imageInput" multiple accept="image/*" @change="imageSelected" class="hidden")
+                            i(class="fas fa-camera text-white text-2xl")
                     div.w-10.h-10.flex.items-center.justify-center.bg-formsid-clear.text-formsid-glass.subtle.hover-text-white.hover-bg-formsid.rounded.cursor-pointer.ml-4(v-if="activeTree == obj.id" @click="deleteObject(obj)")
                       i.material-icons.text-lg delete
 </template>
@@ -153,6 +157,7 @@ export default
       newObject =
         id: uuid('object')
         added: Date.now()
+        required: false
         data:
           type: 'multiplechoice'
           title: 'A label for your question?',
@@ -163,6 +168,13 @@ export default
             { label: 'Choice 2', value: 'Choice 2' }
           ]
       @objects.push(newObject)
+    clickImageInput: -> @$refs.imageInput[0].click()
+    imageSelected: ->
+      file = @$refs.imageInput[0].files[0]
+      allowedTypes = ["image/gif", "image/jpeg", "image/png"]
+      FR = new FileReader()
+      FR.addEventListener "load", (e) => @selectedObject.data.src = e.target.result
+      FR.readAsDataURL(file)
     tagsChanged: (tags) ->
       @tags = tags.map((t) -> text: t.text )
       @selectedObject.data.choices = tags.map((t) -> t.text).map((t) -> value: t, label: t )
