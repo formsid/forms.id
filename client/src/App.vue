@@ -11,6 +11,16 @@
 </script>
 
 <style>
+.vue-notification {
+  padding: 10px;
+  margin: 10px 5px 5px;
+  font-size: 14px !important;
+  color: rgba(48, 70, 152, .82) !important;
+  background: rgba(48, 70, 152, .22) !important;
+  border-left: 5px solid rgba(48, 70, 152, .82) !important;
+  border-radius: 8px;
+}
+
 .subtle {
   transition: all .27s ease;
 }
