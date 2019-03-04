@@ -120,6 +120,7 @@ export default {
       })
     },
     closeAuth(){
+      this.$router.push({ name: 'Forms' })
       this.connectIpfs().then(() => {
         this.fetchForms().then(() => {
           this.authOpen = false
