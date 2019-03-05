@@ -3,12 +3,13 @@
     router-view
     auth(:visible="authOpen")
     form-editor(:visible="formEditorOpen" :form="editingForm" v-if="feOpen")
+    notifications(group="topcent" position="top center")
 </template>
 
 <script>
 import XLSX from 'xlsx'
 import Auth from './components/Auth'
-import FormEditor from './views/FormEditor'
+import FormEditor from './components/FormEditor'
 import OrbitDB from 'orbit-db'
 import { decryptECIES } from 'blockstack/lib/encryption'
 
@@ -250,13 +251,17 @@ export default {
   transition: all 2.8s ease;
 }
 
+.notifications {
+  top: 15px !important;
+  z-index: 9999999999999999999 !important;
+}
 .vue-notification {
   padding: 10px;
   margin: 10px 5px 5px;
   font-size: 14px !important;
   color: rgba(48, 70, 152, .82) !important;
   background: rgba(48, 70, 152, .22) !important;
-  border-left: 5px solid rgba(48, 70, 152, .82) !important;
+  border: 1px solid transparent !important;
   border-radius: 8px;
 }
 .el-collapse-item__arrow {

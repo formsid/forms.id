@@ -77,14 +77,13 @@
 
 <script lang="coffee">
 import Draggable from 'vuedraggable'
-import Editor from '@/components/Editor.vue'
 import VueTagsInput from '@johmun/vue-tags-input'
 isDev = process.env.NODE_ENV is'development'
 
 export default
   props: ['visible', 'form']
   store: ['bus', 'collections', 'forms', 'user']
-  components: { Draggable, Editor, VueTagsInput }
+  components: { Draggable, VueTagsInput }
   data: ->
     @cleanData()
   computed:
@@ -244,7 +243,6 @@ export default
         , 1300
       if newValue is true
         unless @id?
-          @addObject()
           @addObject()
           @activeTree = @objects[0].id.toString()
           @loaded = true
