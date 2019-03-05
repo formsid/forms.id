@@ -8,7 +8,7 @@
 <script>
 import XLSX from 'xlsx'
 import Auth from './components/Auth'
-import FormEditor from './views/FormEditor'
+import FormEditor from './components/FormEditor'
 import OrbitDB from 'orbit-db'
 import { decryptECIES } from 'blockstack/lib/encryption'
 
