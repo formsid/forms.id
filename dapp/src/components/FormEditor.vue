@@ -244,7 +244,6 @@ export default
       if newValue is true
         unless @id?
           @addObject()
-          @addObject()
           @activeTree = @objects[0].id.toString()
           @loaded = true
         if @form?
