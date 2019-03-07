@@ -9,11 +9,6 @@
           <div class="">
             <div class="flex items-center">
               <a class="no-underline mr-4 md:block hidden" href="https://app.forms.id">
-                <!-- <button class="focus:outline-none px-4 h-10 rounded block flex-no-shrink text-white tracking-wide bg-transparent">
-                  <span class="font-light">Frequently Asked Questions</span>
-                </button> -->
-              </a>
-              <a class="no-underline mr-4 md:block hidden" href="https://app.forms.id">
                 <button class="hover:bg-white hover:text-formsid subtle border-white border focus:outline-none px-4 h-10 rounded block flex-no-shrink text-white tracking-wide">
                   <span class="font-light">Login</span>
                 </button>
@@ -25,80 +20,44 @@
       <section class="px-6 md:px-0">
         <div class="container mx-auto flex flex-col md:flex-row flex-row-reverse md:flex-row md:items-center pt-8 pb-24 text-white">
           <div class="order-2 md:order-1 pt-6 md:pt-0 md:w-1/2 mb-24 md:mb-0">
-            <h1 class="text-3xl md:text-5xl text-80 font-light mb-8 leading-normal" style="max-width: 500px;">Say hello to the friendly form maker.</h1>
-            <p class="font-light text-md md:text-xl text-70 leading-loose" style="max-width: 500px;">
-              We put privacy first and offer a secure alternative to Google Forms. Accept information from respondents without compromising their data or yours.
-            </p>
-            <a href="#learn" class="block no-underline bg-white text-formsid table rounded opacity-90 py-3 px-4 shadow-lg mt-8 cursor-pointer"> Learn More</a>
-          </div>
-          <div class="md:block hidden md:w-1/2 px-4 mb-4">
-            <img src="./assets/tellstory.png" class="w-full">
+            <h1 class="text-3xl md:text-5xl text-80 font-light mb-8 leading-normal" style="max-width: 500px;">Frequently Asked Questions</h1>
           </div>
         </div>
       </section>
     </div>
     <section class="bg-formsid-clear -mt-24 pb-8" id="learn">
       <div class="container mx-auto mt-8">
-        <div class="flex justify-between -mx-4 mb-16">
-          <div class="w-1/3 border-b-4 border-formsid-glass mx-2 bg-white shadow-md rounded-lg p-6 relative">
-            <p class="text-formsid-darkest font-light text-lg mb-4">Private</p>
-            <p class="text-formsid-darkest font-light text-base leading-normal z-10">
-              All responses to forms created with Forms.id are encrypted, meaning only the form creator
-              and the respondent will know the contents of the submission.
+        <div class="flex -mx-4 mb-4">
+          <div class="w-1/2 border-b-4 border-formsid-glass mx-2 bg-white shadow-md rounded-lg p-6 relative">
+            <p class="text-formsid-darkest text-lg mb-4">Where is my data stored?</p>
+            <p class="text-formsid-darkest font-light text-base leading-normal z-10 leading-loose">
+              We utilize a storage system called Blockstack Gaia. This system allows you to host your data wherever you'd prefer. You may configure your hosting location to be, for example, your Dropbox, or your AWS account. If you would like to forego the configuration, your files are secured by default in Blockstack's default Gaia hub. Your files are guaranteed to be yours thanks to cryptography.
             </p>
           </div>
-          <div class="w-1/3 border-b-4 border-formsid-glass mx-2 bg-white shadow-md rounded-lg p-6 relative">
-            <p class="text-formsid-darkest font-light text-lg mb-4">Sovereign</p>
-            <p class="text-formsid-darkest font-light text-base leading-normal z-10">
-              Response data and form data is owned by the maker of the form. No data resides on a central server controlled by Forms.id.
-            </p>
-          </div>
-          <div class="w-1/3 flex-grow border-b-4 border-formsid-glass mx-2 bg-white shadow-md rounded-lg p-6 relative">
-            <p class="text-formsid-darkest font-light text-lg mb-4">Modern</p>
-            <p class="text-formsid-darkest font-light text-base leading-normal z-10">
-              Ditch Google Forms and their outdated forms. Forms.id is built on modern technology and we're listening to the features you want!
+          <div class="w-1/2 border-b-4 border-formsid-glass mx-2 bg-white shadow-md rounded-lg p-6 relative">
+            <p class="text-formsid-darkest text-lg mb-4">Why do I need to login with Blockstack?</p>
+            <p class="text-formsid-darkest font-light text-base leading-normal z-10 leading-loose">
+              Blockstack is the authentication provider for our application. Their platform makes it easy to build decentralized applications that can't disrespect your privacy, or, neglect the security of your data. By using your Blockstack ID, you ensure you own your data, and can encrypt files so that only you may view the contents.
             </p>
           </div>
         </div>
-        <section class="px-6 md:px-0 py-4">
-          <div class="container mx-auto flex flex-col md:flex-row items-center flex-row-reverse md:flex-row text-formsid-darkest">
-            <div class="md:block hidden md:w-1/2 mr-4 mb-4">
-              <img src="./assets/pot.png" class="w-full">
-            </div>
-            <div class="order-2 md:order-1 pt-6 md:pt-0 md:w-3/5 mb-24 md:mb-0">
-              <div class="border-b-4 border-formsid-glass bg-white shadow-md rounded-lg p-6 relative">
-                <p class="text-formsid-darkest text-lg mb-3">The Problem</p>
-                <p class="font-light text-md  text-formsid-darkest leading-loose mb-4">
-                  For too long, website visitors and their data have been treated solely as profit; thrown into a bucket and sold to the highest bidder. Large companies such as Google and Facebook are notorious for this, as this is central to their profitability. Who knows where your form and poll data goes after the respondents hits submit? We at Forms.id believe the World Wide Web was built for decentralized consumption, sharing, and building, so we can do better.
-                </p>
-              </div>
-            </div>
+        <div class="flex -mx-4 mb-4">
+          <div class="w-1/2 border-b-4 border-formsid-glass mx-2 bg-white shadow-md rounded-lg p-6 relative">
+            <p class="text-formsid-darkest text-lg mb-4">Why did you build this?</p>
+            <p class="text-formsid-darkest font-light text-base leading-normal z-10 leading-loose">
+              We firmly believe that users should not have to give away their personal data in exchange for access to a website or software. We also believe that large corporations like Google and Facebook do not have users' best interests in mind. Instead of providing Google with more data from yourself and your respondents, you can rest assured knowing your data is not in the hands of evil corporations.
+            </p>
           </div>
-        </section>
-        <section class="px-6 md:px-0 py-4">
-          <div class="container mx-auto flex justify-between flex-col md:flex-row items-center flex-row-reverse md:flex-row text-formsid-darkest">
-            <div class="order-2 md:order-1 pt-6 md:pt-0 md:w-1/2 mb-24 md:mb-0">
-              <div class="border-b-4 border-formsid-glass bg-white shadow-md rounded-lg p-6 relative">
-                <p class="text-formsid-darkest text-lg mb-3">The Solution</p>
-                <p class="font-light text-md text-70 leading-loose mb-4 ">
-                  As a software user, one shouldn't have to sacrifice our privacy and our intellectual security in order to have access to beneficial tools. Luckily, advances in decentralized technology and repeated breaches of trust by corporations, have lead many to create and choose trustworthy alternatives.
-                </p>
-                <p class="font-light text-md text-70 leading-loose mb-4">
-                  Forms.id has chosen to implement <a class="no-underline text-formsid" href="https://blockstack.com">Blockstack</a> authentication and storage into our application. This suite of decentralized software allows the user to personally own their data at all times and prevents us from being evil. You don't, and shouldn't have to trust us.
-                </p>
-                <p class="font-light text-md text-70 leading-loose mb-4">
-                  Your <a class="no-underline text-formsid" href="https://blockstack.com">Blockstack</a> identity gives you access to any app in the ecosystem and most importantly, finally gives you control of your data.
-                </p>
-              </div>
-            </div>
-            <div class="md:block hidden md:w-2/5 ml-4">
-              <img src="./assets/build.png" class="w-full">
-            </div>
+          <div class="w-1/2 border-b-4 border-formsid-glass mx-2 bg-white shadow-md rounded-lg p-6 relative">
+            <p class="text-formsid-darkest text-lg mb-4">Who should use this product?</p>
+            <p class="text-formsid-darkest font-light text-base leading-normal z-10 leading-loose">
+              This product can be used by everyone, but is ideal for those who may require specific environments for themselves or their respondents. This is an excellent tool for journalists who may want to accept responses in a confidential manner. Businesses may also find this tool useful, knowing their trade secrets aren't floating around on other servers.
+            </p>
           </div>
-        </section>
+        </div>
         <section class="py-4 container flex items-center justify-center mt-4">
-          <a href="/" class="no-underline bg-white text-formsid table rounded text-lg py-3 px-4 shadow-lg cursor-pointer mr-4">Get Started w/ Blockstack</a>
-          <a href="/faq" class="no-underline bg-white text-formsid table rounded text-lg py-3 px-4 shadow-lg cursor-pointer">Frequently Asked Questions</a>
+          <a href="https://app.forms.id" class="no-underline bg-white text-formsid table rounded text-lg py-3 px-4 shadow-lg cursor-pointer mr-4">Get Started w/ Blockstack</a>
+          <!-- <div class="bg-white text-formsid table rounded text-lg py-3 px-4 shadow-lg cursor-pointer">Frequently Asked Questions</div> -->
         </section>
       </div>
     </section>
