@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+import FAQ from './FAQ.vue'
 import Form from './Form.vue'
 import Home from './Home.vue'
 
@@ -16,6 +17,11 @@ export default new Router({
       path: '/',
       name: 'Home',
       component: Home,
+    },
+    {
+      path: '/faq',
+      name: 'FAQ',
+      component: FAQ,
     },
     {
       path: '/f/:uslug/:fslug',
