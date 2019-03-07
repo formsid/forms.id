@@ -97,7 +97,7 @@
           </div>
         </section>
         <section class="py-4 container flex items-center justify-center mt-4">
-          <router-link to="/" class="hidden md:block no-underline bg-white text-formsid table rounded text-lg py-3 px-4 shadow-lg cursor-pointer mr-4">Get Started w/ Blockstack</router-link>
+          <a href="https://app.forms.id" class="hidden md:block no-underline bg-white text-formsid table rounded text-lg py-3 px-4 shadow-lg cursor-pointer mr-4">Get Started w/ Blockstack</a>
           <router-link to="/faq" class="no-underline bg-white text-formsid table rounded text-lg py-3 px-4 shadow-lg cursor-pointer">Frequently Asked Questions</router-link>
         </section>
       </div>
