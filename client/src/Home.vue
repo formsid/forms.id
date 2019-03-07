@@ -24,7 +24,7 @@
       </header>
       <section class="px-6 md:px-0">
         <div class="container mx-auto flex flex-col md:flex-row flex-row-reverse md:flex-row md:items-center pt-8 pb-24 text-white">
-          <div class="order-2 md:order-1 pt-6 md:pt-0 md:w-1/2 mb-24 md:mb-0">
+          <div class="order-2 md:order-1 pt-6 md:pt-0 md:w-1/2 mb-8 md:mb-24">
             <h1 class="text-3xl md:text-5xl text-80 font-light mb-8 leading-normal" style="max-width: 500px;">Say hello to the friendly form maker.</h1>
             <p class="font-light text-md md:text-xl text-70 leading-loose" style="max-width: 500px;">
               We put privacy first and offer a secure alternative to Google Forms. Accept information from respondents without compromising their data or yours.
@@ -38,23 +38,23 @@
       </section>
     </div>
     <section class="bg-formsid-clear -mt-24 pb-8" id="learn">
-      <div class="container mx-auto mt-8">
-        <div class="flex justify-between -mx-4 mb-16">
-          <div class="w-1/3 border-b-4 border-formsid-glass mx-2 bg-white shadow-md rounded-lg p-6 relative">
-            <p class="text-formsid-darkest font-light text-lg mb-4">Private</p>
+      <div class="container mx-auto mt-8 px-6 md:px-0">
+        <div class="flex flex-col md:flex-row justify-between -mx-4 md:mb-16">
+          <div class="md:w-1/3 mb-4 md:mb-0 border-b-4 border-formsid-glass mx-2 bg-white shadow-md rounded-lg p-6 relative">
+            <p class="text-formsid-darkest text-lg mb-4">Private</p>
             <p class="text-formsid-darkest font-light text-base leading-normal z-10">
               All responses to forms created with Forms.id are encrypted, meaning only the form creator
               and the respondent will know the contents of the submission.
             </p>
           </div>
-          <div class="w-1/3 border-b-4 border-formsid-glass mx-2 bg-white shadow-md rounded-lg p-6 relative">
-            <p class="text-formsid-darkest font-light text-lg mb-4">Sovereign</p>
+          <div class="md:w-1/3 mb-4 md:mb-0 border-b-4 border-formsid-glass mx-2 bg-white shadow-md rounded-lg p-6 relative">
+            <p class="text-formsid-darkest text-lg mb-4">Sovereign</p>
             <p class="text-formsid-darkest font-light text-base leading-normal z-10">
               Response data and form data is owned by the maker of the form. No data resides on a central server controlled by Forms.id.
             </p>
           </div>
-          <div class="w-1/3 flex-grow border-b-4 border-formsid-glass mx-2 bg-white shadow-md rounded-lg p-6 relative">
-            <p class="text-formsid-darkest font-light text-lg mb-4">Modern</p>
+          <div class="md:w-1/3 mb-4 md:mb-0 flex-grow border-b-4 border-formsid-glass mx-2 bg-white shadow-md rounded-lg p-6 relative">
+            <p class="text-formsid-darkest text-lg mb-4">Modern</p>
             <p class="text-formsid-darkest font-light text-base leading-normal z-10">
               Ditch Google Forms and their outdated forms. Forms.id is built on modern technology and we're listening to the features you want!
             </p>
@@ -65,7 +65,7 @@
             <div class="md:block hidden md:w-1/2 mr-4 mb-4">
               <img src="./assets/pot.png" class="w-full">
             </div>
-            <div class="order-2 md:order-1 pt-6 md:pt-0 md:w-3/5 mb-24 md:mb-0">
+            <div class="order-2 md:order-1 pt-6 md:pt-0 md:w-3/5 md:mb-24 md:mb-0">
               <div class="border-b-4 border-formsid-glass bg-white shadow-md rounded-lg p-6 relative">
                 <p class="text-formsid-darkest text-lg mb-3">The Problem</p>
                 <p class="font-light text-md  text-formsid-darkest leading-loose mb-4">
@@ -77,7 +77,7 @@
         </section>
         <section class="px-6 md:px-0 py-4">
           <div class="container mx-auto flex justify-between flex-col md:flex-row items-center flex-row-reverse md:flex-row text-formsid-darkest">
-            <div class="order-2 md:order-1 pt-6 md:pt-0 md:w-1/2 mb-24 md:mb-0">
+            <div class="order-2 md:order-1 pt-6 md:pt-0 md:w-1/2 md:mb-24 md:mb-0">
               <div class="border-b-4 border-formsid-glass bg-white shadow-md rounded-lg p-6 relative">
                 <p class="text-formsid-darkest text-lg mb-3">The Solution</p>
                 <p class="font-light text-md text-70 leading-loose mb-4 ">
@@ -97,15 +97,15 @@
           </div>
         </section>
         <section class="py-4 container flex items-center justify-center mt-4">
-          <a href="/" class="no-underline bg-white text-formsid table rounded text-lg py-3 px-4 shadow-lg cursor-pointer mr-4">Get Started w/ Blockstack</a>
-          <a href="/faq" class="no-underline bg-white text-formsid table rounded text-lg py-3 px-4 shadow-lg cursor-pointer">Frequently Asked Questions</a>
+          <router-link to="/" class="hidden md:block no-underline bg-white text-formsid table rounded text-lg py-3 px-4 shadow-lg cursor-pointer mr-4">Get Started w/ Blockstack</router-link>
+          <router-link to="/faq" class="no-underline bg-white text-formsid table rounded text-lg py-3 px-4 shadow-lg cursor-pointer">Frequently Asked Questions</router-link>
         </section>
       </div>
     </section>
-    <footer class="py-4 md:px-0 px-6 bg-formsid" id="header">
-      <div class="container mx-auto h-full">
-        <div class="flex md:justify-between h-full">
-          <div class="w-1/3 flex items-center mr-8 md:mr-2">
+    <footer class="py-4 px-6 bg-formsid" id="header">
+      <div class="flex h-full justify-between">
+        <div class="flex items-center w-full justify-between">
+          <div class="flex items-center mr-8 md:mr-2">
             <img src="/img/logomark.png" class="w-12 h-12 rounded-full mr-4">
             <small class="block text-sm text-white mx-4">
               <a href="https://twitter.com/formsid" class="text-white no-underline">

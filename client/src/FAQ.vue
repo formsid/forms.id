@@ -19,52 +19,58 @@
       </header>
       <section class="px-6 md:px-0">
         <div class="container mx-auto flex flex-col md:flex-row flex-row-reverse md:flex-row md:items-center pt-8 pb-24 text-white">
-          <div class="order-2 md:order-1 pt-6 md:pt-0 md:w-1/2 mb-24 md:mb-0">
+          <div class="order-2 md:order-1 pt-6 md:pt-0 md:w-1/2">
             <h1 class="text-3xl md:text-5xl text-80 font-light mb-8 leading-normal" style="max-width: 500px;">Frequently Asked Questions</h1>
           </div>
         </div>
       </section>
     </div>
     <section class="bg-formsid-clear -mt-24 pb-8" id="learn">
-      <div class="container mx-auto mt-8">
-        <div class="flex -mx-4 mb-4">
-          <div class="w-1/2 border-b-4 border-formsid-glass mx-2 bg-white shadow-md rounded-lg p-6 relative">
-            <p class="text-formsid-darkest text-lg mb-4">Where is my data stored?</p>
-            <p class="text-formsid-darkest font-light text-base leading-normal z-10 leading-loose">
-              We utilize a storage system called Blockstack Gaia. This system allows you to host your data wherever you'd prefer. You may configure your hosting location to be, for example, your Dropbox, or your AWS account. If you would like to forego the configuration, your files are secured by default in Blockstack's default Gaia hub. Your files are guaranteed to be yours thanks to cryptography.
-            </p>
+      <div class="container mx-auto mt-8 md:px-2 px-6">
+        <div class="flex mb-4 -mx-4 flex-wrap">
+          <div class="md:w-1/2 w-full px-2 mb-4">
+            <div class="border-b-4 border-formsid-glass bg-white shadow-md rounded-lg p-8 relative h-full">
+              <p class="text-formsid-darkest text-lg mb-4">Why do I need to login with Blockstack?</p>
+              <p class="text-formsid-darkest font-light text-base leading-normal z-10 leading-loose">
+                Blockstack is the authentication provider for our application. Their platform makes it easy to build decentralized applications that can't disrespect your privacy, or, neglect the security of your data. By using your Blockstack ID, you ensure you own your data, and can encrypt files so that only you may view the contents. You also will now have access to the other privacy-centric apps in the Blockstack ecosystem.
+              </p>
+            </div>
           </div>
-          <div class="w-1/2 border-b-4 border-formsid-glass mx-2 bg-white shadow-md rounded-lg p-6 relative">
-            <p class="text-formsid-darkest text-lg mb-4">Why do I need to login with Blockstack?</p>
-            <p class="text-formsid-darkest font-light text-base leading-normal z-10 leading-loose">
-              Blockstack is the authentication provider for our application. Their platform makes it easy to build decentralized applications that can't disrespect your privacy, or, neglect the security of your data. By using your Blockstack ID, you ensure you own your data, and can encrypt files so that only you may view the contents.
-            </p>
+          <div class="md:w-1/2 w-full px-2 mb-4">
+            <div class="border-b-4 border-formsid-glass bg-white shadow-md rounded-lg p-8 relative h-full">
+              <p class="text-formsid-darkest text-lg mb-4">Where is my data stored?</p>
+              <p class="text-formsid-darkest font-light text-base leading-normal z-10 leading-loose">
+                We utilize a storage system called Blockstack Gaia. This system allows you to host your data wherever you'd prefer. You may configure your hosting location to be, for example, your Dropbox, or your AWS account. If you would like to forego the configuration, your files are secured by default in Blockstack's default Gaia hub. Your files are guaranteed to be yours thanks to <a class="no-underline text-formsid" href="https://en.wikipedia.org/wiki/Public-key_cryptography" target="_blank">asymmetric cryptography</a>.
+              </p>
+            </div>
           </div>
-        </div>
-        <div class="flex -mx-4 mb-4">
-          <div class="w-1/2 border-b-4 border-formsid-glass mx-2 bg-white shadow-md rounded-lg p-6 relative">
-            <p class="text-formsid-darkest text-lg mb-4">Why did you build this?</p>
-            <p class="text-formsid-darkest font-light text-base leading-normal z-10 leading-loose">
-              We firmly believe that users should not have to give away their personal data in exchange for access to a website or software. We also believe that large corporations like Google and Facebook do not have users' best interests in mind. Instead of providing Google with more data from yourself and your respondents, you can rest assured knowing your data is not in the hands of evil corporations.
-            </p>
+          <div class="md:w-1/2 w-full px-2 mb-4">
+            <div class="border-b-4 border-formsid-glass bg-white shadow-md rounded-lg p-8 relative h-full">
+              <p class="text-formsid-darkest text-lg mb-4">Why did you build this?</p>
+              <p class="text-formsid-darkest font-light text-base leading-normal z-10 leading-loose">
+                We firmly believe that users should not have to give away their personal data in exchange for access to a website or software. We also believe that large corporations like Google and Facebook do not have users' best interests in mind. Instead of providing Google with more data from yourself and your respondents, you can rest assured knowing your data is not in the hands of evil corporations.
+              </p>
+            </div>
           </div>
-          <div class="w-1/2 border-b-4 border-formsid-glass mx-2 bg-white shadow-md rounded-lg p-6 relative">
-            <p class="text-formsid-darkest text-lg mb-4">Who should use this product?</p>
-            <p class="text-formsid-darkest font-light text-base leading-normal z-10 leading-loose">
-              This product can be used by everyone, but is ideal for those who may require specific environments for themselves or their respondents. This is an excellent tool for journalists who may want to accept responses in a confidential manner. Businesses may also find this tool useful, knowing their trade secrets aren't floating around on other servers.
-            </p>
+          <div class="md:w-1/2 w-full px-2 mb-4">
+            <div class="border-b-4 border-formsid-glass bg-white shadow-md rounded-lg p-8 relative h-full">
+              <p class="text-formsid-darkest text-lg mb-4">Who should use this product?</p>
+              <p class="text-formsid-darkest font-light text-base leading-normal z-10 leading-loose">
+                This product can be used by everyone, but is ideal for those who may require specific environments for themselves or their respondents. This is an excellent tool for journalists who may want to accept responses in a confidential manner. Businesses and research institutions may also find this tool useful, knowing their trade secrets aren't floating around, decrypted, on other servers.
+              </p>
+            </div>
           </div>
         </div>
         <section class="py-4 container flex items-center justify-center mt-4">
-          <a href="https://app.forms.id" class="no-underline bg-white text-formsid table rounded text-lg py-3 px-4 shadow-lg cursor-pointer mr-4">Get Started w/ Blockstack</a>
+          <router-link to="/" class="hidden md:block no-underline bg-white text-formsid table rounded text-lg py-3 px-4 shadow-lg cursor-pointer mr-4">Get Started w/ Blockstack</router-link>
           <!-- <div class="bg-white text-formsid table rounded text-lg py-3 px-4 shadow-lg cursor-pointer">Frequently Asked Questions</div> -->
         </section>
       </div>
     </section>
-    <footer class="py-4 md:px-0 px-6 bg-formsid" id="header">
-      <div class="container mx-auto h-full">
-        <div class="flex md:justify-between h-full">
-          <div class="w-1/3 flex items-center mr-8 md:mr-2">
+    <footer class="py-4 px-6 bg-formsid" id="header">
+      <div class="flex h-full justify-between">
+        <div class="flex items-center w-full justify-between">
+          <div class="flex items-center mr-8 md:mr-2">
             <img src="/img/logomark.png" class="w-12 h-12 rounded-full mr-4">
             <small class="block text-sm text-white mx-4">
               <a href="https://twitter.com/formsid" class="text-white no-underline">
