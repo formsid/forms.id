@@ -67,13 +67,13 @@
                 Our forms are designed to be as minimal as possible so that the respondent can focus on the questions and not branding, or other distractions. We are currently working on make the forms more customizable with our WYSIWYG form editor.
               </p>
               <div class="flex items-center -mx-2 mediumable">
-                <div class="w-1/3 px-2">
+                <div class="w-full md:w-1/3 px-2">
                   <img src="/img/form1.jpg" class="w-full rounded shadow-md"/>
                 </div>
-                <div class="w-1/3 px-2">
+                <div class="w-full md:w-1/3 px-2">
                   <img src="/img/form2.jpg" class="w-full rounded shadow-md"/>
                 </div>
-                <div class="w-1/3 px-2">
+                <div class="w-full md:w-1/3 px-2">
                   <img src="/img/screenshot.jpg" class="w-full rounded shadow-md"/>
                 </div>
               </div>
