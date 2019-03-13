@@ -32,7 +32,7 @@
             <div class="border-b-4 border-formsid-glass bg-white shadow-md rounded-lg p-8 relative h-full">
               <p class="text-formsid-darkest text-lg mb-4">Why do I need to login with Blockstack?</p>
               <p class="text-formsid-darkest font-light text-base leading-normal z-10 leading-loose">
-                Blockstack is the authentication provider for our application. Their platform makes it easy to build decentralized applications that can't disrespect your privacy, or, neglect the security of your data. By using your Blockstack ID, you ensure you own your data, and can encrypt files so that only you may view the contents. You also will now have access to the other privacy-centric apps in the Blockstack ecosystem.
+                Blockstack is the authentication provider for our application. Their platform makes it easy to build decentralized applications that can't disrespect your privacy, or, neglect the security of your data. By using your Blockstack ID, you ensure you own your data, and can encrypt files so that only you may view the contents. You also will now have access to the other privacy-centric apps in the Blockstack ecosystem. <span class="font-bold">Form respondents do not have to login with Blockstack.</span>
               </p>
             </div>
           </div>
@@ -60,10 +60,28 @@
               </p>
             </div>
           </div>
+          <div class="w-full px-2 mb-4">
+            <div class="border-b-4 border-formsid-glass bg-white shadow-md rounded-lg p-8 relative h-full">
+              <p class="text-formsid-darkest text-lg mb-4">What do the forms look like?</p>
+              <p class="text-formsid-darkest font-light text-base leading-normal z-10 leading-loose mb-4">
+                Our forms are designed to be as minimal as possible so that the respondent can focus on the questions and not branding, or other distractions. We are currently working on make the forms more customizable with our WYSIWYG form editor.
+              </p>
+              <div class="flex items-center -mx-2 mediumable">
+                <div class="w-1/3 px-2">
+                  <img src="/img/form1.jpg" class="w-full rounded shadow-md"/>
+                </div>
+                <div class="w-1/3 px-2">
+                  <img src="/img/form2.jpg" class="w-full rounded shadow-md"/>
+                </div>
+                <div class="w-1/3 px-2">
+                  <img src="/img/screenshot.jpg" class="w-full rounded shadow-md"/>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <section class="py-4 container flex items-center justify-center mt-4">
           <a href="https://app.forms.id" class="hidden md:block no-underline bg-white text-formsid table rounded text-lg py-3 px-4 shadow-lg cursor-pointer mr-4">Get Started w/ Blockstack</a>
-          <!-- <div class="bg-white text-formsid table rounded text-lg py-3 px-4 shadow-lg cursor-pointer">Frequently Asked Questions</div> -->
         </section>
       </div>
     </section>
@@ -95,8 +113,16 @@
 </template>
 
 <script>
+import mediumZoom from 'medium-zoom'
+
 export default {
   name: 'app',
+  mounted(){
+    mediumZoom('.mediumable img', {
+      margin: 24,
+      background: 'rgba(0,0,0,.45)'
+    })
+  }
 }
 </script>
 
