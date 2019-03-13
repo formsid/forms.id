@@ -190,6 +190,7 @@ export default {
         try {
           // Instatiate your IPFS node
           ipfs = new Ipfs({
+            preload: { enabled: false },
             repo: repoPath,
             config: {
               Addresses: {
