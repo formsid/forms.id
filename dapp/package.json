@@ -10,7 +10,7 @@
     "@johmun/vue-tags-input": "^2.0.1",
     "blockstack": "18.3.0",
     "element-ui": "^2.6.1",
-    "gun": "^0.9.9999991",
+    "gun": "^0.2019.416",
     "ipfs": "^0.34.4",
     "orbit-db": "^0.19.9",
     "portal-vue": "^1.5.1",
