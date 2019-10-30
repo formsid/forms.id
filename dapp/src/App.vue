@@ -54,11 +54,8 @@ export default
             decryptedSub._id = extSub._id
             newSubmissions.push decryptedSub if isNewSubmission
           if newSubmissions.length
-            newSubmissions.forEach (s) =>
-              @user.notifications.push({ id: uuid('notification'), type: 'response', s: s._id, f: f, read: false, t: s.created })
-              file.submissions.push(s)
+            file.submissions.push(s) for s in newSubmissions
             await blockstack.putFile("submissions/#{f}.json", JSON.stringify(file.submissions), { encrypt : true })
-            await blockstack.putFile("notifications.json", JSON.stringify(@user.notifications), { encrypt : true })
           file.views = viewdb.value
           collections.push(file)
         @collections.forms = collections
