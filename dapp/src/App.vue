@@ -6,195 +6,94 @@
     notifications(group="topcent" position="top center")
 </template>
 
-<script>
+<script lang="coffee">
 import XLSX from 'xlsx'
 import Auth from './components/Auth'
 import FormEditor from './components/FormEditor'
 import OrbitDB from 'orbit-db'
 import { decryptECIES } from 'blockstack/lib/encryption'
 
-export default {
-  store: ['bus', 'collections', 'forms', 'user'],
-  components: { Auth, FormEditor },
-  data() {
-    return {
-      authOpen: true,
-      formEditorOpen: false,
-      feOpen: true,
-      editingForm: null
-    }
-  },
-  methods: {
-    async connectIpfs(){
-      return new Promise((resolve, reject) => {
-        const repoPath = 'ipfs-formsid'
-        let ipfs
-        try {
-          // Instatiate your IPFS node
-          ipfs = new Ipfs({
-            repo: repoPath,
-            config: {
-              Addresses: {
-                Swarm: ['/dns4/ws-star.discovery.libp2p.io/tcp/443/wss/p2p-websocket-star']
-              }
-            },
-            EXPERIMENTAL: { pubsub: true, sharding: false, dht: false }
-          })
-        } catch(err) {
-          console.log(err)
-          reject()
-        }
-        ipfs.on('error', (e) => console.error(e))
-        ipfs.on('ready', async () => {
-          window.orbit = new OrbitDB(ipfs)
-          resolve()
-        })
-      })
-    },
-    async fetchForms() {
-      return new Promise(async (resolve, reject) => {
-        let privateKey = blockstack.loadUserData().appPrivateKey
-        this.forms = JSON.parse(await blockstack.getFile('forms.json', { decrypt : true }))
-        let collections = []
-        let newSubmissions = []
-        this.forms.forEach(async f => {
-          const file = JSON.parse(await blockstack.getFile(`forms/${f}.json`, { decrypt: true }))
-          const subdb = await orbit.open(file.dbs.submissions)
-          const viewdb = await orbit.open(file.dbs.views)
+export default
+  store: ['bus', 'collections', 'forms', 'user']
+  components: { Auth, FormEditor }
+  data: ->
+    authOpen: true
+    formEditorOpen: false
+    feOpen: true
+    editingForm: null
+  methods:
+    connectIpfs: ->
+      new Promise (resolve, reject) =>
+        try
+          ipfs = new Ipfs
+            config: Addresses: Swarm: [ '/dns4/ws-star.discovery.libp2p.io/tcp/443/wss/p2p-websocket-star' ]
+            EXPERIMENTAL: pubsub: true, ipnsPubsub: true
+          ipfs.on('error', (e) => console.error(e))
+          ipfs.on 'ready', () ->
+            window.orbit = await OrbitDB.createInstance(ipfs)
+            resolve()
+        catch err
+          reject(err)
+    fetchForms: ->
+      new Promise (resolve, reject) =>
+        privateKey = @user.apk
+        @forms = JSON.parse(await blockstack.getFile('forms.json', { decrypt : true }))
+        collections = []
+        newSubmissions = []
+        @forms.forEach (f) =>
+          file = JSON.parse(await blockstack.getFile("forms/#{f}.json", { decrypt: true }))
+          subdb = await orbit.docstore(file.dbs.submissions)
+          viewdb = await orbit.counter(file.dbs.views)
           await subdb.load()
           await viewdb.load()
-          file.submissions = JSON.parse(await blockstack.getFile(`submissions/${f}.json`, { decrypt: true }))
-          const allExtSubmissions = subdb.query(doc => doc)
-          allExtSubmissions.forEach(extSub => {
-            const decryptedSub = JSON.parse(decryptECIES(privateKey, extSub.data))
+          file.submissions = JSON.parse(await blockstack.getFile("submissions/#{f}.json", { decrypt: true }))
+          allExtSubmissions = subdb.query (doc) => doc
+          allExtSubmissions.forEach (extSub) =>
+            isNewSubmission = (file.submissions.map (s) -> s._id).indexOf(extSub._id) is -1
+            decryptedSub = JSON.parse decryptECIES privateKey, extSub.data
             decryptedSub._id = extSub._id
-            if(file.submissions.map(s => s._id).indexOf(decryptedSub._id) == -1){
-              newSubmissions.push(decryptedSub)
-            }
-          })
-          if(newSubmissions.length){
-            newSubmissions.forEach(async s => {
-              this.user.notifications.push({ id: uuid('notification'), type: 'response', s: s._id, f: f, read: false, t: s.created })
+            newSubmissions.push decryptedSub if isNewSubmission
+          if newSubmissions.length
+            newSubmissions.forEach (s) =>
+              @user.notifications.push({ id: uuid('notification'), type: 'response', s: s._id, f: f, read: false, t: s.created })
               file.submissions.push(s)
-            })
-            await blockstack.putFile(`submissions/${f}.json`, JSON.stringify(file.submissions), { encrypt : true })
-            await blockstack.putFile(`notifications.json`, JSON.stringify(this.user.notifications), { encrypt : true })
-          }
+            await blockstack.putFile("submissions/#{f}.json", JSON.stringify(file.submissions), { encrypt : true })
+            await blockstack.putFile("notifications.json", JSON.stringify(@user.notifications), { encrypt : true })
           file.views = viewdb.value
           collections.push(file)
-        })
-        this.collections.forms = collections
+        @collections.forms = collections
         resolve()
-      })
-    },
-    async updateForms() {
-      return new Promise(async (resolve, reject) => {
-        this.forms = JSON.parse(await blockstack.getFile('forms.json', { decrypt : true }))
-        let collections = []
-        let newSubmissions = []
-        this.forms.forEach(async f => {
-          const file = JSON.parse(await blockstack.getFile(`forms/${f}.json`, { decrypt: true }))
-          const subdb = await orbit.open(file.dbs.submissions)
-          const viewdb = await orbit.open(file.dbs.views)
-          await subdb.load()
-          await viewdb.load()
-          file.submissions = JSON.parse(await blockstack.getFile(`submissions/${f}.json`, { decrypt: true }))
-          const allExtSubmissions = subdb.query(doc => doc)
-          allExtSubmissions.forEach(extSub => {
-            if(file.submissions.map(s => s._id).indexOf(extSub._id) == -1){
-              newSubmissions.push(extSub)
-            }
-          })
-          if(newSubmissions.length){
-            newSubmissions.forEach(async s => {
-              this.user.notifications.push({ id: uuid('notification'), type: 'response', s: s._id, f: f, read: false, t: s.created })
-              file.submissions.push(s)
-            })
-            await blockstack.putFile(`submissions/${f}.json`, JSON.stringify(file.submissions), { encrypt : true })
-            await blockstack.putFile(`notifications.json`, JSON.stringify(this.user.notifications), { encrypt : true })
-          }
-          file.views = viewdb.value
-          collections.push(file)
-        })
-        this.collections.forms = collections
-        resolve()
-      })
-    },
-    closeAuth(){
-      this.$router.push({ name: 'Forms' })
-      this.connectIpfs().then(() => {
-        this.fetchForms().then(() => {
-          this.authOpen = false
-        })
-      })
-    },
-    closeFormEditor(){
-      this.formEditorOpen = false
-      this.editingForm = null
-      // setTimeout(() => {
-      //   this.feOpen = false
-      //   setTimeout(() => {
-      //     this.feOpen = true
-      //   }, 500)
-      // }, 500)
-    },
-    openFormEditor(form){
-      this.editingForm = form
-      this.formEditorOpen = true
-    },
-    signIn() {
-      const origin = window.location.origin
-      const date = new Date()
-      date.setHours(date.getHours() + 1)
-      const authRequest = blockstack.makeAuthRequest(
-        blockstack.generateAndStoreTransitKey(),
-        `${origin}`,
-        `${origin}/manifest.json`,
-        ['store_write', 'publish_data'],
-        origin,
-        date,
-        { solicitGaiaHubUrl: true }
-      )
-      blockstack.redirectToSignInWithAuthRequest(authRequest)
-    },
-    exportData(form){
-      const answerable = form.objects.filter(o => o.data.type.indexOf('image') == -1)
-      console.log(answerable)
-      let data = []
-      form.submissions.forEach(s => {
-        let record = {}
-        answerable.forEach(object => {
-          record[object.data.title] = s.data.find(a => a.id == object.id).answer
-        })
+    closeAuth: ->
+      @$router.push({ name: 'Forms' })
+      await @connectIpfs()
+      await @fetchForms()
+      @authOpen = false
+    closeFormEditor: ->
+      @formEditorOpen = false
+      @editingForm = null
+    openFormEditor: (form) ->
+      @editingForm = form
+      @formEditorOpen = true
+    exportData: (form) ->
+      answerable = form.objects.filter (o) -> o.data.type.indexOf('image') is -1
+      data = []
+      form.submissions.forEach (s) =>
+        record = {}
+        answerable.forEach (object) =>
+          record[object.data.title] = (s.data.find (a) -> a.id is object.id).answer
         data.push(record)
-      })
-      const ws = XLSX.utils.json_to_sheet(data, { header: answerable.map(a => a.data.title) })
-			const wb = XLSX.utils.book_new()
-			XLSX.utils.book_append_sheet(wb, ws, "Responses")
-			XLSX.writeFile(wb, `${form.title}.xlsx`)
-    },
-  },
-  mounted(){
-    this.bus.$on('closeauth', this.closeAuth)
-    this.bus.$on('closeformeditor', this.closeFormEditor)
-    this.bus.$on('openformeditor', form => {
-       this.openFormEditor(this.collections.forms.find(f => f.id == form))
-    })
-    this.bus.$on('exportdata', form => {
-       this.exportData(this.collections.forms.find(f => f.id == form))
-    })
-    this.bus.$on('signin', this.signIn)
-    this.bus.$on('fetchforms', this.fetchForms)
-    this.bus.$on('updateforms', this.updateForms)
-  },
-  watch: {
-    // $route(newValue, oldValue) {
-    //   if(newValue.name == 'Form' || newValue.name == 'Dashboard'){
-    //     this.updateForms()
-    //   }
-    // }
-  },
-}
+      ws = XLSX.utils.json_to_sheet(data, { header: answerable.map (a) -> a.data.title })
+      wb = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(wb, ws, "Responses")
+      XLSX.writeFile(wb, "#{form.title}.xlsx")
+  mounted: ->
+    @bus.$on('closeformeditor', @closeFormEditor)
+    @bus.$on 'openformeditor', (formId) =>
+      form = @collections.forms.find (f) => f.id is formId
+      @openFormEditor(form)
+    @bus.$on 'exportdata', (formId) =>
+      form = @collections.forms.find (f) => f.id is formId
+      @exportData(form)
 </script>
 
 <style>

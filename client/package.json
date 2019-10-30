@@ -8,11 +8,11 @@
   },
   "dependencies": {
     "autosize": "^4.0.2",
-    "blockstack": "18.3.0",
-    "gun": "^0.9.9999991",
-    "ipfs": "^0.34.4",
+    "blockstack": "^19.3.0",
+    "gun": "^0.2019.930",
+    "ipfs": "^0.39.0",
     "medium-zoom": "^1.0.3",
-    "orbit-db": "^0.19.9",
+    "orbit-db": "^0.22.0",
     "setimmediate": "^1.0.5",
     "tailwindcss": "^0.7.4",
     "v-autosize": "^1.0.1",
@@ -25,8 +25,11 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.5.1",
     "@vue/cli-service": "^3.5.1",
+    "coffee-loader": "^0.9.0",
+    "coffeescript": "^2.3.2",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2",
+    "vue-cli-plugin-coffee": "^0.1.0",
     "vue-template-compiler": "^2.6.8"
   }
 }

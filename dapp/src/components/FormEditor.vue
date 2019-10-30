@@ -78,7 +78,6 @@
 <script lang="coffee">
 import Draggable from 'vuedraggable'
 import VueTagsInput from '@johmun/vue-tags-input'
-isDev = process.env.NODE_ENV is'development'
 
 export default
   props: ['visible', 'form']
@@ -87,13 +86,6 @@ export default
   data: ->
     @cleanData()
   computed:
-    data6: ->
-      tree = [{ label: 'Heading' }]
-      tree.push({
-        label: obj.data.title, id: obj.id, children: [ { label: '' } ]
-      }) for obj in @objects
-      tree
-    vueScrollClass: -> 'form-container' : true
     open: ->
       return 'opacity-100 visible' if @visible is true and @loaded is true
       return 'opacity-0 invisible' if @visible is false
@@ -193,8 +185,8 @@ export default
           public: @isPublic
           theme: @theme
         if isOld is false
-          subDb = await orbit.create("#{@user.username}.#{form.id}.submissions", 'docstore', { write: ['*']})
-          viewDb = await orbit.create("#{@user.username}.#{form.id}.views", 'counter', { write: ['*']})
+          subDb = await orbit.create("#{@user.username}.#{form.id}.submissions", 'docstore', { accessController: { write: ['*'] }})
+          viewDb = await orbit.create("#{@user.username}.#{form.id}.views", 'counter', { accessController: { write: ['*'] }})
           form.created = Date.now()
           form.dbs =
             submissions: subDb.address.toString()
@@ -219,7 +211,7 @@ export default
           text: 'Form saved successfully.'
         })
         resolve(form)
-        @bus.$emit 'updateforms'
+        @$parent.fetchForms()
     publishForm: ->
       form = await @saveForm()
       if @isPublishable and form?
@@ -229,7 +221,7 @@ export default
             group: 'topcent',
             text: 'Form published successfully.'
           })
-          @bus.$emit 'updateforms'
+          @$parent.fetchForms()
           resolve()
       else
         # // couldn't publicly publish

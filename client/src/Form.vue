@@ -16,7 +16,7 @@
             <h1 class="text-center fair mb-8 text-4xl">Thank you for your response.</h1>
             <div class="flex flex-col">
               <a class="no-underline block greycliff bg-formsid-clear hover:bg-formsid-glass hover:text-white rounded text-center p-4 max-w-xs mx-auto w-full mb-4 text-lg text-formsid-glass leading-tight tracking-normal cursor-pointer subtle" href="https://forms.id"> Create Your Own</a>
-              <div class="greycliff bg-formsid-clear hover:bg-formsid-glass hover:text-white rounded text-center p-4 max-w-xs mx-auto w-full text-lg text-formsid-glass leading-tight tracking-normal cursor-pointer subtle"> Share Form</div>
+              <!-- <div class="greycliff bg-formsid-clear hover:bg-formsid-glass hover:text-white rounded text-center p-4 max-w-xs mx-auto w-full text-lg text-formsid-glass leading-tight tracking-normal cursor-pointer subtle"> Share Form</div> -->
             </div>
           </div>
         </div>
@@ -45,7 +45,7 @@
       <h1 class="font-light">Submitting your response...</h1>
     </div>
     <div class="flex-grow min-h-screen ml-24 bg-blay text-formsid-darker" id="content" v-if="shouldShowForm">
-      <vue-scroll-progress-bar class="ml-24" @complete="handleComplete" height=".5rem" backgroundColor="rgba(48, 70, 152, .82)" containerColor="#CDD2E7"/>
+      <vue-scroll-progress-bar class="ml-24" @complete="handleScrollComplete" height=".5rem" backgroundColor="rgba(48, 70, 152, .82)" containerColor="#CDD2E7"/>
       <div class="container h-full mt-15p">
         <div class="md:px-16 max-w-lg mx-auto pb-12">
           <div class="mx-auto pb-12">
@@ -86,144 +86,106 @@
   </div>
 </template>
 
-<script>
-import { getFile } from 'blockstack'
+<script lang="coffee">
+import { AppConfig, UserSession, getFile, getUserAppFileUrl, lookupProfile } from 'blockstack'
 import autosize from 'v-autosize'
 import { encryptECIES } from 'blockstack/lib/encryption'
 import OrbitDB from 'orbit-db'
-const isDev = process.env.NODE_ENV == 'development'
+isDev = process.env.NODE_ENV is 'development'
 
-export default {
-  name: 'Form',
-  directives: { autosize },
-  data: () => {
-    return {
-      orbit: false,
-      form: false,
-      isFetching: true,
-      isSubmitting: false,
-      isSubmitted: false,
-      answers: [],
-      pubKey: ''
-    }
-  },
-  computed: {
-    emailsValid(){
-      const emails = this.form.objects.filter(o => o.data.type == 'email')
-      return emails.every(e => {
-        const answer = this.answers.find(a => a.id == e.id)
-        return answer
-          ?  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(answer.answer)
-          : true
-      })
-    },
-    requiredsValid(){
-      const required = this.form.objects.filter(o => o.required)
-      return required.every(o => this.hasAnswer(o.id))
-    },
-    shouldShowForm(){
-      return !this.isFetching && !this.isSubmitting && !this.isSubmitted
-    }
-  },
-  methods: {
-    async clickSubmit(){
-      return new Promise(async (resolve, reject) => {
-        this.isSubmitting = true
-        if(this.validateForm()){
-          const submission = {
-            created: Date.now(),
-            data: this.answers,
-          }
-          const encryptedSubmission = encryptECIES(this.pubKey, JSON.stringify(submission))
-          const fslug = this.$route.params.fslug
-          const uslug = this.$route.params.uslug
-          const db = await this.orbit.open(this.form.dbs.submissions)
-          const hash = await db.put({ _id: uuid('submission'), data : encryptedSubmission })
-          this.isSubmitting = false
-          this.isSubmitted = true
-        } else {
-          this.isSubmitting = false
-        }
+export default
+  name: 'Form'
+  directives: { autosize }
+  data: ->
+    orbit: false
+    form: false
+    isFetching: true
+    isSubmitting: false
+    isSubmitted: false
+    answers: []
+    pubKey: ''
+    submissiondb: null
+    viewdb: null
+  computed:
+    emailsAreValid: ->
+      emails = @form.objects.filter (o) -> o.data.type is 'email'
+      emails.every (e) =>
+        question = @answers.find (a) -> a.id is e.id
+        return true unless question?
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(question.answer)
+    requiredsAreValid: ->
+      required = @form.objects.filter (o) -> o.required is true
+      required.every (o) => @questionHasAnswer(o.id)
+    shouldShowForm: -> return !@isFetching and !@isSubmitting && !@isSubmitted
+  methods:
+    connectIpfs: ->
+      new Promise (resolve, reject) =>
+        try
+          ipfs = new Ipfs
+            config: Addresses: Swarm: [ '/dns4/ws-star.discovery.libp2p.io/tcp/443/wss/p2p-websocket-star' ]
+            preload: enabled: false
+            EXPERIMENTAL: pubsub: true, ipnsPubsub: true
+          ipfs.on('error', (e) => console.error(e))
+          ipfs.on 'ready', () =>
+            @orbit = await OrbitDB.createInstance(ipfs)
+            resolve()
+        catch err
+          reject(err)
+    clickSubmit: ->
+      new Promise (resolve, reject) =>
+        return unless @validateForm()
+        @isSubmitting = true
+        submission = created: Date.now(), data: @answers
+        encryptedSubmission = encryptECIES @pubKey, JSON.stringify(submission)
+        fslug = @$route.params.fslug
+        uslug = @$route.params.uslug
+        hash = await @submissiondb.put _id: uuid('submission'), data : encryptedSubmission
+        console.log encryptedSubmission
+        console.log hash
+        @isSubmitting = false
+        @isSubmitted = true
         resolve()
-      })
-    },
-    hasAnswer(oid){
-      const answer = this.answers.find(a => a.id == oid)
-      return answer && answer !== ''
-    },
-    answerIsSelected(answer, oid){
-      const object = this.form.objects.find(o => o.id == oid)
-      const hasAnswer = this.answers.find(a => a.id == oid)
-      return hasAnswer
-        ? hasAnswer.answer == answer
-        : false
-    },
-    async fetchForm(){
-      return new Promise(async (resolve, reject) => {
-        const options = {
-          username: this.$route.params.uslug,
-          app: `${isDev ? 'http://localhost:8080' : 'https://app.forms.id' }`,
-          decrypt: false
-        }
-        const form = await getFile(`shared/${this.$route.params.fslug}.json`, options)
-        const pubKey = await getFile(`key.txt`, options)
-        this.form = JSON.parse(form)
-        this.pubKey = pubKey
-        resolve()
-      })
-    },
-    handleComplete(){
-
-    },
-    validateForm(){
-      return this.requiredsValid && this.emailsValid
-    },
-    setAnswer(id, answer){
-      const object = this.form.objects.find(o => o.id == id)
-      this.answers = this.answers.filter(a => a.id !== id)
-      this.answers.push({ id: id, answer: answer })
-    },
-    async connectIpfs(){
-      return new Promise(async (resolve, reject) => {
-        const repoPath = 'ipfs-' + Math.random()
-        let ipfs
-        try {
-          // Instatiate your IPFS node
-          ipfs = new Ipfs({
-            preload: { enabled: false },
-            repo: repoPath,
-            config: {
-              Addresses: {
-                Swarm: ['/dns4/ws-star.discovery.libp2p.io/tcp/443/wss/p2p-websocket-star']
-              }
-            },
-            EXPERIMENTAL: { pubsub: true, sharding: false, dht: false }
-          })
-        } catch(err) {
-          console.log(err)
-        }
-        ipfs.on('error', (e) => console.error(e))
-        ipfs.on('ready', async () => {
-          this.orbit = new OrbitDB(ipfs)
+    questionHasAnswer: (oid) ->
+      question = @answers.find (a) => a.id is oid
+      question? and question.answer != ''
+    answerIsSelected: (answer, oid) ->
+      object = @form.objects.find (o) => o.id is oid
+      question = @answers.find (a) -> a.id is oid
+      return false unless question?
+      return question.answer is answer
+    fetchForm: ->
+      new Promise (resolve, reject) =>
+        app = 'https://app.forms.id'
+        app = 'http://localhost:8080' if isDev
+        session = new UserSession({ appConfig: new AppConfig() })
+        try 
+          options = 
+            app: app
+            decrypt: false
+            username: @$route.params.uslug
+          @form = JSON.parse await session.getFile("shared/#{@$route.params.fslug}.json", options)
+          @pubKey = await session.getFile("key.txt", options)
           resolve()
-        })
-      })
-    }
-  },
-  async mounted(){
-    await this.connectIpfs()
-    this.fetchForm().then(async () => {
-      this.isFetching = false
-      const viewCount = await this.orbit.open(this.form.dbs.views)
-      await viewCount.inc()
-    }).catch(err => {
-      this.$router.push('/')
-    })
-  },
-  watch: {
-
-  }
-}
+        catch err 
+          reject(err)
+    validateForm: -> @requiredsAreValid && @emailsAreValid
+    setAnswer: (id, answer) ->
+      object = @form.objects.find (o) -> o.id == id
+      @answers = @answers.filter (a) -> a.id != id
+      @answers.push id: id, answer: answer 
+    handleScrollComplete: ->
+  mounted: ->
+    await @connectIpfs()
+    try 
+      await @fetchForm()
+      @viewdb = await @orbit.counter @form.dbs.views
+      @submissiondb = await @orbit.docstore @form.dbs.submissions
+      await @viewdb.load()
+      await @submissiondb.load()
+      hash = await @viewdb.inc(1)
+      @isFetching = false
+    catch err 
+      @$router.push('/')
 </script>
 
 <style lang="stylus">

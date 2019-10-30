@@ -9,87 +9,56 @@
   </div>
 </template>
 
-<script>
-import { decryptECIES, encryptECIES } from 'blockstack/lib/encryption'
+<script lang="coffee">
+import { AppConfig, UserSession } from 'blockstack'
+import { decryptECIES } from 'blockstack/lib/encryption'
+import { getPublicKeyFromPrivate } from 'blockstack/lib/keys'
 
-export default {
-  name: 'Auth',
-  store: ['bus', 'user'],
-  props: ['visible'],
-  data() {
-    return {
-      isLoggingIn: false
-    }
-  },
-  computed: {
-    open(){
-      return this.visible ? 'opacity-100 visible' : 'opacity-0 invisible'
-    }
-  },
-  methods: {
-    signIn() {
-      this.bus.$emit('signin')
-    },
-    async putUser(data){
-      return new Promise(async (resolve, reject) => {
-        this.user = {
-          username : data.username,
-          notifications: JSON.parse(await blockstack.getFile('notifications.json', { decrypt: true }))
-        }
+export default
+  name: 'Auth'
+  store: ['bus', 'isDev', 'session', 'user']
+  props: ['visible']
+  data: ->
+    isLoggingIn: false
+  computed:
+    open: ->
+      'opacity-100 visible' if @visible
+      'opacity-0 invisible' if !@visible
+  methods:
+    signIn: -> @session.redirectToSignIn()
+    setUser: ->
+      userData = @session.loadUserData()
+      new Promise (resolve, reject) =>
+        try
+          pubkey = await @session.getFile 'key.txt', { decrypt : false }
+        catch err
+          pubkey = getPublicKeyFromPrivate(userData.appPrivateKey)
+          await @session.putFile('key.txt', pubkey, { encrypt : false })
+          await @session.putFile('forms.json', JSON.stringify([]), { encrypt : true })
+          await @session.putFile('notifications.json', JSON.stringify([]), { encrypt : true })
+        @user = {}
+        @user.apk = userData.appPrivateKey
+        @user.did = userData.decentralizedID
+        @user.notifications = JSON.parse await blockstack.getFile 'notifications.json', { decrypt: true }
+        @user.pk = pubkey
+        @user.username = userData.username
+        @user.avatar = userData.profile?.image[0]?.contentUrl || 'https://picsum.photos/100'
         resolve()
-      })
-    },
-    async checkUser(){
-      if(!this.$route.query.authResponse){
-        if(blockstack.isUserSignedIn()){
-          this.isLoggingIn = true
-          const data = blockstack.loadUserData()
-          const profile = new blockstack.Person(data.profile)
-          await this.putUser(data)
-          // await blockstack.putFile('preferences.json', JSON.stringify(null), { encrypt : true })
-          this.bus.$emit('closeauth')
-        }
-      }
-      if(blockstack.isSignInPending()) {
-        console.log('pending sign in')
-        this.isLoggingIn = true
-        blockstack.handlePendingSignIn().then(async userData => {
-          this.$router.push({ name: this.$route.name })
-          this.userData = userData
-          let file
-          try {
-            file = JSON.parse(await blockstack.getFile('preferences.json', { decrypt: true }))
-            if(file === null || typeof(file.created) == 'undefined') throw 'new user; blockstack null'
-            console.log('old user')
-            await this.putUser(userData)
-            this.bus.$emit('closeauth')
-          } catch(err) {
-            console.log('new user')
-            const cleanArray = JSON.stringify([])
-            const pubKey = blockstack.getPublicKeyFromPrivate(blockstack.loadUserData().appPrivateKey)
-            await blockstack.putFile('key.txt', pubKey, { encrypt : false })
-            await blockstack.putFile('forms.json', cleanArray, { encrypt : true })
-            await blockstack.putFile('notifications.json', cleanArray, { encrypt : true })
-            await blockstack.putFile('preferences.json', JSON.stringify({
-              created: Date.now(),
-              email: '',
-              notifications: false
-            }), { encrypt : true })
-            await this.putUser(userData)
-            this.bus.$emit('closeauth')
-          }
-        }).catch(err => {
-          console.log(err)
-          // error trying to authenticate
-
-        })
-      }
-    },
-  },
-  created(){
-    this.$nextTick(() => {
-      this.checkUser()
-    })
-  }
-}
+    checkUser: ->
+      scopes = ['store_write']
+      scopes = ['store_write', 'publish_data']
+      confg = new AppConfig(scopes, window.location.origin, "/")
+      @session = new UserSession({ appConfig: confg })
+      if @session.isSignInPending()
+        @isLoggingIn = true
+        await @session.handlePendingSignIn()
+        await @setUser()
+        @$parent.closeAuth()
+      @session.redirectToSignIn() unless @session.isUserSignedIn()
+      if @session.isUserSignedIn()
+        @isLoggingIn = true
+        await @setUser()
+        @$parent.closeAuth()
+  created: ->
+    @$nextTick => @checkUser()
 </script>

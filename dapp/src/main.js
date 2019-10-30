@@ -36,6 +36,7 @@ new Vue({
         forms: []
       },
       forms: [],
+      isDev: process.env.NODE_ENV == 'development',
       user: false
     },
   }),
