@@ -35,11 +35,9 @@ export default
           pubkey = getPublicKeyFromPrivate(userData.appPrivateKey)
           await @session.putFile('key.txt', pubkey, { encrypt : false })
           await @session.putFile('forms.json', JSON.stringify([]), { encrypt : true })
-          await @session.putFile('notifications.json', JSON.stringify([]), { encrypt : true })
         @user = {}
         @user.apk = userData.appPrivateKey
         @user.did = userData.decentralizedID
-        @user.notifications = JSON.parse await blockstack.getFile 'notifications.json', { decrypt: true }
         @user.pk = pubkey
         @user.username = userData.username
         @user.avatar = userData.profile?.image[0]?.contentUrl || 'https://picsum.photos/100'
