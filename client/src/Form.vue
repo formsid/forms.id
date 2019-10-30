@@ -140,8 +140,6 @@ export default
         fslug = @$route.params.fslug
         uslug = @$route.params.uslug
         hash = await @submissiondb.put _id: uuid('submission'), data : encryptedSubmission
-        console.log encryptedSubmission
-        console.log hash
         @isSubmitting = false
         @isSubmitted = true
         resolve()
