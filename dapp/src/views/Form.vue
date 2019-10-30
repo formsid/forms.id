@@ -11,7 +11,7 @@
               h4.mb-2.font-light.text-2xl.text-formsid-darkest {{ completionRate }}%
               span.font-light.text-uppercase.text-formsid-darker Avg. Completion Rate
             .text-center.flex.flex-col
-              h4.mb-2.font-light.text-2xl.text-formsid-darkest {{ form.views }}
+              h4.mb-2.font-light.text-2xl.text-formsid-darkest {{ form.views || 0 }}
               span.font-light.text-uppercase.text-formsid-darker Views
         table.w-full.px-8
           thead
@@ -65,6 +65,7 @@ export default
           answer = answers.find (a) -> a.id is q.id
           answered++ if answer? and answer.answer != ''
         rates.push (answered/@answerable.length) * 100
+      return 0 unless rates.length > 0
       Math.ceil((rates.reduce (p,c) -> p + c) / @form.submissions.length)
   methods:
     exportData: ->
