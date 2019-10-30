@@ -181,7 +181,6 @@ export default
       @viewdb = await @orbit.counter @form.dbs.views
       @submissiondb = await @orbit.docstore @form.dbs.submissions
       await @viewdb.load()
-      await @submissiondb.load()
       hash = await @viewdb.inc(1)
       @isFetching = false
     catch err 
